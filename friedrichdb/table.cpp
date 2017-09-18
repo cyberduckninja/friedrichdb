@@ -27,21 +27,24 @@ namespace friedrichdb {
     }
 
     bool in_memory_database::erase(where f) {
+        /*
         for(auto it = t_.begin(); it!=t_.end(); ) {
+
             if(f(it->second)){
                 it = t_.erase(it);
             } else {
                 ++it;
             }
         }
+         */
         return true;
     }
 
     bool in_memory_database::insert(generator f) {
-        for(const auto &i:f()){
+        for(auto &&i:f()){
             auto tmp = tuple::object_id().generate();
             auto size = t_.size();
-            t_.emplace(composite_key{tmp,size},i);
+            t_.emplace(composite_key{tmp,size},std::move(i));
         }
         return true;
     }

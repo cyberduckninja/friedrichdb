@@ -5,51 +5,37 @@
 #include <string>
 #include <initializer_list>
 
-#include "type.hpp"
+#include "friedrichdb/type.hpp"
+#include "friedrichdb/tuple/meta_data_t.hpp"
 
 namespace friedrichdb {
 
-    struct element final {
-        element(const std::string &name, tuple::type::meta_type id_type)
-                :
-                name(name),
-                id_type(id_type)
-        {}
-
-        ~element() = default;
-
-        std::string name;
-        tuple::type::meta_type id_type;
-
-    };
-
     class schema final {
-    public:
-
+    private:
         struct __element__ final {
-            __element__(const std::string &name, std::size_t id, tuple::type::meta_type id_type)
+            __element__(const std::string &name, std::size_t id, tuple::type::meta_type type)
                     :
-                    name(name),
                     id(id),
-                    id_type(id_type)
+                    type(name,type)
+
             {}
 
             ~__element__() = default;
 
-            std::string name;
+            tuple::meta_data_t type;
             std::size_t id;
-            tuple::type::meta_type id_type;
-
         };
 
-        using type_type=std::vector<__element__>;
+        using type_type = std::vector<__element__>;
+
+    public:
 
         ~schema() = default;
 
-        schema(std::initializer_list<element> raw_schema) {
+        schema(std::initializer_list<tuple::meta_data_t> raw_schema) {
             for (const auto &i: raw_schema) {
                 auto number = types.size();
-                types.push_back(__element__{i.name, number, i.id_type});
+                types.push_back(__element__{i.name, number, i.type});
             }
         }
 
@@ -65,6 +51,7 @@ namespace friedrichdb {
             return types.end();
         };
 
+    private:
         type_type types;
     };
 

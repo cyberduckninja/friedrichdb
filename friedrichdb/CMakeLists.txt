@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 list(APPEND ${project}_HEADERS
         include/friedrichdb/tuple/error.hpp
+        include/friedrichdb/tuple/meta_data_t.hpp
         include/friedrichdb/tuple/object_id.hpp
         include/friedrichdb/tuple/ordering.h
         include/friedrichdb/tuple/storage.hpp
@@ -29,9 +30,10 @@ list(APPEND ${project}_SOURCES
         database.cpp
         object_id.cpp
         storage.cpp
-        timestamp.cpp
-        time.cpp
         table.cpp
+        time.cpp
+        timestamp.cpp
+        tuple.cpp
 )
 
 add_library(${project} ${${project}_HEADERS} ${${project}_SOURCES} )

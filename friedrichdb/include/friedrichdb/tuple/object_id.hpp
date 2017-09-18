@@ -1,5 +1,5 @@
-#ifndef EXAMPLA_OBJECT_ID_HPP
-#define EXAMPLA_OBJECT_ID_HPP
+#ifndef OBJECT_ID_HPP
+#define OBJECT_ID_HPP
 
 #include "ordering.h"
 namespace friedrichdb {

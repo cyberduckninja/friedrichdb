@@ -1,5 +1,5 @@
-#ifndef FRIEDRICHDB_DATABASE_HPP
-#define FRIEDRICHDB_DATABASE_HPP
+#ifndef DATABASE_HPP
+#define DATABASE_HPP
 
 #include <vector>
 #include <functional>

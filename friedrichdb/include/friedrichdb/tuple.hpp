@@ -47,27 +47,16 @@ namespace friedrichdb {
             virtual ~base() = default;
         };
 
-        struct base_field_t {
-            base_field_t() = default;
-            base_field_t(const base_field_t&)= delete;
-            base_field_t&operator()(const base_field_t&)= delete;
-            base_field_t(const std::string &name, type::meta_type type) : name(name), type(type),body(new base) {}
+        struct meta_data_field_t final {
 
+            meta_data_field_t() = default;
+            meta_data_field_t(const meta_data_field_t&)= default;
+            meta_data_field_t&operator=(const meta_data_field_t&)= default;
+            ~meta_data_field_t() = default;
+
+            meta_data_field_t(const std::string &name, type::meta_type type) : name(name), type(type)  {}
             std::string name;
             type::meta_type type;
-            std::unique_ptr<base> body;
-
-            virtual ~base_field_t() = default;
-        };
-
-        ///   field_t -> { id, name, field_1 }
-        struct field_t final : public base_field_t {
-            field_t() = default;
-            field_t(const field_t&)= delete;
-            field_t&operator()(const field_t&)= delete;
-            field_t(const std::string &name, size_t id, type::meta_type type) : id(id), base_field_t(name, type) {}
-            std::size_t id;
-            ~field_t() = default;
         };
 
         ///   <field_t1, field_t2, field_t3, ..., field_tN >
@@ -80,26 +69,25 @@ namespace friedrichdb {
                 for (auto &i:init_list) {
                     auto size = t.size();
                     index_of_name.emplace(i.name, size);
-                    t.emplace_back(std::make_shared<field_t>(i.name, size, i.type));
+                    meta_info.emplace_back(meta_data_field_t{i.name, i.type});
+                    t.emplace_back(std::move(std::make_shared<base>()));
                 }
             }
 
-            std::shared_ptr<field_t> operator[](position_key key) {
-                //        strat <position <= stop
-                //assert(t.size() >= index.position);
-                //assert(index.position<1 );
+            std::shared_ptr<base> operator[](position_key key) {
+                assert( key.key <= t.size() );
+                assert( key.key >= 0 );
+                auto meta = meta_info[key.key];
+                assert(meta.type == key.type);
                 auto tmp = t[key.key];
-                assert(tmp->type == key.type);
                 return tmp;
             }
 
-            std::shared_ptr<field_t> operator[](string_key key) {
-                //        strat <position <= stop
-                //assert(t.size() >= index.position);
-                //assert(index.position<1 );
+            std::shared_ptr<base> operator[](string_key key) {
                 auto position = index_of_name[key.key];
+                auto meta = meta_info[position];
+                assert(meta.type == key.type);
                 auto tmp = t[position];
-                assert(tmp->type == key.type);
                 return tmp;
             }
 
@@ -107,9 +95,9 @@ namespace friedrichdb {
 
         private:
             std::unordered_map<std::string, offest> index_of_name;
-            std::vector<std::shared_ptr<field_t>> t;
+            std::vector<meta_data_field_t> meta_info;
+            std::vector<std::shared_ptr<base>> t;
         };
-
     }
 
     using tuple::string_key;

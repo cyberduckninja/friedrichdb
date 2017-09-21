@@ -3,7 +3,6 @@
 #include <functional>
 
 namespace friedrichdb {
-    namespace tuple {
         namespace implement {
 
             struct ordered_base {
@@ -51,5 +50,4 @@ namespace friedrichdb {
                 friend bool operator>=(const T &, const T &) { return true; }
             };
         }
-    }
 }

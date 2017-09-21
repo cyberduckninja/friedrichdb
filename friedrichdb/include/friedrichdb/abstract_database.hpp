@@ -2,16 +2,16 @@
 #define ABSTRACT_DATABASE_HPP
 
 #include <functional>
-#include <friedrichdb/tuple.hpp>
+#include <friedrichdb/tuple_t.hpp>
 #import "array"
 
 namespace friedrichdb {
 
-    using row             = tuple::tuple;
-    using where           = std::function<bool(row)>;
-    using generator       = std::function<std::vector<row>()>;
-    using where_generator = std::function<row(row)>;
+    using row             = tuple_t;
     using response        = std::vector<row>;
+    using where           = std::function<bool(row)>;
+    using generator       = std::function<response()>;
+    using where_generator = std::function<row(row)>;
 
     struct abstract_database {
         enum class storge_t : uint8_t {
@@ -20,7 +20,7 @@ namespace friedrichdb {
             instance
         };
 
-        abstract_database(storge_t t) : type_(t) {}
+        explicit abstract_database(storge_t t) : type_(t) {}
 
         virtual response find(where) const = 0;
 

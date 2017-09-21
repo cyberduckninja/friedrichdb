@@ -2,9 +2,10 @@
 #define TIMETAMP_HPP
 
 #include "ordering.h"
+
 namespace friedrichdb{
-namespace tuple {
-    class timestamp : public implement::ordered<timestamp> {
+
+    class timestamp final : public implement::ordered<timestamp> {
     public:
         timestamp() { ts_ = 0; }
 
@@ -33,5 +34,5 @@ namespace tuple {
     };
 
     std::ostream &operator<<(std::ostream &out, const timestamp &);
-}}
+}
 #endif

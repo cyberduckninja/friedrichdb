@@ -1,16 +1,16 @@
 #ifndef COMPOSITE_KEY_HPP
 #define COMPOSITE_KEY_HPP
 
-#include "tuple.hpp"
-#include "friedrichdb/tuple/object_id.hpp"
+#include "tuple_t.hpp"
+#include "object_id.hpp"
 
 namespace friedrichdb {
 
     struct composite_key {
-        composite_key(const tuple::object_id &id_1, const size_t id_2);
+        composite_key(const object_id &id_1, const size_t id_2);
         ~composite_key()= default;
-        const tuple::object_id id_1;
-        const std::size_t      id_2;
+        const object_id   id_1;
+        const std::size_t id_2;
 
         bool operator == (const composite_key &rhs) const;
 

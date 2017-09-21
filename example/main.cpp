@@ -1,49 +1,66 @@
 #include <friedrichdb/fake_file_storage.hpp>
 #include "friedrichdb/table.hpp"
 #include "friedrichdb/database.hpp"
+#include "friedrichdb/view.hpp"
+
+using friedrichdb::tuple_t;
+using friedrichdb::run_time_type::string_t;
+using friedrichdb::run_time_type::boolean_t;
+using friedrichdb::schema;
+using friedrichdb::run_time_type::positive_integer_t;
+using friedrichdb::view::positive_integer;
+using friedrichdb::position_key;
+using friedrichdb::in_memory_database;
+using friedrichdb::row;
+using friedrichdb::file_storage_fake;
+using friedrichdb::database;
+using friedrichdb::abstract_database;
+using friedrichdb::response;
 
 int main() {
 
-    friedrichdb::schema s{
-            {"a", friedrichdb::string_t},
-            {"b", friedrichdb::boolean_t},
-            {"c", friedrichdb::double_t}
+    schema s{
+            {"a", string_t},
+            {"b", boolean_t},
+            {"c", friedrichdb::run_time_type::double_t}
     };
 
 
-    auto tmp = std::to_string(568);
-    friedrichdb::tuple::tuple d{{"a",friedrichdb::positive_integer_t}};
-    d[friedrichdb::position_key{0,friedrichdb::positive_integer_t}]->set(tmp.data(),tmp.length());
+    tuple_t d{{"a",positive_integer_t}};
+    auto insert = d.get<positive_integer>(0);
+    insert.set(568);
 
-    friedrichdb::in_memory_database table;
+    in_memory_database table;
     table.insert(
-            [&]() -> std::vector<friedrichdb::row> {
-                std::vector<friedrichdb::row> tmp;
-                auto tmp_1 = std::to_string(568);
-                friedrichdb::tuple::tuple d{{"a",  friedrichdb::positive_integer_t}};
-                d[friedrichdb::position_key{0,friedrichdb::positive_integer_t}]->set(tmp_1.data(),tmp_1.length());
+            [&]() -> response {
+                response tmp;
+                tuple_t d{{"a",  positive_integer_t}};
+                auto insert = d.get<positive_integer>(0);
+                insert.set(568);
                 tmp.emplace_back(std::move(d));
                 return tmp;
             }
     );
 
 
-    auto* memory = new friedrichdb::in_memory_database;
-    auto* fake = new friedrichdb::file_storage_fake;
-    std::unique_ptr<friedrichdb::abstract_database>db (new friedrichdb::database(memory, fake));
+    auto* memory = new in_memory_database;
+    auto* fake = new file_storage_fake;
+    std::unique_ptr<abstract_database>db (new database(memory, fake));
 
     db->insert(
-            [&]() -> std::vector<friedrichdb::row> {
-                std::vector<friedrichdb::row> tmp;
-                auto tmp_1 = std::to_string(568);
-                friedrichdb::tuple::tuple d{
-                        {"a", friedrichdb::positive_integer_t},
-                        {"b", friedrichdb::positive_integer_t},
-                        {"c", friedrichdb::positive_integer_t}
+            [&]() -> response {
+                response tmp;
+                tuple_t d{
+                        {"a", positive_integer_t},
+                        {"b", positive_integer_t},
+                        {"c", positive_integer_t}
                 };
-                d[friedrichdb::position_key{0,friedrichdb::positive_integer_t}]->set(tmp_1.data(),tmp_1.length());
-                d[friedrichdb::position_key{1,friedrichdb::positive_integer_t}]->set(tmp_1.data(),tmp_1.length());
-                d[friedrichdb::position_key{2,friedrichdb::positive_integer_t}]->set(tmp_1.data(),tmp_1.length());
+                auto insert = d.get<positive_integer>(0);
+                insert.set(568);
+                insert = d.get<positive_integer>(1);
+                insert.set(568);
+                insert = d.get<positive_integer>(2);
+                insert.set(568);
                 tmp.emplace_back(std::move(d));
                 return tmp;
             }

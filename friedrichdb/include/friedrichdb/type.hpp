@@ -7,8 +7,8 @@
 #include <unordered_map>
 
 namespace friedrichdb {
-    namespace tuple {
-        namespace type {
+
+        namespace run_time_type {
 
             enum class object_type {
                 NILL = 0x00,
@@ -40,17 +40,33 @@ namespace friedrichdb {
                     return !(rhs == *this);
                 }
 
-                const bool fixed;
-                const bool inner;
-                const object_type id;
+                bool fixed;
+                bool inner;
+                object_type id;
             };
+
+            constexpr const meta_type positive_integer_t(object_type::POSITIVE_INTEGER,true,false);
+            constexpr const meta_type string_t(object_type::STR,false,false);
+            constexpr const meta_type double_t(object_type::FLOAT64,true,false);
+            constexpr const meta_type boolean_t(object_type::BOOLEAN,true,false);
         }
+
+    namespace compile_time_type {
+
+        template<uint8_t ID>
+        struct id {
+            id() : id_(ID) {}
+            uint8_t id_;
+        };
+
+
+        class positive_integer_t final : public id<0x02> {};
+
+        class string_t final : public id<0x05> {};
+
+        class double_t final : public id<0x04> {};
+
+        class boolean_t final : public id<0x01> {};
     }
-
-    constexpr const tuple::type::meta_type positive_integer_t(tuple::type::object_type::POSITIVE_INTEGER,true,false);
-    constexpr const tuple::type::meta_type string_t(tuple::type::object_type::STR,false,false);
-    constexpr const tuple::type::meta_type double_t(tuple::type::object_type::FLOAT64,true,false);
-    constexpr const tuple::type::meta_type boolean_t(tuple::type::object_type::FLOAT64,true,false);
-
-}
+};
 #endif //PROJECT_TYPE_HPP

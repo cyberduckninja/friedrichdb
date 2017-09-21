@@ -1,5 +1,5 @@
 #include "include/friedrichdb/table.hpp"
-#include "friedrichdb/tuple/object_id.hpp"
+#include "friedrichdb/object_id.hpp"
 namespace friedrichdb {
     response in_memory_database::find(where f) const {
         response tmp;
@@ -42,7 +42,7 @@ namespace friedrichdb {
 
     bool in_memory_database::insert(generator f) {
         for(auto &&i:f()){
-            auto tmp = tuple::object_id().generate();
+            auto tmp = object_id().generate();
             auto size = t_.size();
             t_.emplace(composite_key{tmp,size},std::move(i));
         }

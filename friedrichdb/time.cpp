@@ -1,8 +1,7 @@
-#include "friedrichdb/tuple/time.hpp"
+#include "friedrichdb/time.hpp"
 #include <ostream>
 #include <time.h>
 namespace friedrichdb {
-    namespace tuple {
 
         time::time(time_t t) : milli_(t * 1000) {}
 
@@ -22,5 +21,4 @@ namespace friedrichdb {
                 );
                 return out << buf;
         }
-    }
 }

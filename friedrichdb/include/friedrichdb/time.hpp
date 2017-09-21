@@ -1,10 +1,9 @@
 #ifndef TIME_HPP
 #define TIME_HPP
 
-#include "friedrichdb/tuple/ordering.h"
+#include "ordering.h"
 #include <sys/time.h>
 namespace friedrichdb{
-namespace tuple {
     class time: public implement::ordered<time> {
     public:
         explicit time(time_t t);
@@ -21,5 +20,5 @@ namespace tuple {
     };
 
     std::ostream& operator << (std::ostream& out, const time& t);
-}}
+}
 #endif

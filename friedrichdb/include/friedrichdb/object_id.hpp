@@ -3,8 +3,7 @@
 
 #include "ordering.h"
 namespace friedrichdb {
-    namespace tuple {
-        class object_id : public implement::ordered<object_id> {
+        class object_id final  : public implement::ordered<object_id> {
         public:
             object_id() { ::memset(data_, 0, DataSize); }
 
@@ -46,12 +45,11 @@ namespace friedrichdb {
             friend std::ostream &operator<<(std::ostream &out, const object_id &);
         };
 
-    }
 }
 namespace std {
     template <>
-    struct hash<friedrichdb::tuple::object_id>{
-        std::size_t operator()(friedrichdb::tuple::object_id id) const {
+    struct hash<friedrichdb::object_id>{
+        std::size_t operator()(friedrichdb::object_id id) const {
             return std::hash<std::string>{}(id.to_string());
         }
     };

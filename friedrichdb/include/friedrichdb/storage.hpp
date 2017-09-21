@@ -1,7 +1,6 @@
 #ifndef STORAGE_HPP
 #define STORAGE_HPP
 namespace friedrichdb {
-    namespace tuple {
         namespace implement {
 
             class storage_t {
@@ -33,6 +32,5 @@ namespace friedrichdb {
             };
 
         }
-    }
 }
 #endif

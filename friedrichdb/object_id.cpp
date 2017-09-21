@@ -1,10 +1,9 @@
 #include <stdexcept>
 #include <fstream>
 #include <zconf.h>
-#include "friedrichdb/tuple/object_id.hpp"
-#include <friedrichdb/tuple/error.hpp>
+#include "friedrichdb/object_id.hpp"
+#include <friedrichdb/error.hpp>
 namespace friedrichdb {
-    namespace tuple {
 
         namespace implement {
 
@@ -52,7 +51,7 @@ namespace friedrichdb {
                 if (c >= 'A' && c <= 'F') {
                     return 10u + (c - 'A');
                 }
-                throw tuple::Error("Invalid ObjectId: unknown character");
+                throw error("Invalid ObjectId: unknown character");
             }
 
             inline unsigned char byteOfHex(char msb, char lsb) {
@@ -67,7 +66,7 @@ namespace friedrichdb {
 
         object_id::object_id(const char *hex) {
             if (std::strlen(hex) != DataSize * 2) {
-                throw tuple::Error("Invalid object_t id: bad size");
+                throw error("Invalid object_t id: bad size");
             }
             for (size_t i = 0; i < DataSize; ++i) {
                 data_[i] = byteOfHex(hex[2 * i], hex[2 * i + 1]);
@@ -76,7 +75,7 @@ namespace friedrichdb {
 
         object_id::object_id(const std::string &hex) {
             if (hex.size() != DataSize * 2) {
-                throw tuple::Error("Invalid object_t id: bad size");
+                throw error("Invalid object_t id: bad size");
             }
             for (size_t i = 0; i < DataSize; ++i) {
                 data_[i] = byteOfHex(hex[2 * i], hex[2 * i + 1]);
@@ -119,5 +118,4 @@ namespace friedrichdb {
                 puthex(out, id.data_[i]);
             return out << "\")";
         }
-    }
 }

@@ -1,9 +1,9 @@
 
 #include <vector>
 
-#include "friedrichdb/tuple/storage.hpp"
+#include "friedrichdb/storage.hpp"
 namespace friedrichdb {
-    namespace tuple {
+
         namespace implement {
             struct storage_t::Impl {
                 std::atomic<std::size_t> refcount{0};
@@ -50,5 +50,4 @@ namespace friedrichdb {
             void storage_t::resize(size_t size) { impl_->data.resize(size); }
 
         }
-    }
 }

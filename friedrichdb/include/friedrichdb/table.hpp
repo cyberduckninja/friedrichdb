@@ -5,18 +5,17 @@
 #include <functional>
 #include "tuple_t.hpp"
 #include "schema.hpp"
-#include "object_id.hpp"
+#include "friedrichdb/data_types/object_id.hpp"
 #include "friedrichdb/composite_key.hpp"
+
 namespace friedrichdb {
 
     class in_memory_database final : public abstract_database {
     private:
-        ///   <object_id, id> <-> <field_t1, field_t2, field_t3, ..., field_tN >
+        ///   composite_key{ object_id, id } <-> <field_t1, field_t2, field_t3, ..., field_tN >
         using table_t = std::unordered_map<composite_key, tuple_t::tuple_t,hash>;
     public:
-        //explicit in_memory_database(schema &&current_schema) : schema_tuple(std::move(current_schema)) {}
-        in_memory_database():abstract_database(storge_t::memory){}
-
+        explicit in_memory_database(schema &&current_schema);
         ~in_memory_database() = default;
 
         response find(where) const override;
@@ -28,8 +27,7 @@ namespace friedrichdb {
         bool insert(generator) override;
 
     private:
-        //schema schema_tuple;
-
+        schema current_schema;
         table_t t_;
     };
 }

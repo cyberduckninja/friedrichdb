@@ -13,8 +13,8 @@ namespace friedrichdb {
     public:
         template<typename MEMORY, typename FILE>
         database(MEMORY *memory, FILE *file):abstract_database(storge_t::instance) {
-            assert(memory->type()==storge_t::memory);
-            assert(file->type()==storge_t::disk);
+            assert(memory->type() == storge_t::memory);
+            assert(file->type() == storge_t::disk);
             this->memory.reset(memory);
             this->file.reset(file);
         }

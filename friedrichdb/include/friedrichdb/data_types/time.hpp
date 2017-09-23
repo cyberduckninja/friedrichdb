@@ -4,7 +4,8 @@
 #include "ordering.h"
 #include <sys/time.h>
 namespace friedrichdb{
-    class time: public implement::ordered<time> {
+
+    class time final: public implement::ordered<time> {
     public:
         explicit time(time_t t);
         explicit time(const struct timeval& tv);

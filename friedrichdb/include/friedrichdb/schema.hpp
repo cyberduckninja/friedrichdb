@@ -13,12 +13,7 @@ namespace friedrichdb {
     class schema final {
     private:
         struct __element__ final {
-            __element__(const std::string &name, std::size_t id, run_time_type::meta_type type)
-                    :
-                    id(id),
-                    type(name,type)
-
-            {}
+            __element__(const std::string &name, std::size_t id, run_time_type::meta_type type);
 
             ~__element__() = default;
 
@@ -29,30 +24,25 @@ namespace friedrichdb {
         using type_type = std::vector<__element__>;
 
     public:
-
         ~schema() = default;
+        /// |name:type:id|name:type:id|name:type:id|
+        explicit schema(std::initializer_list<meta_data_t> raw_schema);
 
-        schema(std::initializer_list<meta_data_t> raw_schema) {
-            for (const auto &i: raw_schema) {
-                auto number = types.size();
-                types.push_back(__element__{i.name, number, i.type});
-            }
+        /// compile time check
+        template <typename T>
+        auto check(const T& data) const  -> bool {
+            return hash == data.template hash();
         }
 
-        std::size_t size() const {
-            return types.size();
-        }
+        auto size() const -> std::size_t;
 
-        auto begin() -> type_type::iterator {
-            return types.begin();
-        };
+        auto begin() -> type_type::iterator;
 
-        auto end() -> type_type::iterator {
-            return types.end();
-        };
+        auto end() -> type_type::iterator;
 
     private:
         type_type types;
+        std::size_t hash;
     };
 
 }

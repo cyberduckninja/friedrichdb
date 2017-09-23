@@ -3,7 +3,10 @@
 
 #include "ordering.h"
 namespace friedrichdb {
-        class object_id final  : public implement::ordered<object_id> {
+
+    namespace data_types {
+
+        class object_id final : public implement::ordered<object_id> {
         public:
             object_id() { ::memset(data_, 0, DataSize); }
 
@@ -27,6 +30,7 @@ namespace friedrichdb {
             enum {
                 DataSize = 12
             };
+
             union {
                 struct {
                     uint32_t time_;
@@ -45,14 +49,15 @@ namespace friedrichdb {
             friend std::ostream &operator<<(std::ostream &out, const object_id &);
         };
 
+    }
 }
 namespace std {
     template <>
-    struct hash<friedrichdb::object_id>{
-        std::size_t operator()(friedrichdb::object_id id) const {
+    struct hash<friedrichdb::data_types::object_id>{
+        std::size_t operator()(friedrichdb::data_types::object_id id) const {
             return std::hash<std::string>{}(id.to_string());
         }
     };
 }
 
-#endif //EXAMPLA_OBJECT_ID_HPP
+#endif //OBJECT_ID_HPP

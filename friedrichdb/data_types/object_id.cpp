@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <fstream>
 #include <zconf.h>
-#include "friedrichdb/object_id.hpp"
+#include "friedrichdb/data_types/object_id.hpp"
 #include <friedrichdb/error.hpp>
 namespace friedrichdb {
 
@@ -63,7 +63,7 @@ namespace friedrichdb {
             }
 
         } // namespace
-
+    namespace data_types {
         object_id::object_id(const char *hex) {
             if (std::strlen(hex) != DataSize * 2) {
                 throw error("Invalid object_t id: bad size");
@@ -118,4 +118,5 @@ namespace friedrichdb {
                 puthex(out, id.data_[i]);
             return out << "\")";
         }
+    }
 }

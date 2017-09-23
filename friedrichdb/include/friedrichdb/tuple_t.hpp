@@ -8,7 +8,7 @@
 #include <cassert>
 #include "type.hpp"
 #include "field_t.hpp"
-#include "view.hpp"
+#include "friedrichdb/view/view_t.hpp"
 
 namespace friedrichdb {
 
@@ -36,6 +36,7 @@ namespace friedrichdb {
             tuple_t&operator=(tuple_t&&) = default;
             ~tuple_t() = default;
 
+            /// |name:type:id|name:type:id|name:type:id|
             tuple_t(std::initializer_list<meta_data_t> init_list);
 
             /// compile time check
@@ -49,6 +50,7 @@ namespace friedrichdb {
                 return tmp;
             }
 
+            /// compile time check
             template <typename T>
             auto get(std::size_t key) -> T {
                 assert(key <= t.size());
@@ -60,31 +62,30 @@ namespace friedrichdb {
                 return tmp;
             }
 
-            /// run time  check
-            template <typename T>
-            auto get(string_key key) -> T {
-                auto position = index_of_name[key.key];
-                auto meta = meta_info[position];
-                assert(meta.type == key.type);
-                T tmp{t[position]};
-                return tmp;
-            }
+            /// run time check
+            auto get(string_key key) -> field_ptr;
+            /// run time check
+            auto get(position_key key) -> field_ptr;
 
-            template <typename T>
-            auto get(position_key key) -> T {
-                assert(key.key <= t.size());
-                assert(key.key >= 0);
-                auto meta = meta_info[key.key];
-                assert(meta.type == key.type);
-                T tmp{t[key.key]};
-                return tmp;
-            }
+            auto hash() const -> std::size_t;
 
         private:
             std::unordered_map<std::string, offest> index_of_name;
             std::vector<meta_data_t> meta_info;
             std::vector<field_ptr> t;
+            std::size_t hash_;
         };
+
+        template<typename T,std::size_t index>
+        auto get(tuple_t& tuple) -> T {
+            return tuple.get<T>(index);
+        };
+
+        template<typename T,std::size_t Size>
+        auto get(tuple_t& tuple,const char(&DATA)[Size]) -> T {
+            return tuple.get<T>({DATA,Size-1});
+        };
+
 }
 
 #endif //TUPLE_HPP

@@ -21,11 +21,9 @@ namespace friedrichdb {
             return true;
         }
 
-
         bool erase(where) override {
             return true;
         }
-
 
         bool insert(generator) override {
             return true;

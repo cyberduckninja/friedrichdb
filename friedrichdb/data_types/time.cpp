@@ -1,4 +1,4 @@
-#include "friedrichdb/time.hpp"
+#include "friedrichdb/data_types/time.hpp"
 #include <ostream>
 #include <time.h>
 namespace friedrichdb {

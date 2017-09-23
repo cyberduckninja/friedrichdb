@@ -1,14 +1,13 @@
 #include <friedrichdb/fake_file_storage.hpp>
 #include "friedrichdb/table.hpp"
 #include "friedrichdb/database.hpp"
-#include "friedrichdb/view.hpp"
+#include "friedrichdb/view/positive_integer.hpp"
 
 using friedrichdb::tuple_t;
 using friedrichdb::run_time_type::string_t;
 using friedrichdb::run_time_type::boolean_t;
 using friedrichdb::schema;
 using friedrichdb::run_time_type::positive_integer_t;
-using friedrichdb::view::positive_integer;
 using friedrichdb::position_key;
 using friedrichdb::in_memory_database;
 using friedrichdb::row;
@@ -27,15 +26,19 @@ int main() {
 
 
     tuple_t d{{"a",positive_integer_t}};
-    auto insert = d.get<positive_integer>(0);
+    auto insert = friedrichdb::get<friedrichdb::view::positive_integer,0>(d);
     insert.set(568);
 
-    in_memory_database table;
+    schema s1{
+            {"a",  positive_integer_t}
+    };
+
+    in_memory_database table(std::move(s1));
     table.insert(
             [&]() -> response {
                 response tmp;
                 tuple_t d{{"a",  positive_integer_t}};
-                auto insert = d.get<positive_integer>(0);
+                auto insert = friedrichdb::get<friedrichdb::view::positive_integer,0>(d);
                 insert.set(568);
                 tmp.emplace_back(std::move(d));
                 return tmp;
@@ -43,7 +46,13 @@ int main() {
     );
 
 
-    auto* memory = new in_memory_database;
+    schema s2{
+            {"a", positive_integer_t},
+            {"b", positive_integer_t},
+            {"c", positive_integer_t}
+    };
+
+    auto* memory = new in_memory_database(std::move(s2));
     auto* fake = new file_storage_fake;
     std::unique_ptr<abstract_database>db (new database(memory, fake));
 
@@ -55,11 +64,11 @@ int main() {
                         {"b", positive_integer_t},
                         {"c", positive_integer_t}
                 };
-                auto insert = d.get<positive_integer>(0);
+                auto insert = friedrichdb::get<friedrichdb::view::positive_integer,0>(d);
                 insert.set(568);
-                insert = d.get<positive_integer>(1);
+                insert = friedrichdb::get<friedrichdb::view::positive_integer,1>(d);
                 insert.set(568);
-                insert = d.get<positive_integer>(2);
+                insert = friedrichdb::get<friedrichdb::view::positive_integer,2>(d);
                 insert.set(568);
                 tmp.emplace_back(std::move(d));
                 return tmp;

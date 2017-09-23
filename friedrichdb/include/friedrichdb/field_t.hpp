@@ -1,7 +1,7 @@
 #ifndef FIELD_T_HPP
 #define FIELD_T_HPP
 
-#include "ordering.h"
+#include "friedrichdb/data_types/ordering.h"
 #include <vector>
 
 namespace friedrichdb {

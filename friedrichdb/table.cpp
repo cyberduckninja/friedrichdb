@@ -1,5 +1,5 @@
 #include "include/friedrichdb/table.hpp"
-#include "friedrichdb/object_id.hpp"
+#include "friedrichdb/data_types/object_id.hpp"
 namespace friedrichdb {
     response in_memory_database::find(where f) const {
         response tmp;
@@ -41,13 +41,18 @@ namespace friedrichdb {
     }
 
     bool in_memory_database::insert(generator f) {
+
         for(auto &&i:f()){
-            auto tmp = object_id().generate();
+            auto tmp = data_types::object_id().generate();
             auto size = t_.size();
+            current_schema.check(i);
             t_.emplace(composite_key{tmp,size},std::move(i));
         }
+
         return true;
     }
+
+    in_memory_database::in_memory_database(schema &&current_schema) : current_schema(std::move(current_schema)),abstract_database(storge_t::memory){}
 
 
 }

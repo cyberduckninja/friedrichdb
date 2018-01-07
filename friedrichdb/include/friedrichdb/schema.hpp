@@ -10,38 +10,64 @@
 
 namespace friedrichdb {
 
+    /**
+     * json
+     {
+        "name":"example",
+        "schema":[
+            {
+                "name":a,
+	            "type":int
+            },
+
+	        {
+	            "name":b,
+	            "type":bool
+  	        },
+	        {
+	            "name":c,
+	            "type":double
+	        },
+        ]
+         "indexs":[
+            {
+                "rows":[],
+                "constrain":[]
+            }
+         ]
+     }
+     */
+
+
     class schema final {
-    private:
-        struct __element__ final {
-            __element__(const std::string &name, std::size_t id, run_time_type::meta_type type);
-
-            ~__element__() = default;
-
-            meta_data_t type;
-            std::size_t id;
-        };
-
-        using type_type = std::vector<__element__>;
-
     public:
         ~schema() = default;
+
+        const std::string& name() const {
+            return name_;
+        }
+
         /// |name:type:id|name:type:id|name:type:id|
-        explicit schema(std::initializer_list<meta_data_t> raw_schema);
+        schema(const std::string&name, std::initializer_list<meta_data_t> raw_schema,std::initializer_list<std::string> constrain);
 
         /// compile time check
-        template <typename T>
-        auto check(const T& data) const  -> bool {
+        template<typename T>
+        auto check(const T &data) const -> bool {
             return hash == data.template hash();
         }
 
-        auto size() const -> std::size_t;
+        std::pair< std::vector<meta_data_t>::const_iterator,std::vector<meta_data_t>::const_iterator> get_schema() const;
 
-        auto begin() -> type_type::iterator;
+        std::pair<std::vector<std::string>::const_iterator ,std::vector<std::string>::const_iterator> get_indexs() const;
 
-        auto end() -> type_type::iterator;
+        bool hash_element_in_schema(const std::string &name) const;
+
+
 
     private:
-        type_type types;
+        std::string name_;
+        std::vector<meta_data_t> schema_;
+        std::vector<std::string> constrain_;
         std::size_t hash;
     };
 

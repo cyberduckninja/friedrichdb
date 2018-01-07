@@ -2,7 +2,6 @@
 #include <fstream>
 #include <zconf.h>
 #include "friedrichdb/data_types/object_id.hpp"
-#include <friedrichdb/error.hpp>
 namespace friedrichdb {
 
         namespace implement {
@@ -51,7 +50,7 @@ namespace friedrichdb {
                 if (c >= 'A' && c <= 'F') {
                     return 10u + (c - 'A');
                 }
-                throw error("Invalid ObjectId: unknown character");
+                throw std::runtime_error("Invalid ObjectId: unknown character");
             }
 
             inline unsigned char byteOfHex(char msb, char lsb) {
@@ -66,7 +65,7 @@ namespace friedrichdb {
     namespace data_types {
         object_id::object_id(const char *hex) {
             if (std::strlen(hex) != DataSize * 2) {
-                throw error("Invalid object_t id: bad size");
+                throw std::runtime_error("Invalid object_t id: bad size");
             }
             for (size_t i = 0; i < DataSize; ++i) {
                 data_[i] = byteOfHex(hex[2 * i], hex[2 * i + 1]);
@@ -75,7 +74,7 @@ namespace friedrichdb {
 
         object_id::object_id(const std::string &hex) {
             if (hex.size() != DataSize * 2) {
-                throw error("Invalid object_t id: bad size");
+                throw std::runtime_error("Invalid object_t id: bad size");
             }
             for (size_t i = 0; i < DataSize; ++i) {
                 data_[i] = byteOfHex(hex[2 * i], hex[2 * i + 1]);

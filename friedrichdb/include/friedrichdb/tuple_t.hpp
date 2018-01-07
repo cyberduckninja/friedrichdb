@@ -8,7 +8,7 @@
 #include <cassert>
 #include "type.hpp"
 #include "field_t.hpp"
-#include "friedrichdb/view/view_t.hpp"
+#include "friedrichdb/objects/view_t.hpp"
 
 namespace friedrichdb {
 
@@ -28,8 +28,7 @@ namespace friedrichdb {
         ///   <field_t1, field_t2, field_t3, ..., field_tN >
         class tuple_t final {
         public:
-
-            tuple_t() = delete;
+            tuple_t() = default;
             tuple_t(const tuple_t&) = delete;
             tuple_t&operator=(const tuple_t&) = delete;
             tuple_t(tuple_t&&) = default;
@@ -76,9 +75,9 @@ namespace friedrichdb {
             std::size_t hash_;
         };
 
-        template<typename T,std::size_t index>
+        template<typename T,std::size_t Index>
         auto get(tuple_t& tuple) -> T {
-            return tuple.get<T>(index);
+            return tuple.get<T>(Index);
         };
 
         template<typename T,std::size_t Size>

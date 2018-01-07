@@ -2,6 +2,7 @@
 #define OBJECT_ID_HPP
 
 #include "ordering.h"
+
 namespace friedrichdb {
 
     namespace data_types {
@@ -52,12 +53,14 @@ namespace friedrichdb {
     }
 }
 namespace std {
+
     template <>
     struct hash<friedrichdb::data_types::object_id>{
         std::size_t operator()(friedrichdb::data_types::object_id id) const {
             return std::hash<std::string>{}(id.to_string());
         }
     };
+
 }
 
 #endif //OBJECT_ID_HPP

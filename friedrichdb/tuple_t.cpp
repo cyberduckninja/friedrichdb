@@ -12,7 +12,7 @@ namespace friedrichdb {
             tmp.append("|");
             auto size = t.size();
             index_of_name.emplace(i.name, size);
-            meta_info.emplace_back(meta_data_t{i.name, i.type});
+            meta_info.emplace_back(i.name,size, i.type);
             t.emplace_back(std::move(std::make_shared<field_t>()));
             tmp.append(i.name).append(":").append(std::to_string(size)).append(":").append(run_time_type::to_string(i.type));
             tmp.append("|");

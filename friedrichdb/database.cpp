@@ -1,21 +1,24 @@
-#include "include/friedrichdb/database.hpp"
+#include "friedrichdb/database.hpp"
 namespace friedrichdb {
-    response database::find(where f) const {
-        return memory->find(f);
+
+    bool database::table(const std::string &name, abstract_table *ptr) {
+        return memory->table(name,ptr);
     }
 
-    bool database::update(where_generator f) {
-        file->update(f);
-        return memory->update(f);
+    abstract_table *database::table(const std::string &name) {
+        return memory->table(name);
     }
 
-    bool database::erase(where f) {
-        file->erase(f);
-        return memory->erase(f);
+    abstract_table *database::table(const std::string &name) const {
+        return memory->table(name);
     }
 
-    bool database::insert(generator f) {
-        file->insert(f);
-        return memory->insert(f);
+    abstract_database::storge_t database::type() const {
+        return memory->type();
     }
+
+    bool database::table(schema &&) {
+        return false;
+    }
+
 }

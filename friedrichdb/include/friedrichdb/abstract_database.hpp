@@ -1,43 +1,34 @@
 #ifndef ABSTRACT_DATABASE_HPP
 #define ABSTRACT_DATABASE_HPP
 
-#include <functional>
-#include <friedrichdb/tuple_t.hpp>
-#import "array"
+#include <unordered_map>
+#include "schema.hpp"
 
 namespace friedrichdb {
-
-    using row             = tuple_t;
-    using response        = std::vector<row>;
-    using where           = std::function<bool(row)>;
-    using generator       = std::function<response()>;
-    using where_generator = std::function<row(row)>;
+    struct abstract_table;
 
     struct abstract_database {
+        virtual abstract_table *table(const std::string &name) = 0;
+
+        virtual abstract_table *table(const std::string &name) const = 0;
+
+        virtual bool table(const std::string &, abstract_table *) =0;
+
+        virtual bool table(schema&&)=0;
+
+
         enum class storge_t : uint8_t {
-            memory = 0,
+            memory = 0x00,
             disk,
             instance
         };
 
-        explicit abstract_database(storge_t t) : type_(t) {}
+        storge_t type() const;
 
-        virtual response find(where) const = 0;
-
-        virtual bool update(where_generator) = 0;
-
-        virtual bool erase(where) = 0;
-
-        virtual bool insert(generator) = 0;
-
-        virtual ~abstract_database() = default;
-
-        storge_t type() const {
-            return type_;
-        }
+        explicit abstract_database(storge_t);
 
     private:
         storge_t type_;
     };
 }
-#endif //VERSIONS_ABSTRACT_DATABASE_HPP
+#endif //ABSTRACT_DATABASE_HPP

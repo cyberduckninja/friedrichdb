@@ -11,26 +11,25 @@ namespace friedrichdb {
 
     class database final : public abstract_database {
     public:
-        template<typename MEMORY, typename FILE>
-        database(MEMORY *memory, FILE *file):abstract_database(storge_t::instance) {
-            assert(memory->type() == storge_t::memory);
-            assert(file->type() == storge_t::disk);
+        database(abstract_database *memory, abstract_database *file):abstract_database(storge_t::instance) {
+            assert(memory->type() != storge_t::memory);
+            assert(file->type() != storge_t::disk);
             this->memory.reset(memory);
             this->file.reset(file);
         }
 
         ~database() = default;
 
-        /// iterator ?
-        response find(where) const override;
+        abstract_table *table(const std::string &name) const ;
 
-        bool update(where_generator) override;
+        abstract_table *table(const std::string &name);
 
-        bool erase(where) override;
+        bool table(const std::string &, abstract_table *);
 
-        bool insert(generator) override;
+        bool table(schema&&);
 
     private:
+        storge_t type() const;
         std::unique_ptr<abstract_database> memory;
         std::unique_ptr<abstract_database> file;
     };

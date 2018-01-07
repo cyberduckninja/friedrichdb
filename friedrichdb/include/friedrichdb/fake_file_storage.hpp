@@ -5,27 +5,23 @@
 #include <vector>
 #include <functional>
 namespace friedrichdb {
-    class file_storage_fake : public abstract_database {
+    class file_storage_fake final : public abstract_database {
     public:
 
         file_storage_fake():abstract_database(storge_t::disk){}
 
-        ~file_storage_fake() = default;
+        ~file_storage_fake(){}
 
-        response find(where) const override {
-            response tmp;
-            return tmp;
+        abstract_table *table(const std::string &name) {
+            return nullptr;
         }
-
-        bool update(where_generator) override {
+        abstract_table *table(const std::string &name) const {
+            return nullptr;
+        }
+        bool table(const std::string &, abstract_table *) {
             return true;
         }
-
-        bool erase(where) override {
-            return true;
-        }
-
-        bool insert(generator) override {
+        bool table(schema&&){
             return true;
         }
     };

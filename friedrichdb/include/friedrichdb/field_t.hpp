@@ -6,7 +6,7 @@
 
 namespace friedrichdb {
 
-        using byte   = std::uint8_t;
+        using byte = std::uint8_t;
 
         class field_t final : public implement::ordered<field_t> {
         public:

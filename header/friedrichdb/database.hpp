@@ -11,12 +11,7 @@ namespace friedrichdb {
 
     class database final : public abstract_database {
     public:
-        database(abstract_database *memory, abstract_database *file):abstract_database(storge_t::instance) {
-            assert(memory->type() != storge_t::memory);
-            assert(file->type() != storge_t::disk);
-            this->memory.reset(memory);
-            this->file.reset(file);
-        }
+        database(abstract_database *memory, abstract_database *file);
 
         ~database() = default;
 

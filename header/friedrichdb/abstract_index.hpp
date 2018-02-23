@@ -21,6 +21,7 @@ namespace friedrichdb {
 
         class abstract_index {
         public:
+            abstract_index():type_(index_type::abstract_index){}
             explicit abstract_index(const std::string& name,index_type);
             const std::string& name() const;
             index_type type() const;

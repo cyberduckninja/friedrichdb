@@ -1,12 +1,8 @@
-#ifndef TABLE_H
-#define TABLE_H
+#pragma once
 
 #include "friedrichdb/abstract_table.hpp"
 #include <functional>
-#include "friedrichdb/tuple_t.hpp"
-#include "friedrichdb/schema.hpp"
 #include "friedrichdb/data_types/object_id.hpp"
-#include "friedrichdb/composite_key.hpp"
 #include "friedrichdb/abstract_index.hpp"
 
 namespace friedrichdb {
@@ -24,8 +20,6 @@ namespace friedrichdb {
 
             bool table(const std::string &, abstract_table *);
 
-            bool table(schema &&);
-
         private:
             std::unordered_map<std::string, std::unique_ptr<abstract_table>> tables_;
         };
@@ -33,4 +27,3 @@ namespace friedrichdb {
     }
 }
 
-#endif //TABLE_TABLE_H

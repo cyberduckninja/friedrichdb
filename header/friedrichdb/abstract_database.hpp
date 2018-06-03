@@ -2,20 +2,16 @@
 #define ABSTRACT_DATABASE_HPP
 
 #include <unordered_map>
-#include "schema.hpp"
+#include <friedrichdb/forward.h>
 
 namespace friedrichdb {
-    struct abstract_table;
 
     struct abstract_database {
         virtual abstract_table *table(const std::string &name) = 0;
 
         virtual abstract_table *table(const std::string &name) const = 0;
 
-        virtual bool table(const std::string &, abstract_table *) =0;
-
-        virtual bool table(schema&&)=0;
-
+        virtual bool table(const std::string &, abstract_table *) = 0;
 
         enum class storge_t : uint8_t {
             memory = 0x00,

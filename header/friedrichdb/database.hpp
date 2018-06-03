@@ -5,7 +5,7 @@
 #include <functional>
 #include <cassert>
 
-#include "abstract_database.hpp"
+#include <friedrichdb/abstract_database.hpp>
 
 namespace friedrichdb {
 
@@ -15,16 +15,15 @@ namespace friedrichdb {
 
         ~database() = default;
 
-        abstract_table *table(const std::string &name) const ;
+        auto table(const std::string &name) const         -> abstract_table *;
 
-        abstract_table *table(const std::string &name);
+        auto table(const std::string &name)               -> abstract_table *;
 
-        bool table(const std::string &, abstract_table *);
-
-        bool table(schema&&);
+        auto table(const std::string &, abstract_table *) -> bool;
 
     private:
         storge_t type() const;
+
         std::unique_ptr<abstract_database> memory;
         std::unique_ptr<abstract_database> file;
     };

@@ -17,10 +17,6 @@ namespace friedrichdb {
         return memory->type();
     }
 
-    bool database::table(schema &&) {
-        return false;
-    }
-
     database::database(abstract_database *memory, abstract_database *file) :abstract_database(storge_t::instance) {
         assert(memory->type() != storge_t::memory);
         assert(file->type() != storge_t::disk);

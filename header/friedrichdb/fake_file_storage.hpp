@@ -21,9 +21,7 @@ namespace friedrichdb {
         bool table(const std::string &, abstract_table *) {
             return true;
         }
-        bool table(schema&&){
-            return true;
-        }
+
     };
 }
 #endif //VERSIONS_FILE_STORAGE_HPP

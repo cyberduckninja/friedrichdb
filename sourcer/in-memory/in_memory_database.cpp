@@ -37,14 +37,7 @@ namespace friedrichdb {
         }
 
         in_memory_database::in_memory_database() : abstract_database(abstract_database::storge_t::memory) {
-
         }
-
-        bool in_memory_database::table(schema &&schema_) {
-            auto it = tables_.emplace(schema_.name(), new class table(std::move(schema_)));
-            return it.second;
-        }
-
 
         in_memory_database::~in_memory_database() = default;
     }

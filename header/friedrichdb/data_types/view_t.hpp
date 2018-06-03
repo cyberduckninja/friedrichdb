@@ -1,6 +1,4 @@
-#ifndef VIEW_T_HPP
-#define VIEW_T_HPP
-#include "friedrichdb/meta_data_t.hpp"
+#pragma once
 #include "friedrichdb/field_t.hpp"
 #include "friedrichdb/type.hpp"
 
@@ -30,4 +28,4 @@ namespace friedrichdb {
         }
 }
 
-#endif //VIEW_T_HPP
+

@@ -1,6 +1,7 @@
 #ifndef OBJECT_ID_HPP
 #define OBJECT_ID_HPP
 
+#include <cstring>
 #include "ordering.h"
 
 namespace friedrichdb {

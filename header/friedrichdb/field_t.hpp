@@ -3,6 +3,7 @@
 
 #include "friedrichdb/data_types/ordering.h"
 #include <vector>
+#include <memory>
 
 namespace friedrichdb {
 

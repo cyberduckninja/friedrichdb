@@ -1,6 +1,9 @@
 #include <stdexcept>
 #include <fstream>
-#include <zconf.h>
+#include <atomic>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <limits>
 #include "friedrichdb/data_types/object_id.hpp"
 namespace friedrichdb {
 

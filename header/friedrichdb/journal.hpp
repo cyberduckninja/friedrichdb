@@ -1,21 +1,40 @@
-#ifndef PROJECT_JOURNAL_HPP
-#define PROJECT_JOURNAL_HPP
+#pragma once
 
-#include <friedrichdb/transaction.hpp>
-
-//0,1,2,3 -> ...
-
-class abstract_journal {
-    virtual bool write_transaction(transaction& t )=0;
-    virtual bool update_status_transaction(transaction& t )=0;
-    virtual void read_transaction() = 0;
-};
+#include <friedrichdb/serializable.hpp>
+#include <friedrichdb/transaction_t.hpp>
+#include <iostream>
 
 
+namespace friedrichdb {
+    struct abstract_journal {
+        virtual ~abstract_journal() = default;
 
-class journal final {
+        virtual void push(serializable &) = 0;
+    };
 
-private:
-    std::unique_ptr<abstract_journal> ptr;
-};
-#endif //PROJECT_JOURNAL_HPP
+
+    class dummy_journal final : public abstract_journal {
+        ~dummy_journal()= default;
+        void push(serializable &s) {
+            std::cerr << s.serialization_json() << std::endl;
+        }
+    };
+
+
+    class journal final : abstract_journal {
+    public:
+        journal() = delete;
+
+        explicit journal(abstract_journal *journal) : ptr(journal) {}
+
+        ~journal() = default;
+
+        void push(serializable &s) override {
+            ptr->push(s);
+        }
+
+    private:
+        std::unique_ptr<abstract_journal> ptr;
+
+    };
+}

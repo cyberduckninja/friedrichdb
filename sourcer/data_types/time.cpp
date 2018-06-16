@@ -1,6 +1,8 @@
 #include "friedrichdb/data_types/time.hpp"
 #include <ostream>
 #include <time.h>
+#include <cstring>
+
 namespace friedrichdb {
 
         time::time(time_t t) : milli_(t * 1000) {}

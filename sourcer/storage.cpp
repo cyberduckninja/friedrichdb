@@ -1,5 +1,6 @@
 
 #include <vector>
+#include <atomic>
 
 #include "friedrichdb/storage.hpp"
 namespace friedrichdb {
@@ -38,16 +39,16 @@ namespace friedrichdb {
                 return impl_ ? impl_->data.data() : 0;
             }
 
-            size_t storage_t::size() const { return impl_ ? impl_->data.size() : 0; }
+            std::size_t storage_t::size() const { return impl_ ? impl_->data.size() : 0; }
 
-            void storage_t::push(const void *data, size_t size) {
+            void storage_t::push(const void *data, std::size_t size) {
                 const char *p = reinterpret_cast<const char *>(data);
                 if (!impl_)
                     reset(new Impl);
                 impl_->data.insert(impl_->data.end(), p, p + size);
             }
 
-            void storage_t::resize(size_t size) { impl_->data.resize(size); }
+            void storage_t::resize(std::size_t size) { impl_->data.resize(size); }
 
         }
 }

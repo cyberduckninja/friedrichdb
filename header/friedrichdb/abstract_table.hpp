@@ -1,38 +1,41 @@
-#ifndef ABSTRACT_TABLE_HPP
-#define ABSTRACT_TABLE_HPP
+#pragma once
 
-
+#include <utility>
 #include <mutex>
 #include <condition_variable>
 #include <functional>
-#include <friedrichdb/abstract_index.hpp>
-#include <friedrichdb/query.hpp>
-#include <friedrichdb/query.hpp>
+#include <string>
+
+#include <friedrichdb/operation.hpp>
+#include <friedrichdb/output.hpp>
+#include <friedrichdb/transaction_t.hpp>
 
 
 namespace friedrichdb {
 
-    class abstract_index;
-
-    enum class index_storage_type {
+    enum class table_storage_type {
         memory = 0x00,
         persistent
     };
 
-    struct abstract_table {
-
-        abstract_table() = default;
+    class abstract_table {
+    public:
+        abstract_table(std::string name):name_(std::move(name)){}
 
         virtual ~abstract_table() = default;
 
-        virtual auto exec(query) -> query_result = 0;
+        virtual auto apply(transaction_t) -> output_transaction = 0;
 
     protected:
-        std::mutex  mutext;
-        virtual auto index(const std::string &, abstract_index *) -> bool =0;
-        virtual auto index(const std::string &)                   -> abstract_index* = 0;
-        virtual auto index(const std::string &) const             -> abstract_index* = 0;
+        const std::string& name() const {
+            return name_;
+        }
 
+        std::mutex  mutext;
+        std::condition_variable condition_variable;
+
+    private:
+        std::string name_;
     };
 }
-#endif //VERSIONS_ABSTRACT_DATABASE_HPP
+

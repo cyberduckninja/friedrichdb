@@ -4,26 +4,24 @@
 #include <vector>
 #include <functional>
 #include <cassert>
+#include <memory>
 
+#include <friedrichdb/journal.hpp>
 #include <friedrichdb/abstract_database.hpp>
+#include <friedrichdb/pool.hpp>
 
 namespace friedrichdb {
 
     class database final : public abstract_database {
     public:
-        database(abstract_database *memory, abstract_database *file);
+        database(const std::string&,abstract_database *memory, abstract_database *file);
 
         ~database() = default;
 
-        auto table(const std::string &name) const         -> abstract_table *;
-
-        auto table(const std::string &name)               -> abstract_table *;
-
-        auto table(const std::string &, abstract_table *) -> bool;
+        auto apply(query&&) -> output_query override;
 
     private:
-        storge_t type() const;
-
+        journal journal_;
         std::unique_ptr<abstract_database> memory;
         std::unique_ptr<abstract_database> file;
     };

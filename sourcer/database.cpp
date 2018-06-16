@@ -1,27 +1,31 @@
-#include "friedrichdb/database.hpp"
+
+#include <friedrichdb/database.hpp>
+#include <string>
+
 namespace friedrichdb {
 
-    bool database::table(const std::string &name, abstract_table *ptr) {
-        return memory->table(name,ptr);
+    database::database(
+            const std::string &name,
+            abstract_database *memory_,
+            abstract_database *file_
+    ) :
+        abstract_database(name, storge_t::instance),
+        journal_(new dummy_journal) {
+        assert(memory_->type() == storge_t::memory);
+        assert(file_->type() == storge_t::disk);
+        memory.reset(memory_);
+        file.reset(file_);
     }
 
-    abstract_table *database::table(const std::string &name) {
-        return memory->table(name);
+    auto database::apply(query&& query_) -> output_query {
+        //journal_.push(query_);
+        auto outpyt_ = file->apply(std::move(query_));
+        //journal_.push(query_);
+        //auto outpyt_ =  memory->apply(query_);
+        //journal_.push(query_);
+        return outpyt_;
     }
 
-    abstract_table *database::table(const std::string &name) const {
-        return memory->table(name);
-    }
 
-    abstract_database::storge_t database::type() const {
-        return memory->type();
-    }
-
-    database::database(abstract_database *memory, abstract_database *file) :abstract_database(storge_t::instance) {
-        assert(memory->type() != storge_t::memory);
-        assert(file->type() != storge_t::disk);
-        this->memory.reset(memory);
-        this->file.reset(file);
-    }
 
 }

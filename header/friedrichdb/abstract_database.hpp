@@ -2,16 +2,17 @@
 #define ABSTRACT_DATABASE_HPP
 
 #include <unordered_map>
+#include <cstdint>
+#include <condition_variable>
+#include <mutex>
+
 #include <friedrichdb/forward.h>
+#include <friedrichdb/transaction_t.hpp>
+#include <friedrichdb/output.hpp>
 
 namespace friedrichdb {
 
     struct abstract_database {
-        virtual abstract_table *table(const std::string &name) = 0;
-
-        virtual abstract_table *table(const std::string &name) const = 0;
-
-        virtual bool table(const std::string &, abstract_table *) = 0;
 
         enum class storge_t : uint8_t {
             memory = 0x00,
@@ -19,11 +20,24 @@ namespace friedrichdb {
             instance
         };
 
-        storge_t type() const;
+        abstract_database(std::string , storge_t);
 
-        explicit abstract_database(storge_t);
+        ~abstract_database() = default;
+
+        virtual auto apply(query&&) -> output_query = 0;
+
+        storge_t type() const;
+    protected:
+        std::mutex              mutex;
+        std::condition_variable condition_variable;
+
+
+        const std::string& name() const;
+
 
     private:
+
+        std::string name_;
         storge_t type_;
     };
 }

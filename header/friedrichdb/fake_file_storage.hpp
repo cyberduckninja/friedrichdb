@@ -4,23 +4,17 @@
 #include "abstract_database.hpp"
 #include <vector>
 #include <functional>
+
 namespace friedrichdb {
     class file_storage_fake final : public abstract_database {
     public:
 
-        file_storage_fake():abstract_database(storge_t::disk){}
+        file_storage_fake();
 
-        ~file_storage_fake(){}
+        auto apply(query&&) -> output_query override;
 
-        abstract_table *table(const std::string &name) {
-            return nullptr;
-        }
-        abstract_table *table(const std::string &name) const {
-            return nullptr;
-        }
-        bool table(const std::string &, abstract_table *) {
-            return true;
-        }
+        ~file_storage_fake();
+
 
     };
 }

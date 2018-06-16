@@ -1,12 +1,10 @@
 #pragma once
 
-#include "friedrichdb/abstract_table.hpp"
-#include <functional>
-#include "friedrichdb/data_types/object_id.hpp"
-#include "friedrichdb/abstract_index.hpp"
+#include <friedrichdb/abstract_table.hpp>
+#include <friedrichdb/pool.hpp>
 
-namespace friedrichdb {
-    namespace in_memory {
+namespace friedrichdb { namespace in_memory {
+
         class in_memory_database final : public abstract_database {
         public:
 
@@ -14,13 +12,10 @@ namespace friedrichdb {
 
             ~in_memory_database();
 
-            abstract_table *table(const std::string &name);
-
-            abstract_table *table(const std::string &name) const;
-
-            bool table(const std::string &, abstract_table *);
+            auto apply(query&&) -> output_query override ;
 
         private:
+
             std::unordered_map<std::string, std::unique_ptr<abstract_table>> tables_;
         };
 

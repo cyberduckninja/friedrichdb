@@ -6,9 +6,7 @@
 #include <condition_variable>
 #include <mutex>
 
-#include <friedrichdb/forward.h>
-#include <friedrichdb/transaction_t.hpp>
-#include <friedrichdb/output.hpp>
+#include <friedrichdb/query.hpp>
 
 namespace friedrichdb {
 

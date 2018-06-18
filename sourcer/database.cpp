@@ -1,6 +1,7 @@
 
 #include <friedrichdb/database.hpp>
 #include <string>
+#include <friedrichdb/query.hpp>
 
 namespace friedrichdb {
 
@@ -18,11 +19,7 @@ namespace friedrichdb {
     }
 
     auto database::apply(query&& query_) -> output_query {
-        //journal_.push(query_);
-        auto outpyt_ = file->apply(std::move(query_));
-        //journal_.push(query_);
-        //auto outpyt_ =  memory->apply(query_);
-        //journal_.push(query_);
+        auto outpyt_ = memory->apply(std::move(query_));
         return outpyt_;
     }
 

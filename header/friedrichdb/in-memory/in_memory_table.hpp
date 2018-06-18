@@ -14,7 +14,7 @@ namespace friedrichdb {
         public:
             in_memory_table(const std::string &name);
             ~in_memory_table() override;
-            auto apply(transaction_t) -> output_transaction override ;
+            auto apply(transaction) -> output_transaction override ;
 
         private:
             output_operation find(operation);

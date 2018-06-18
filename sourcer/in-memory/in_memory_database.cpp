@@ -32,12 +32,15 @@ namespace friedrichdb {
 
                     } /// for
 
-                } /// lock
+                } else {
+                    /// else 
+                }
 
 
-            } /// apply
+
+            } /// lock
             return tmp;
-        }
+        }/// apply
 
             in_memory_database::~in_memory_database() =default;
         }

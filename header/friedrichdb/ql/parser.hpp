@@ -2,7 +2,7 @@
 
 #include <rapidjson/document.h>
 #include <rapidjson/>
-#include <friedrichdb/transaction_t.hpp>
+#include <friedrichdb/transaction.hpp>
 
 #include <string>
 
@@ -24,7 +24,7 @@
 namespace friedrichdb { namespace ql {
 
 
-        bool parser_transactions(rapidjson::Value::Array &array, std::vector<transaction_t> transactions) {
+        bool parser_transactions(rapidjson::Value::Array &array, std::vector<transaction> transactions) {
             bool error = true;
             for (auto &i:array) {
                 if (i.IsObject()) {

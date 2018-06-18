@@ -7,8 +7,7 @@
 #include <string>
 
 #include <friedrichdb/operation.hpp>
-#include <friedrichdb/output.hpp>
-#include <friedrichdb/transaction_t.hpp>
+#include <friedrichdb/transaction.hpp>
 
 
 namespace friedrichdb {
@@ -24,7 +23,7 @@ namespace friedrichdb {
 
         virtual ~abstract_table() = default;
 
-        virtual auto apply(transaction_t) -> output_transaction = 0;
+        virtual auto apply(transaction) -> output_transaction = 0;
 
     protected:
         const std::string& name() const {

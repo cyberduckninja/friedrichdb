@@ -15,20 +15,24 @@ list(APPEND ${project}_HEADERS
 
 
         header/friedrichdb/in-memory/composite_key.h
+        header/friedrichdb/in-memory/document.hpp
         header/friedrichdb/in-memory/in_memory_database.hpp
         header/friedrichdb/in-memory/in_memory_table.hpp
 
         header/friedrichdb/ql/parser.hpp
 
-        header/friedrichdb/journal.hpp
-        header/friedrichdb/operation.hpp
         header/friedrichdb/abstract_database.hpp
         header/friedrichdb/abstract_table.hpp
         header/friedrichdb/database.hpp
         header/friedrichdb/fake_file_storage.hpp
-        header/friedrichdb/storage.hpp
-        header/friedrichdb/transaction_t.hpp
+        header/friedrichdb/journal.hpp
+        header/friedrichdb/operation.hpp
         header/friedrichdb/pool.hpp
+        header/friedrichdb/query.hpp
+        header/friedrichdb/serializable.hpp
+        header/friedrichdb/storage.hpp
+        header/friedrichdb/transaction.hpp
+
 
 )
 

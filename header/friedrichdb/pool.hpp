@@ -3,7 +3,7 @@
 #include <queue>
 #include <unordered_map>
 
-#include <friedrichdb/transaction_t.hpp>
+#include <friedrichdb/transaction.hpp>
 
 
 namespace friedrichdb {

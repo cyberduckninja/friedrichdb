@@ -1,5 +1,6 @@
 
 #include <friedrichdb/in-memory/in_memory_table.hpp>
+#include <iostream>
 
 
 namespace friedrichdb {
@@ -8,7 +9,7 @@ namespace friedrichdb {
 
         in_memory_table::in_memory_table(const std::string &name) : abstract_table(name) {}
 
-        auto in_memory_table::apply(transaction_t trx) -> output_transaction {
+        auto in_memory_table::apply(transaction trx) -> output_transaction {
             output_transaction tmp;
             std::unique_lock<std::mutex> lock(mutext);
             {
@@ -49,27 +50,27 @@ namespace friedrichdb {
 
         output_operation in_memory_table::find(operation query_) {
             if ( query_.operation_ == operation_type::find ) {
-                output_operation tmp;
-                tmp.operation = query_.operation_;
-                tmp.table = query_.table;
+                output_operation tmp(query_);
                 auto it = storage_.find(query_.document_key);
-                if (it == storage_.end()) {
+                std::cerr<<it->first<<std::endl;
 
-                } else {
+                if (it != storage_.end()) {
                     auto result = it->second.at(query_.field_name);
-                    tmp.output_ = result;
+                } else {
+                    std::cerr<<"!"<<std::endl;
+
 
                 }
 
                 return tmp;
+            } else {
+                ///else
             }
         }
 
         output_operation in_memory_table::remove(operation query_) {
             if (query_.operation_ == operation_type::remove) {
-                output_operation tmp;
-                tmp.operation = query_.operation_;
-                tmp.table = query_.table;
+                output_operation tmp(query_);
                 storage_.erase(query_.document_key);
                 return tmp;
             }
@@ -77,20 +78,21 @@ namespace friedrichdb {
 
         output_operation in_memory_table::create(operation query_) {
             if (query_.operation_ == operation_type::create) {
-                output_operation tmp;
-                tmp.operation = query_.operation_;
-                tmp.table = query_.table;
-                storage_.emplace(query_.document_key, document());
+                output_operation tmp(query_);
+                auto result =  storage_.emplace(query_.document_key, document());
+                if(result.second){
+                    result.first->second.emplace(query_.field_name,query_.field_value);
+                }
                 return tmp;
+            } else {
+                ///else
             }
 
         }
 
         output_operation in_memory_table::modify(operation query_) {
             if (query_.operation_ == operation_type::modify) {
-                output_operation tmp;
-                tmp.operation = query_.operation_;
-                tmp.table = query_.table;
+                output_operation tmp(query_);
                 auto it = storage_.find(query_.document_key);
                 if (it == storage_.end()) {
                     auto cursor = storage_.emplace(query_.document_key, document());
@@ -100,6 +102,8 @@ namespace friedrichdb {
                 }
 
                 return tmp;
+            } else {
+                ///else
             }
         }
 

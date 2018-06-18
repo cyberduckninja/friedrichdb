@@ -1,7 +1,7 @@
 #pragma once
 
 #include <friedrichdb/serializable.hpp>
-#include <friedrichdb/transaction_t.hpp>
+#include <friedrichdb/transaction.hpp>
 #include <iostream>
 
 

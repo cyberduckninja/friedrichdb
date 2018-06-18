@@ -44,7 +44,7 @@ namespace friedrichdb { namespace in_memory {
             template<typename... _Args>
             void emplace(const std::string &key, _Args &&... __args) {
                storage_.emplace_back((__args)...);
-               index.emplace(key,manager("",storage_.size()));
+               index.emplace(key,manager("",storage_.size()-1));
 
             }
 
@@ -53,11 +53,11 @@ namespace friedrichdb { namespace in_memory {
             }
 
             auto at(const std::string &key) -> object & {
-                return storage_[index.at(key).position];
+                return storage_.at(index.at(key).position);
             }
 
             auto at(const std::string &key) const -> const object & {
-                return storage_[index.at(key).position];
+                return storage_.at(index.at(key).position);
             }
 
             auto operator[](std::size_t key) -> object & {

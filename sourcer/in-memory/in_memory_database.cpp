@@ -13,7 +13,7 @@ namespace friedrichdb {
         }
 
         auto in_memory_database::apply(query&& query_) -> output_query {
-            output_query tmp;
+            output_query tmp(query_);
             std::unique_lock<std::mutex> lock(mutex);
             {
 
@@ -33,7 +33,7 @@ namespace friedrichdb {
                     } /// for
 
                 } else {
-                    /// else 
+                    /// else
                 }
 
 

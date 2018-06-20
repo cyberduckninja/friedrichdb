@@ -1,6 +1,7 @@
 
-#include <friedrichdb/database.hpp>
 #include <string>
+
+#include <friedrichdb/database.hpp>
 #include <friedrichdb/query.hpp>
 
 namespace friedrichdb {
@@ -19,8 +20,16 @@ namespace friedrichdb {
     }
 
     auto database::apply(query&& query_) -> output_query {
-        auto outpyt_ = memory->apply(std::move(query_));
-        return outpyt_;
+
+        output_query output;
+
+        if (name() == query_.database) {
+            output = memory->apply(std::move(query_));
+        } else {
+            /// else
+        }
+
+        return output;
     }
 
 

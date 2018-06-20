@@ -16,8 +16,6 @@ namespace friedrichdb {
             output_query tmp(query_);
             std::unique_lock<std::mutex> lock(mutex);
             {
-
-                if (name() == query_.database) {
                     for (auto &trx:query_) {
                         for (auto &j:trx) {
                             auto it = tables_.find(j.table);
@@ -31,12 +29,6 @@ namespace friedrichdb {
                         }
 
                     } /// for
-
-                } else {
-                    /// else
-                }
-
-
 
             } /// lock
             return tmp;

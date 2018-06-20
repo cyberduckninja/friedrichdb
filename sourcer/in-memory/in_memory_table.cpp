@@ -52,14 +52,10 @@ namespace friedrichdb {
             if ( query_.operation_ == operation_type::find ) {
                 output_operation tmp(query_);
                 auto it = storage_.find(query_.document_key);
-                std::cerr<<it->first<<std::endl;
 
                 if (it != storage_.end()) {
-                    std::cerr<<query_.field_name<<std::endl;
                     auto result = it->second.at(query_.field_name);
                 } else {
-                    std::cerr<<"!"<<std::endl;
-
 
                 }
 
@@ -82,7 +78,6 @@ namespace friedrichdb {
                 output_operation tmp(query_);
                 auto result =  storage_.emplace(query_.document_key, document());
                 if(result.second){
-                    std::cerr<<query_.field_name<<" : "<<query_.field_value<<std::endl;
                     result.first->second.emplace(query_.field_name,query_.field_value);
                 }
                 return tmp;

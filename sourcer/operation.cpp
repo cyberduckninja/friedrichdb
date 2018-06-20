@@ -16,7 +16,7 @@ namespace friedrichdb {
         }
     }
 
-    operation_type from_string(std::string type) {
+    operation_type from_string(const std::string& type) {
 
         switch (*type.begin()) {
             case 'c':
@@ -29,7 +29,7 @@ namespace friedrichdb {
                 return friedrichdb::operation_type::remove;
 
             default:
-                break;
+                throw std::exception();
         }
 
     }

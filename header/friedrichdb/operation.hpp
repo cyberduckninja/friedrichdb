@@ -10,7 +10,7 @@ namespace friedrichdb {
     enum class operation_type : uint8_t {
         create,
         find,
-        modify,
+        modify,/// upsert
         remove
     };
 
@@ -28,6 +28,20 @@ namespace friedrichdb {
             document_key(document_key),
             field_name(field_name),
             field_value(field_value) {
+
+        }
+
+
+        operation(
+                operation_type operation_,
+                const std::string &table,
+                const std::string &field_name,
+                const std::string &field_value
+        ) :
+                operation_(operation_),
+                table(table),
+                field_name(field_name),
+                field_value(field_value) {
 
         }
 
@@ -93,7 +107,7 @@ namespace friedrichdb {
 
     std::string to_string(friedrichdb::operation_type type);
 
-    operation_type from_string(std::string type);
+    operation_type from_string(const std::string& type);
 
 
 }

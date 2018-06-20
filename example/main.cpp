@@ -16,7 +16,7 @@ int main() {
         op.document_key = "1qaz2wsx3edc";
         op.field_name = "comment_data_name";
         op.field_value = "comment_data_value";
-        friedrichdb::query q(std::string("memory"));
+        friedrichdb::query q(std::string("test"));
         friedrichdb::transaction transaction;
         transaction.emplace_back(op);
         q.emplace_back(transaction);
@@ -32,7 +32,7 @@ int main() {
         op.table = "comment";
         op.document_key = "1qaz2wsx3edc";
         op.field_name = "comment_data_name";
-        friedrichdb::query q(std::string("memory"));
+        friedrichdb::query q(std::string("test"));
         friedrichdb::transaction transaction;
         transaction.emplace_back(op);
         q.emplace_back(transaction);

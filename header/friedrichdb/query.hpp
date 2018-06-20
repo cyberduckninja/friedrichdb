@@ -46,6 +46,13 @@ class output_query final : public serializable {
 public:
     using storage = std::vector<output_transaction>;
     using iterator = storage::iterator;
+
+    output_query() = default;
+    output_query(const output_query&) = default;
+    output_query(output_query&&) = default;
+    output_query&operator=(const output_query&) = default;
+    output_query&operator=( output_query&&) = default;
+
     output_query(const query& query_){
         this->id       = query_.id;
         this->database = query_.database;

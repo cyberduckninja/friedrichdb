@@ -24,10 +24,11 @@ list(APPEND ${project}_HEADERS
         header/friedrichdb/abstract_database.hpp
         header/friedrichdb/abstract_table.hpp
         header/friedrichdb/database.hpp
+        header/friedrichdb/controller.hpp
         header/friedrichdb/fake_file_storage.hpp
         header/friedrichdb/journal.hpp
         header/friedrichdb/operation.hpp
-        header/friedrichdb/pool.hpp
+        header/friedrichdb/query_scheduler.hpp
         header/friedrichdb/query.hpp
         header/friedrichdb/serializable.hpp
         header/friedrichdb/storage.hpp
@@ -48,6 +49,9 @@ list(APPEND ${project}_SOURCES
         sourcer/storage.cpp
         sourcer/tuple_t.cpp
         sourcer/type.cpp
+        sourcer/query.cpp
+        sourcer/transaction.cpp
+        sourcer/controller.cpp
 )
 
 #add_subdirectory(test)

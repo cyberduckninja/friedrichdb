@@ -3,35 +3,19 @@
 
 #include <friedrichdb/database.hpp>
 #include <friedrichdb/query.hpp>
+#include <cassert>
 
 namespace friedrichdb {
 
-    database::database(
-            const std::string &name,
-            abstract_database *memory_,
-            abstract_database *file_
-    ) :
-        abstract_database(name, storge_t::instance),
-        journal_(new dummy_journal) {
-        assert(memory_->type() == storge_t::memory);
-        assert(file_->type() == storge_t::disk);
-        memory.reset(memory_);
-        file.reset(file_);
+
+    database::database(const std::string &name, abstract_database*memory) : name(name), memory(memory) {
+        assert(memory->type() == storge_t::memory);
     }
 
-    auto database::apply(query&& query_) -> output_query {
-
-        output_query output;
-
-        if (name() == query_.database) {
-            output = memory->apply(std::move(query_));
-        } else {
-            /// else
-        }
-
-        return output;
+    database::database(const std::string &name,abstract_database*memory, abstract_database*file) : name(name), memory(memory), file(file) {
+        assert(memory->type() == storge_t::memory);
+        assert(file->type() == storge_t::disk);
     }
-
 
 
 }

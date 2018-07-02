@@ -10,17 +10,16 @@
 
 namespace friedrichdb {
 
+    enum class storge_t : uint8_t {
+        memory = 0x00,
+        disk
+    };
+
     struct abstract_database {
 
-        enum class storge_t : uint8_t {
-            memory = 0x00,
-            disk,
-            instance
-        };
+        abstract_database(storge_t);
 
-        abstract_database(std::string , storge_t);
-
-        ~abstract_database() = default;
+        virtual ~abstract_database() = default;
 
         virtual auto apply(query&&) -> output_query = 0;
 
@@ -29,13 +28,7 @@ namespace friedrichdb {
         std::mutex              mutex;
         std::condition_variable condition_variable;
 
-
-        const std::string& name() const;
-
-
     private:
-
-        std::string name_;
         storge_t type_;
     };
 }

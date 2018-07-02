@@ -18,22 +18,16 @@ namespace friedrichdb {
 
         ~transaction() = default;
 
-        auto begin() -> iterator  {
-            return operations.begin();
-        }
+        auto begin() -> iterator;
 
-        auto end() -> iterator  {
-            return operations.end();
-        }
+        auto end() -> iterator;
 
         template<typename... Args>
         void emplace_back(Args&&... args){
             operations.emplace_back(std::forward<Args>(args)...);
         }
 
-        binary_data serialization_json() const override {
-
-        }
+        binary_data serialization_json() const override;
 
         void deserialization_json(binary_data) override  {
 
@@ -49,28 +43,18 @@ namespace friedrichdb {
     public:
         using storage = std::vector<output_operation>;
         using iterator = storage::iterator;
-        output_transaction(const transaction& trx){
-            this->query_id=trx.query_id;
-            this->id=trx.id;
-        }
+
+        output_transaction(const transaction& trx);
 
         ~output_transaction() override = default;
 
-        binary_data serialization_json() const override {
+        binary_data serialization_json() const override;
 
-        }
+        void deserialization_json(binary_data) override;
 
-        void deserialization_json(binary_data) override {
+        auto begin() -> iterator;
 
-        }
-
-        auto begin() -> iterator {
-            return outputs_.begin();
-        }
-
-        auto end() -> iterator {
-            return outputs_.end();
-        }
+        auto end() -> iterator;
 
 
         template<typename... Args>

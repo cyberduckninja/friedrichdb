@@ -1,3 +1,5 @@
+#include <utility>
+
 #pragma once
 
 #include <friedrichdb/serializable.hpp>
@@ -10,7 +12,7 @@ namespace friedrichdb { namespace in_memory {
         using tuple_storage = std::vector<object>;
         struct manager final {
             manager()= default;
-            manager(const std::string &name, size_t position) : name(name), position(position) {}
+            manager(std::string name, size_t position) : name(std::move(name)), position(position) {}
             ~manager()= default;
             std::string name;
             std::size_t position;
@@ -37,14 +39,14 @@ namespace friedrichdb { namespace in_memory {
 
             }
 
-            void deserialization_json(std::string) override {
+            void deserialization_json(binary_data) override {
 
             }
 
             template<typename... _Args>
-            void emplace(const std::string &key, _Args &&... __args) {
+            auto emplace(const std::string &key, _Args &&... __args) -> void {
                storage_.emplace_back((__args)...);
-               index.emplace(key,manager("",storage_.size()-1));
+               index.emplace(key,manager(key,storage_.size()-1));
 
             }
 

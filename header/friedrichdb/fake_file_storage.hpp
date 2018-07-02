@@ -1,7 +1,7 @@
 #ifndef FILE_STORAGE_HPP
 #define FILE_STORAGE_HPP
 
-#include "abstract_database.hpp"
+#include <friedrichdb/abstract_database.hpp>
 #include <vector>
 #include <functional>
 

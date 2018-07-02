@@ -3,21 +3,26 @@
 #include <queue>
 #include <unordered_map>
 
-#include <friedrichdb/transaction.hpp>
-
+#include <friedrichdb/query.hpp>
 
 namespace friedrichdb {
 
+    struct dummy_analyzer final {
+        using queue =  std::queue<query>;
+    };
+
     template <typename Analyzer>
-    struct query_pool final {
-        ~query_pool() = default;
+    struct query_scheduler final {
+        using queue = typename Analyzer::queue;
+        ~query_scheduler() = default;
         template<typename... Args>
         void emplace(Args&&... args){
             queue_.emplace(std::forward<Args>(args)...);
 
         }
     private:
-        std::queue<query> queue_;
+
+        queue queue_;
         std::unordered_map<id_t, query> index;
 
 

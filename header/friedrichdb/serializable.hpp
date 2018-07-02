@@ -1,4 +1,7 @@
 #pragma once
+
+#include <string>
+
 namespace friedrichdb {
 
     using binary_data = std::string;

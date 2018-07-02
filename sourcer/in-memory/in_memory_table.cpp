@@ -17,7 +17,7 @@ namespace friedrichdb {
                 for (auto &i:trx) {
                     if (name() == i.table) {
                         switch (i.operation_) {
-                            case operation_type::create: {
+                            case operation_type::insert: {
                                 tmp.emplace_back(create(i));
                                 break;
                             }
@@ -25,7 +25,7 @@ namespace friedrichdb {
                                 tmp.emplace_back(find(i));
                                 break;
                             }
-                            case operation_type::modify: {
+                            case operation_type::upsert: {
                                 tmp.emplace_back(modify(i));
                                 break;
                             }
@@ -74,7 +74,7 @@ namespace friedrichdb {
         }
 
         output_operation in_memory_table::create(operation query_) {
-            if (query_.operation_ == operation_type::create) {
+            if (query_.operation_ == operation_type::insert) {
                 output_operation tmp(query_);
                 auto result =  storage_.emplace(query_.document_key, document());
                 if(result.second){
@@ -88,7 +88,7 @@ namespace friedrichdb {
         }
 
         output_operation in_memory_table::modify(operation query_) {
-            if (query_.operation_ == operation_type::modify) {
+            if (query_.operation_ == operation_type::upsert) {
                 output_operation tmp(query_);
                 auto it = storage_.find(query_.document_key);
                 if (it == storage_.end()) {

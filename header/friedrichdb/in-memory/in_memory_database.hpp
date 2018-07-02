@@ -1,7 +1,8 @@
 #pragma once
 
 #include <friedrichdb/abstract_table.hpp>
-#include <friedrichdb/pool.hpp>
+#include <friedrichdb/query_scheduler.hpp>
+#include <friedrichdb/database.hpp>
 
 namespace friedrichdb { namespace in_memory {
 

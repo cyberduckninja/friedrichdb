@@ -1,29 +1,21 @@
-#ifndef DATABASE_HPP
-#define DATABASE_HPP
+#pragma once
 
-#include <vector>
-#include <functional>
-#include <cassert>
 #include <memory>
 
-#include <friedrichdb/journal.hpp>
 #include <friedrichdb/abstract_database.hpp>
-#include <friedrichdb/pool.hpp>
 
 namespace friedrichdb {
 
-    class database final : public abstract_database {
-    public:
-        database(const std::string&,abstract_database *memory, abstract_database *file);
+    struct database final {
 
-        ~database() = default;
+        database(const std::string &name, abstract_database*memory);
+        database(const std::string &name, abstract_database*memory, abstract_database*file);
 
-        auto apply(query&&) -> output_query override;
-
-    private:
-        journal journal_;
+        std::string name;
         std::unique_ptr<abstract_database> memory;
         std::unique_ptr<abstract_database> file;
     };
+
+
 }
-#endif //FRIEDRICHDB_DATABASE_HPP
+

@@ -2,6 +2,7 @@
 
 #include <friedrichdb/serializable.hpp>
 #include <friedrichdb/transaction.hpp>
+#include <memory>
 #include <iostream>
 
 
@@ -14,8 +15,11 @@ namespace friedrichdb {
 
 
     class dummy_journal final : public abstract_journal {
-        ~dummy_journal()= default;
-        void push(serializable &s) {
+        //dummy_journal() = default;
+
+        ~dummy_journal() override = default;
+
+        void push(serializable &s) override {
             std::cerr << s.serialization_json() << std::endl;
         }
     };
@@ -23,8 +27,6 @@ namespace friedrichdb {
 
     class journal final : abstract_journal {
     public:
-        journal() = delete;
-
         explicit journal(abstract_journal *journal) : ptr(journal) {}
 
         ~journal() = default;

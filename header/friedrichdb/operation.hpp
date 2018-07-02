@@ -8,9 +8,9 @@
 namespace friedrichdb {
 
     enum class operation_type : uint8_t {
-        create,
+        insert,
         find,
-        modify,/// upsert
+        upsert,
         remove
     };
 
@@ -22,14 +22,7 @@ namespace friedrichdb {
                 const std::string &document_key,
                 const std::string &field_name,
                 const std::string &field_value
-        ) :
-            operation_(operation_),
-            table(table),
-            document_key(document_key),
-            field_name(field_name),
-            field_value(field_value) {
-
-        }
+        );
 
 
         operation(
@@ -37,25 +30,15 @@ namespace friedrichdb {
                 const std::string &table,
                 const std::string &field_name,
                 const std::string &field_value
-        ) :
-                operation_(operation_),
-                table(table),
-                field_name(field_name),
-                field_value(field_value) {
-
-        }
+        );
 
         operation()= default;
 
         ~operation()= default;
 
-        binary_data serialization_json() const {
+        binary_data serialization_json() const;
 
-        }
-
-        void deserialization_json(binary_data) {
-
-        }
+        void deserialization_json(binary_data);
 
         id_t query_id;
         id_t transaction_id;

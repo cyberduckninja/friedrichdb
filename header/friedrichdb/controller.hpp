@@ -2,14 +2,17 @@
 
 #include <vector>
 #include <string>
+
 #include <friedrichdb/abstract_database.hpp>
 #include <friedrichdb/database.hpp>
 #include <friedrichdb/journal.hpp>
 #include <friedrichdb/query_scheduler.hpp>
+#include <chrono>
 
 /// run - time
 namespace friedrichdb {
 
+    using apply_callback = std::function<void(const output_query&)>;
 
     struct engine final  {
         storge_t type;
@@ -20,25 +23,35 @@ namespace friedrichdb {
         engine engine_;
     };
 
+    enum class query_status {
+        wait = 0x00,
+        good,
+        bad,
+        proccess
+    };
 
-    struct io_query {
+
+    struct io_query final {
+
+        io_query( const query &input, apply_callback && callback);
+
+        query_status status;
         query input;
         output_query output;
+        apply_callback callback;
 
     };
 
     using controller_config = std::initializer_list<database_config>;
 
-
-
     struct abstract_controller  {
-        abstract_controller(const controller_config &config,abstract_journal* ptr);
+        abstract_controller(const controller_config &config,abstract_journal* );
 
-        abstract_controller(abstract_journal* ptr);
+        abstract_controller(abstract_journal*);
 
         virtual ~abstract_controller() = default;
 
-        auto add_query(query&&) -> id_t ;
+        auto add_query(query&&,apply_callback && callback) -> id_t ;
 
         auto add_database(const std::string& name,abstract_database* , abstract_database* ) -> void;
 
@@ -50,10 +63,8 @@ namespace friedrichdb {
         std::condition_variable cv;
         journal                                  journal_;
         std::unordered_map<std::string,database> databases;
-        std::queue<id_t> queue_;
-        std::unordered_map<id_t, io_query> data;
-
-
+        std::queue<id_t>                         queue_;
+        std::unordered_map<id_t, io_query>       data;
     };
 
 
@@ -67,24 +78,16 @@ namespace friedrichdb {
         controller(const controller_config &config):abstract_controller(config,new dummy_journal){}
         ~controller() = default;
 
-        auto apply(query && query_) -> void {
-/*
-            output_query output;
+        auto apply(query && query_,std::function<void(const output_query&)>callback) -> id_t {
 
-            auto it = databases.find(query_.database);
-            if ( it != databases.end() ) {
-                output = it->second.memory->apply(std::move(query_));
-            } else {
-                /// else
-            }
+        }
 
-            return output;
+        void run(){
 
-
-*/
         }
 
     private:
+
         Executor executor;
     };
 

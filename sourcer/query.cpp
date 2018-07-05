@@ -4,7 +4,7 @@ namespace friedrichdb {
 
 
     output_query::output_query(const query &query_) {
-        this->id = query_.id;
+        this->id = query_.id();
         this->database = query_.database;
 
     }
@@ -40,4 +40,12 @@ namespace friedrichdb {
     auto query::end() -> query::iterator {
         return transactions.end();
     }
+
+    void query::emplace_back(transaction &&trx) {
+        trx.query_id(id_);
+        trx.id = transactions.size() - 1;
+        transactions.emplace_back(std::move(trx));
+    }
+
+    query::query(std::string database) : database(std::move(database)) {}
 }

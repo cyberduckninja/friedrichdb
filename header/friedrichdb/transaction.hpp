@@ -22,19 +22,29 @@ namespace friedrichdb {
 
         auto end() -> iterator;
 
-        template<typename... Args>
-        void emplace_back(Args&&... args){
-            operations.emplace_back(std::forward<Args>(args)...);
-        }
+        void emplace_back(operation&& op);
 
         binary_data serialization_json() const override;
 
         void deserialization_json(binary_data) override  {
 
         }
-        id_t query_id;
-        id_t id;
+
+       auto query_id(id_t id) -> void {
+            query_id_ = id ;
+            for(auto&i:operations){
+                i.query_id = query_id_;
+            }
+        }
+
+        auto query_id() const -> id_t {
+            return query_id_;
+        }
+
+
+            id_t id;
     private:
+        id_t query_id_;
         storage operations;
     };
 

@@ -11,7 +11,7 @@ namespace friedrichdb {
         using const_iterator = storage::const_iterator;
 
 
-        query(std::string database) : database(std::move(database)) {}
+        query(std::string database);
 
         ~query() override = default;
 
@@ -23,15 +23,23 @@ namespace friedrichdb {
 
         void deserialization_json(binary_data) override;
 
-        template<typename... Args>
-        void emplace_back(Args &&... args) {
-            transactions.emplace_back(std::forward<Args>(args)...);
+        void emplace_back(transaction&& trx );
+
+        std::string database;
+
+        auto id(id_t id) -> void {
+            id_ = id;
+            for(auto&i:transactions){
+                i.query_id(id_);
+            }
         }
 
+        auto id() const -> id_t  {
+            return id_;
+        }
 
-        id_t id;
-        std::string database;
     private:
+        id_t id_;
         storage transactions;
     };
 

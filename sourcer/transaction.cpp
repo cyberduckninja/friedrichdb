@@ -6,7 +6,7 @@ namespace friedrichdb {
 
 
     output_transaction::output_transaction(const transaction &trx) {
-        this->query_id = trx.query_id;
+        this->query_id = trx.query_id();
         this->id       = trx.id;
     }
 
@@ -36,5 +36,12 @@ namespace friedrichdb {
 
     binary_data transaction::serialization_json() const {
 
+    }
+
+    void transaction::emplace_back(operation &&op) {
+        op.query_id = query_id_;
+        op.transaction_id = id;
+        op.id = operations.size()-1;
+        operations.emplace_back(std::move(op));
     }
 }

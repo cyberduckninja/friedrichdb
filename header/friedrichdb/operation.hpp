@@ -53,29 +53,15 @@ namespace friedrichdb {
     class output_operation final : public serializable {
     public:
 
-        explicit output_operation(const operation& operation_) {
-            this->query_id = operation_.query_id;
-            this->transaction_id = operation_.transaction_id;
-            this->id = operation_.id;
-            this->operation_ = operation_.operation_ ;
-            this->table = operation_.table;
-            this->document_key = operation_.document_key;
-            this->field_name = operation_.field_name;
-            this->field_value = operation_.field_value;
-
-        }
+        explicit output_operation(const operation& operation_);
 
         output_operation() = default;
 
         ~output_operation() override = default;
 
-        void deserialization_json(std::string) {
+        void deserialization_json(std::string);
 
-        }
-
-        std::string serialization_json() const {
-
-        }
+        std::string serialization_json() const;
 
         id_t query_id;
         id_t transaction_id;

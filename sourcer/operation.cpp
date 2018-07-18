@@ -36,22 +36,16 @@ namespace friedrichdb {
 
     }
 
-    operation::operation(operation_type operation_, const std::string &table, const std::string &document_key,
-                         const std::string &field_name, const std::string &field_value) :
+    operation::operation(operation_type operation_, const std::string &table, const std::string &document_key) :
             operation_(operation_),
             table(table),
-            document_key(document_key),
-            field_name(field_name),
-            field_value(field_value) {
+            document_key(document_key){
 
     }
 
-    operation::operation(operation_type operation_, const std::string &table, const std::string &field_name,
-                         const std::string &field_value) :
+    operation::operation(operation_type operation_, const std::string &table) :
             operation_(operation_),
-            table(table),
-            field_name(field_name),
-            field_value(field_value) {
+            table(table){
 
     }
 
@@ -78,8 +72,7 @@ namespace friedrichdb {
         this->operation_ = operation_.operation_ ;
         this->table = operation_.table;
         this->document_key = operation_.document_key;
-        this->field_name = operation_.field_name;
-        this->field_value = operation_.field_value;
+        this->fields = operation_.fields;
 
     }
 }

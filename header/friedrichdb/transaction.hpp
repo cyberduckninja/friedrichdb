@@ -53,6 +53,7 @@ namespace friedrichdb {
     public:
         using storage = std::vector<output_operation>;
         using iterator = storage::iterator;
+        using const_iterator = storage::const_iterator;
 
         output_transaction(const transaction& trx);
 
@@ -65,6 +66,12 @@ namespace friedrichdb {
         auto begin() -> iterator;
 
         auto end() -> iterator;
+
+        auto begin() const -> const_iterator ;
+
+        auto end() const -> const_iterator;
+
+
 
 
         template<typename... Args>

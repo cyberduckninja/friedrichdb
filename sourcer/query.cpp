@@ -25,6 +25,14 @@ namespace friedrichdb {
 
     }
 
+    auto output_query::begin() const -> output_query::const_iterator {
+        return outputs_.begin();
+    }
+
+    auto output_query::end() const -> output_query::const_iterator {
+        return outputs_.end();
+    }
+
     binary_data query::serialization_json() const {
 
     }

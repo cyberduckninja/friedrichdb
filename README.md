@@ -8,24 +8,26 @@ in-memory embedded database storage
 
 0. composite key(tuple -> value:string ) - flat-document-tuple ( simple-key-value -> key:string value:string )
 
-1. simple data type support
+1. add basic concurrency control
 
-2. simple index
+2. simple data type support
 
-3. small json Ql
+3. simple index
 
-4. document storage 
+4. small json Ql
 
-5. index Update
+5. document storage 
 
-6. update small json Ql
+6. index Update
 
-7. performance transaction
+7. update small json Ql
 
-8. performance locks
+8. performance transaction
 
-9. advanced transaction processing
+9. performance locks
 
-10. ql: mixed json and GraphQL
+10. advanced transaction processing
 
-11. mechanics of replications 
+11. ql: mixed json and GraphQL
+
+12. mechanics of replications 

@@ -48,6 +48,7 @@ namespace friedrichdb {
     public:
         using storage = std::vector<output_transaction>;
         using iterator = storage::iterator;
+        using const_iterator = storage::const_iterator;
 
         output_query() = default;
 
@@ -70,6 +71,10 @@ namespace friedrichdb {
         auto begin() -> iterator;
 
         auto end() -> iterator;
+
+        auto begin() const -> const_iterator;
+
+        auto end() const -> const_iterator;
 
         template<typename... Args>
         void emplace_back(Args &&... args) {

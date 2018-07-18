@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 #include <friedrichdb/serializable.hpp>
 
 namespace friedrichdb {
@@ -14,22 +15,25 @@ namespace friedrichdb {
         remove
     };
 
+    struct field {
+        std::string key;
+        std::string value;
+    };
+
+    using fields_t = std::vector<field>;
+
     struct operation final : public serializable {
 
         operation(
                 operation_type operation_,
                 const std::string &table,
-                const std::string &document_key,
-                const std::string &field_name,
-                const std::string &field_value
+                const std::string &document_key
         );
 
 
         operation(
                 operation_type operation_,
-                const std::string &table,
-                const std::string &field_name,
-                const std::string &field_value
+                const std::string &table
         );
 
         operation()= default;
@@ -40,14 +44,18 @@ namespace friedrichdb {
 
         void deserialization_json(binary_data);
 
-        id_t query_id;
-        id_t transaction_id;
-        id_t id;
+        template <typename Key, typename Value>
+        void emplace(Key&& key, Value&& value){
+            fields.emplace_back(std::forward<Key>(key),std::forward<Value>(value));
+        }
+
+        id_t           query_id;
+        id_t           transaction_id;
+        id_t           id;
         operation_type operation_;
         std::string    table;
         std::string    document_key;
-        std::string    field_name;
-        std::string    field_value;
+        fields_t       fields;
     };
 
     class output_operation final : public serializable {
@@ -63,14 +71,13 @@ namespace friedrichdb {
 
         std::string serialization_json() const;
 
-        id_t query_id;
-        id_t transaction_id;
-        id_t id;
+        id_t           query_id;
+        id_t           transaction_id;
+        id_t           id;
         operation_type operation_;
         std::string    table;
         std::string    document_key;
-        std::string    field_name;
-        std::string    field_value;
+        fields_t       fields;
     };
 
 

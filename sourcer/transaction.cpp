@@ -26,6 +26,14 @@ namespace friedrichdb {
         return outputs_.end();
     }
 
+    auto output_transaction::begin() const -> output_transaction::const_iterator {
+        return outputs_.begin();
+    }
+
+    auto output_transaction::end() const -> output_transaction::const_iterator {
+        return outputs_.end();
+    }
+
     auto transaction::begin() -> transaction::iterator {
         return operations.begin();
     }

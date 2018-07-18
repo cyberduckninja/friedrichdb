@@ -2,14 +2,19 @@
 
 #pragma once
 
-#include <friedrichdb/serializable.hpp>
 #include <memory>
 #include <atomic>
+#include <vector>
 #include <map>
 
+#include <friedrichdb/serializable.hpp>
+
 namespace friedrichdb { namespace in_memory {
+
         using object = std::string;
+
         using tuple_storage = std::vector<object>;
+
         struct manager final {
             manager()= default;
             manager(std::string name, size_t position) : name(std::move(name)), position(position) {}
@@ -17,6 +22,7 @@ namespace friedrichdb { namespace in_memory {
             std::string name;
             std::size_t position;
         };
+
         using vector_type = std::vector<manager>;
 
 
@@ -72,6 +78,14 @@ namespace friedrichdb { namespace in_memory {
 
             auto at(std::size_t key) const -> const object & {
                 return storage_.at(key);
+            }
+
+            bool in(std::size_t key){
+
+            }
+
+            bool in(const std::string &key){
+
             }
 
 

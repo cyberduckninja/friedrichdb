@@ -54,7 +54,11 @@ namespace friedrichdb {
                 auto it = storage_.find(query_.document_key);
 
                 if (it != storage_.end()) {
-                    auto result = it->second.at(query_.field_name);
+                    for(auto&i:query_.fields){
+                        auto it_document = it->second.
+                        auto result = it->second.at(query_.field_name);
+                    }
+
                 } else {
 
                 }

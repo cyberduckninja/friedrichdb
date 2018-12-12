@@ -14,15 +14,15 @@ include_directories(thirdparty/rapidjson/include)
 list(APPEND ${project}_HEADERS
 
 
-        header/friedrichdb/in-memory/composite_key.h
-        header/friedrichdb/in-memory/document.hpp
+        header/friedrichdb/composite_key.h
+        header/friedrichdb/document.hpp
         header/friedrichdb/in-memory/in_memory_database.hpp
-        header/friedrichdb/in-memory/in_memory_table.hpp
+        header/friedrichdb/in-memory/in_memory_collection.hpp
 
         header/friedrichdb/ql/parser.hpp
 
         header/friedrichdb/abstract_database.hpp
-        header/friedrichdb/abstract_table.hpp
+        header/friedrichdb/abstract_collection.hpp
         header/friedrichdb/database.hpp
         header/friedrichdb/controller.hpp
         header/friedrichdb/fake_file_storage.hpp
@@ -39,8 +39,10 @@ list(APPEND ${project}_HEADERS
 
 list(APPEND ${project}_SOURCES
         sourcer/abstract_database.cpp
-        sourcer/in-memory/in_memory_table.cpp
+        sourcer/in-memory/in_memory_collection.cpp
         sourcer/in-memory/in_memory_database.cpp
+        sourcer/document.cpp
+        sourcer/abstract_collection.cpp
         sourcer/database.cpp
         sourcer/fake_file_storage.cpp
         sourcer/field_t.cpp

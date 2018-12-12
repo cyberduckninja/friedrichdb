@@ -8,11 +8,10 @@
 namespace friedrichdb {
 
     struct database final  {
-
+        database()= default;
+        ~database()= default;
         database(const std::string &name, abstract_database*memory);
         database(const std::string &name, abstract_database*memory, abstract_database*file);
-
-        //auto apply(query&&) -> output_query
 
         std::string name;
     private:

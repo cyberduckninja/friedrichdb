@@ -9,7 +9,7 @@
 
 #include <friedrichdb/serializable.hpp>
 
-namespace friedrichdb { namespace in_memory {
+namespace friedrichdb {
 
         using object = std::string;
 
@@ -19,12 +19,25 @@ namespace friedrichdb { namespace in_memory {
             manager()= default;
             manager(std::string name, size_t position) : name(std::move(name)), position(position) {}
             ~manager()= default;
-            std::string name;
             std::size_t position;
+            std::string name;
         };
 
         using vector_type = std::vector<manager>;
 
+        struct field final  {
+            field(const std::string &key, const std::string &value);
+            ~field()= default;
+            std::string key;
+            std::string value;
+        };
+
+        using fields_t = std::vector<field>;
+
+        struct embedded_document final {
+            std::string document_id;
+            fields_t    fields;
+        };
 
         class document final : public serializable {
         public:
@@ -41,13 +54,9 @@ namespace friedrichdb { namespace in_memory {
 
             ~document() override = default;
 
-            std::string serialization_json() const override {
+            std::string serialization_json() const override;
 
-            }
-
-            void deserialization_json(binary_data) override {
-
-            }
+            void deserialization_json(binary_data) override;
 
             template<typename... _Args>
             auto emplace(const std::string &key, _Args &&... __args) -> void {
@@ -90,11 +99,9 @@ namespace friedrichdb { namespace in_memory {
 
 
         private:
-            std::size_t id; //TODO move to meta data in storage;
             std::map<std::string, manager> index;
             tuple_storage storage_;
 
         };
 
-    }
 }

@@ -17,18 +17,16 @@ namespace friedrichdb {
         persistent
     };
 
-    class abstract_table {
+    class abstract_collection {
     public:
-        abstract_table(std::string name):name_(std::move(name)){}
+        abstract_collection(std::string name);
 
-        virtual ~abstract_table() = default;
+        virtual ~abstract_collection() = default;
 
         virtual auto apply(transaction) -> output_transaction = 0;
 
     protected:
-        const std::string& name() const {
-            return name_;
-        }
+        const std::string& name() const;
 
         std::mutex  mutext;
         std::condition_variable condition_variable;

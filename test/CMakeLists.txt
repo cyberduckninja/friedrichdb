@@ -8,14 +8,14 @@ list(APPEND ${project}_HEADERS
 
         ../header/friedrichdb/database.hpp
         ../header/friedrichdb/in-memory/in_memory_database.hpp
-        ../header/friedrichdb/in-memory/in_memory_table.hpp
+        ../header/friedrichdb/in-memory/in_memory_collection.hpp
         ../header/friedrichdb/journal.hpp
 )
 
 list(APPEND ${project}_SOURCES
         ../sourcer/database.cpp
         ../sourcer/in-memory/in_memory_database.cpp
-        ../sourcer/in-memory/in_memory_table.cpp
+        ../sourcer/in-memory/in_memory_collection.cpp
 
 )
 

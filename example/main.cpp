@@ -13,17 +13,17 @@ int main() {
     friedrichdb::controller cntrllr;
 
 
-    cntrllr.add_database("test",new friedrichdb::in_memory::in_memory_database,new friedrichdb::file_storage_fake);
+    cntrllr.create_database("test",new friedrichdb::in_memory::in_memory_database,new friedrichdb::file_storage_fake);
 
     /// create
     {
         /// start
         friedrichdb::operation op;
         op.operation_ = friedrichdb::operation_type::insert;
-        op.table = "comment";
-        op.document_key = "1qaz2wsx3edc";
+        op.collection= "comment";
+        op.embedded_document_.document_id = "1qaz2wsx3edc";
         op.emplace("comment_data_name","comment_data_value");
-        friedrichdb::query q("test");
+        friedrichdb::query q/*("test")*/;
         friedrichdb::transaction transaction;
         transaction.emplace_back(std::move(op));
         q.emplace_back(std::move(transaction));
@@ -53,10 +53,10 @@ int main() {
         /// start
         friedrichdb::operation op;
         op.operation_ = friedrichdb::operation_type::find;
-        op.table = "comment";
-        op.document_key = "1qaz2wsx3edc";
+        op.collection = "comment";
+        op.embedded_document_.document_id = "1qaz2wsx3edc";
         op.emplace("comment_data_name","");
-        friedrichdb::query q("test");
+        friedrichdb::query q/*("test")*/;
         friedrichdb::transaction transaction;
         transaction.emplace_back(std::move(op));
         q.emplace_back(std::move(transaction));
@@ -88,10 +88,10 @@ int main() {
         /// start
         friedrichdb::operation op;
         op.operation_ = friedrichdb::operation_type::upsert;
-        op.table = "comment";
-        op.document_key = "1qaz2wsx3edc";
+        op.collection = "comment";
+        op.embedded_document_.document_id = "1qaz2wsx3edc";
         op.emplace("comment_data_name","comment_data_value_1");
-        friedrichdb::query q("test");
+        friedrichdb::query q/*("test")*/;
         friedrichdb::transaction transaction;
         transaction.emplace_back(std::move(op));
         q.emplace_back(std::move(transaction));
@@ -107,7 +107,7 @@ int main() {
                     std::cerr << op.query_id << std::endl;
                     std::cerr << op.transaction_id << std::endl;
                     std::cerr << op.id << std::endl;
-                    std::cerr << op.field_value << std::endl;
+                    ///std::cerr << op.field_value << std::endl;
                 }
             }
             /// stop
@@ -122,10 +122,10 @@ int main() {
             /// start
             friedrichdb::operation op;
             op.operation_ = friedrichdb::operation_type::find;
-            op.table = "comment";
-            op.document_key = "1qaz2wsx3edc";
+            op.collection = "comment";
+            op.embedded_document_.document_id = "1qaz2wsx3edc";
             op.emplace("comment_data_name","");
-            friedrichdb::query q("test");
+            friedrichdb::query q/*("test")*/;
             friedrichdb::transaction transaction;
             transaction.emplace_back(std::move(op));
             q.emplace_back(std::move(transaction));
@@ -159,10 +159,10 @@ int main() {
             /// start
             friedrichdb::operation op;
             op.operation_ = friedrichdb::operation_type::remove;
-            op.table = "comment";
-            op.document_key = "1qaz2wsx3edc";
+            op.collection = "comment";
+            op.embedded_document_.document_id = "1qaz2wsx3edc";
             op.emplace("comment_data_name","");
-            friedrichdb::query q("test");
+            friedrichdb::query q/*("test")*/;
             friedrichdb::transaction transaction;
             transaction.emplace_back(std::move(op));
             q.emplace_back(std::move(transaction));
@@ -194,10 +194,10 @@ int main() {
         /// start
         friedrichdb::operation op;
         op.operation_ = friedrichdb::operation_type::find;
-        op.table = "comment";
-        op.document_key = "1qaz2wsx3edc";
+        op.collection = "comment";
+        op.embedded_document_.document_id = "1qaz2wsx3edc";
         op.emplace("comment_data_name","");
-        friedrichdb::query q("test");
+        friedrichdb::query q/*("test")*/;
         friedrichdb::transaction transaction;
         transaction.emplace_back(std::move(op));
         q.emplace_back(std::move(transaction));

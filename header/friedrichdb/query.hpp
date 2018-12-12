@@ -10,9 +10,6 @@ namespace friedrichdb {
         using iterator = storage::iterator;
         using const_iterator = storage::const_iterator;
 
-
-        query(std::string database);
-
         ~query() override = default;
 
         auto begin() -> iterator;
@@ -25,19 +22,11 @@ namespace friedrichdb {
 
         void emplace_back(transaction&& trx );
 
+        auto id(id_t id) -> void;
+
+        auto id() const -> id_t;
+
         std::string database;
-
-        auto id(id_t id) -> void {
-            id_ = id;
-            for(auto&i:transactions){
-                i.query_id(id_);
-            }
-        }
-
-        auto id() const -> id_t  {
-            return id_;
-        }
-
     private:
         id_t id_;
         storage transactions;
@@ -64,9 +53,9 @@ namespace friedrichdb {
 
         ~output_query() override = default;
 
-        binary_data serialization_json() const;
+        binary_data serialization_json() const override;
 
-        void deserialization_json(binary_data);
+        void deserialization_json(binary_data) override;
 
         auto begin() -> iterator;
 

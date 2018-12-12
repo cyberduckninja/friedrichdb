@@ -36,19 +36,6 @@ namespace friedrichdb {
 
     }
 
-    operation::operation(operation_type operation_, const std::string &table, const std::string &document_key) :
-            operation_(operation_),
-            table(table),
-            document_key(document_key){
-
-    }
-
-    operation::operation(operation_type operation_, const std::string &table) :
-            operation_(operation_),
-            table(table){
-
-    }
-
     binary_data operation::serialization_json() const {
 
     }
@@ -70,9 +57,8 @@ namespace friedrichdb {
         this->transaction_id = operation_.transaction_id;
         this->id = operation_.id;
         this->operation_ = operation_.operation_ ;
-        this->table = operation_.table;
-        this->document_key = operation_.document_key;
-        this->fields = operation_.fields;
+        this->collection = operation_.collection;
+        this->embedded_document_ = operation_.embedded_document_;
 
     }
 }

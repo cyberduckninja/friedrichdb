@@ -52,4 +52,19 @@ namespace friedrichdb {
         op.id = operations.size()-1;
         operations.emplace_back(std::move(op));
     }
+
+    void transaction::deserialization_json(binary_data) {
+
+    }
+
+    auto transaction::query_id(id_t id) -> void {
+        query_id_ = id ;
+        for(auto&i:operations){
+            i.query_id = query_id_;
+        }
+    }
+
+    auto transaction::query_id() const -> id_t {
+        return query_id_;
+    }
 }

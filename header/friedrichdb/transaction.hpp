@@ -26,21 +26,11 @@ namespace friedrichdb {
 
         binary_data serialization_json() const override;
 
-        void deserialization_json(binary_data) override  {
+        void deserialization_json(binary_data) override;
 
-        }
+        auto query_id(id_t id) -> void;
 
-       auto query_id(id_t id) -> void {
-            query_id_ = id ;
-            for(auto&i:operations){
-                i.query_id = query_id_;
-            }
-        }
-
-        auto query_id() const -> id_t {
-            return query_id_;
-        }
-
+        auto query_id() const -> id_t;
 
             id_t id;
     private:
@@ -70,9 +60,6 @@ namespace friedrichdb {
         auto begin() const -> const_iterator ;
 
         auto end() const -> const_iterator;
-
-
-
 
         template<typename... Args>
         void emplace_back(Args &&... args) {

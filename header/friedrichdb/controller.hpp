@@ -46,7 +46,7 @@ namespace friedrichdb {
     using controller_config = std::initializer_list<database_config>;
 
     struct abstract_controller {
-        abstract_controller(const controller_config &config, abstract_journal *);
+        abstract_controller(std::size_t worker_count, abstract_journal *);
 
         abstract_controller(abstract_journal *);
 
@@ -54,12 +54,13 @@ namespace friedrichdb {
 
         auto add_query(query &&, apply_callback &&callback) -> id_t;
 
-        auto add_database(const std::string &, abstract_database *, abstract_database *) -> void;
+        auto create_database(const std::string &, abstract_database *, abstract_database *) -> void;
 
         auto status(id_t, status_callback &&) -> void;
 
 
     protected:
+        std::size_t worker_count;
         std::mutex mtx;
         std::condition_variable cv;
         journal journal_;
@@ -67,7 +68,6 @@ namespace friedrichdb {
         std::queue<id_t> queue_;
         std::unordered_map<id_t, io_query> data;
     };
-
 
 
     /// standalone
@@ -80,7 +80,11 @@ namespace friedrichdb {
 
         }
 
-        controller(const controller_config &config) : abstract_controller(config, new dummy_journal) {
+        controller(const controller_config &config,std::size_t worker_counter) : abstract_controller(worker_counter, new dummy_journal) {
+
+        }
+
+        controller(std::size_t worker_counter) : abstract_controller(worker_counter, new dummy_journal) {
 
         }
 
@@ -103,11 +107,13 @@ namespace friedrichdb {
                 unique_lock lock(mtx);
                 cv.wait(lock,[&](){ return !queue_.empty(); });
                 while(!queue_.empty()){
+                    /*
                     auto id = queue_.front();
                     queue_.pop();
                     auto&d = data.at(id);
                     auto&db = databases.at(d.input.database);
-                    db.memory->apply();
+                   db
+                     */
 
                 }
             }

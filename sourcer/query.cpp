@@ -55,5 +55,15 @@ namespace friedrichdb {
         transactions.emplace_back(std::move(trx));
     }
 
-    query::query(std::string database) : database(std::move(database)) {}
+    auto query::id(id_t id) -> void {
+        id_ = id;
+        for(auto&i:transactions){
+            i.query_id(id_);
+        }
+    }
+
+    auto query::id() const -> id_t {
+        return id_;
+    }
+
 }

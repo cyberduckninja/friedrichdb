@@ -39,8 +39,8 @@ namespace friedrichdb { namespace ql {
                     }
 
                     std::string table;
-                    if (i["in_memory_table"].IsString() && i["in_memory_table"].IsString()) {
-                        table = i["in_memory_table"].GetString();
+                    if (i["in_memory_collection"].IsString() && i["in_memory_collection"].IsString()) {
+                        table = i["in_memory_collection"].GetString();
 
                     } else {
                         return error;

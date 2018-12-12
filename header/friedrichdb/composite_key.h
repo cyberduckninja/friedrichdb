@@ -1,7 +1,10 @@
 #pragma once
 
 #include <friedrichdb/serializable.hpp>
-namespace friedrichdb { namespace in_memory {
+namespace friedrichdb {
+
+    /// database:collection:guid - guid document
+
     using composite_key = std::string;
 /*
         class composite_key final : public serializable {
@@ -33,4 +36,4 @@ namespace friedrichdb { namespace in_memory {
 
         };
         */
-    }}
+}

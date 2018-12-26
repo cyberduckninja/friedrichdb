@@ -16,9 +16,9 @@ namespace friedrichdb { namespace in_memory {
             auto apply(query&&) -> output_query override ;
 
         private:
-            output_operation remove_collection(operation);
-            abstract_collection* create_collection(const std::string&name);
-            std::pair<bool,abstract_collection*> find_collection(const std::string&name);
+            auto remove_collection(operation)              -> output_operation;
+            auto create_collection(const std::string&name) -> abstract_collection*;
+            auto find_collection(const std::string&name)   -> std::pair<bool,abstract_collection*>;
             std::unordered_map<std::string, std::unique_ptr<abstract_collection>> tables_;
         };
 

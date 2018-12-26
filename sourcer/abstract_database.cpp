@@ -5,12 +5,12 @@
 
 namespace friedrichdb {
 
-    storge_t abstract_database::type() const {
+    storage_type abstract_database::type() const {
         return type_;
     }
 
     abstract_database::abstract_database(
-            storge_t type
+            storage_type type
     ):
             type_(type) {
 

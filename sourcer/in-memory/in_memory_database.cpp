@@ -10,7 +10,7 @@ namespace friedrichdb {
     namespace in_memory {
 
 
-        in_memory_database::in_memory_database() : abstract_database(storge_t::memory) {
+        in_memory_database::in_memory_database() : abstract_database(storage_type::memory) {
         }
 
         auto in_memory_database::apply(query&& query_) -> output_query {

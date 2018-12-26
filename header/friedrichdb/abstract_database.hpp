@@ -1,5 +1,4 @@
-#ifndef ABSTRACT_DATABASE_HPP
-#define ABSTRACT_DATABASE_HPP
+#pragma once
 
 #include <unordered_map>
 #include <cstdint>
@@ -10,26 +9,25 @@
 
 namespace friedrichdb {
 
-    enum class storge_t : uint8_t {
+    enum class storage_type : uint8_t {
         memory = 0x00,
         disk
     };
 
     struct abstract_database {
 
-        abstract_database(storge_t);
+        abstract_database(storage_type);
 
         virtual ~abstract_database() = default;
 
         virtual auto apply(query&&) -> output_query = 0;
 
-        storge_t type() const;
+        storage_type type() const;
     protected:
         std::mutex              mutex;
         std::condition_variable condition_variable;
 
     private:
-        storge_t type_;
+        storage_type type_;
     };
 }
-#endif //ABSTRACT_DATABASE_HPP

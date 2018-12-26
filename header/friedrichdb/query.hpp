@@ -10,6 +10,8 @@ namespace friedrichdb {
         using iterator = storage::iterator;
         using const_iterator = storage::const_iterator;
 
+        query(const std::string &database);
+
         ~query() override = default;
 
         auto begin() -> iterator;

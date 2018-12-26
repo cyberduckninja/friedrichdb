@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+#include <thread>
 #include <vector>
 #include <string>
 
@@ -8,8 +10,6 @@
 #include <friedrichdb/journal.hpp>
 #include <friedrichdb/query_scheduler.hpp>
 #include <friedrichdb/in-memory/in_memory_database.hpp>
-#include <chrono>
-#include <thread>
 
 /// run - time
 namespace friedrichdb {
@@ -25,7 +25,7 @@ namespace friedrichdb {
     using status_callback = std::function<void(query_status, const output_query &)>;
 
     struct engine final {
-        storge_t type;
+        storage_type type;
     };
 
     struct database_config {
@@ -48,7 +48,7 @@ namespace friedrichdb {
     struct abstract_controller {
         abstract_controller(std::size_t worker_count, abstract_journal *);
 
-        abstract_controller(abstract_journal *);
+        abstract_controller(controller_config&,abstract_journal *);
 
         virtual ~abstract_controller() = default;
 
@@ -64,7 +64,7 @@ namespace friedrichdb {
         std::mutex mtx;
         std::condition_variable cv;
         journal journal_;
-        std::unordered_map<std::string, database> databases;
+        std::unordered_map<std::string, std::unique_ptr<database>> databases_;
         std::queue<id_t> queue_;
         std::unordered_map<id_t, io_query> data;
     };
@@ -76,7 +76,7 @@ namespace friedrichdb {
     public:
         using unique_lock =  std::unique_lock<std::mutex>;
 
-        controller() : abstract_controller(new dummy_journal) {
+        controller(controller_config& сс) : abstract_controller(сс,new dummy_journal) {
 
         }
 
@@ -97,6 +97,7 @@ namespace friedrichdb {
             {
                 unique_lock lock(mtx);
                 id = add_query(std::move(query_), std::move(callback));
+                cv.notify_one();
             }
 
             return id;

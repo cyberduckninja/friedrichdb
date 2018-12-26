@@ -1,11 +1,11 @@
-#ifndef FILE_STORAGE_HPP
-#define FILE_STORAGE_HPP
+#pragma once
 
 #include <friedrichdb/abstract_database.hpp>
 #include <vector>
 #include <functional>
 
 namespace friedrichdb {
+
     class file_storage_fake final : public abstract_database {
     public:
 
@@ -13,9 +13,8 @@ namespace friedrichdb {
 
         auto apply(query&&) -> output_query override;
 
-        ~file_storage_fake();
+        ~file_storage_fake() override = default;
 
 
     };
 }
-#endif //VERSIONS_FILE_STORAGE_HPP

@@ -66,4 +66,6 @@ namespace friedrichdb {
         return id_;
     }
 
+    query::query(const std::string &database) : database(database) {}
+
 }

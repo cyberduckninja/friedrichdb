@@ -58,7 +58,7 @@ namespace friedrichdb {
         this->id = operation_.id;
         this->operation_ = operation_.operation_ ;
         this->collection = operation_.collection;
-        this->embedded_document_ = operation_.embedded_document_;
+        this->embedded_document_ = operation_.flat_document_;
 
     }
 }

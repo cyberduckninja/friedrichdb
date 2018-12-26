@@ -13,26 +13,25 @@ include_directories(thirdparty/rapidjson/include)
 
 list(APPEND ${project}_HEADERS
 
-
-        header/friedrichdb/composite_key.h
-        header/friedrichdb/document.hpp
-        header/friedrichdb/in-memory/in_memory_database.hpp
         header/friedrichdb/in-memory/in_memory_collection.hpp
+        header/friedrichdb/in-memory/in_memory_database.hpp
 
-        header/friedrichdb/ql/parser.hpp
-
-        header/friedrichdb/abstract_database.hpp
         header/friedrichdb/abstract_collection.hpp
-        header/friedrichdb/database.hpp
+        header/friedrichdb/abstract_database.hpp
+        header/friedrichdb/abstract_index.hpp
+        header/friedrichdb/composite_key.h
         header/friedrichdb/controller.hpp
+        header/friedrichdb/database.hpp
+        header/friedrichdb/document/document.hpp
         header/friedrichdb/fake_file_storage.hpp
         header/friedrichdb/journal.hpp
         header/friedrichdb/operation.hpp
-        header/friedrichdb/query_scheduler.hpp
         header/friedrichdb/query.hpp
+        header/friedrichdb/query_scheduler.hpp
         header/friedrichdb/serializable.hpp
         header/friedrichdb/storage.hpp
         header/friedrichdb/transaction.hpp
+
 
 
 )

@@ -1,8 +1,9 @@
 #include <friedrichdb/controller.hpp>
+#include <friedrichdb/database.hpp>
 
 namespace friedrichdb {
 
-    abstract_controller::abstract_controller(abstract_journal* ptr):journal_(ptr) {
+    abstract_controller::abstract_controller(controller_config&cc,abstract_journal* ptr):journal_(ptr) {
 
     }
 
@@ -11,18 +12,21 @@ namespace friedrichdb {
     }
 
     auto abstract_controller::create_database(const std::string& name,abstract_database* memory, abstract_database* disk) -> void {
-        databases.emplace(name,{name,memory,disk});
+        if(disk == nullptr){
+            databases_.emplace(name,new database(name,memory));
+        }
+        databases_.emplace(name,new database(name,memory,disk));
     }
 
     auto abstract_controller::add_query(query &&query_,apply_callback && callback) -> id_t {
 
-        auto it = databases.find(query_.database);
-        if (it == databases.end()) {
+        auto it = databases_.find(query_.database);
+        if (it == databases_.end()) {
             create_database(query_.database, new in_memory::in_memory_database, nullptr);
         }
 
         auto id = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::steady_clock::now().time_since_epoch()).count();
-        data.emplace(id,io_query(std::move(query_),std::move(callback)));
+        data.emplace(id,io_query(query_,std::move(callback)));
         queue_.emplace(id);
         return id;
     }

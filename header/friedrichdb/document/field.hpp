@@ -66,9 +66,7 @@ private:
 
 class field final {
 public:
-
-private:
-
+    field(std::nullptr_t);
     enum class type : char {
         null_t,
         bool_t,
@@ -80,6 +78,9 @@ private:
     };
 
     union payload {
+        explicit payload() : payload_nullptr(nullptr) {}
+        ~payload() = default;
+
         std::nullptr_t payload_nullptr;
         bool payload_bool;
         number payload_number;
@@ -89,9 +90,15 @@ private:
         incomplete_wrapper<std::unordered_map<std::string, field>> payload_hash_map;
     };
 
+private:
+
     type type_;
     payload payload_;
 
 };
+
+field::field(std::nullptr_t):type_(type::null_t) {
+
+}
 
 

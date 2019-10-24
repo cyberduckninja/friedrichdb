@@ -12,7 +12,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.13/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 
 find_package(Python3 COMPONENTS Development)
@@ -93,10 +93,10 @@ list(APPEND ${project}_SOURCES
         sourcer/controller.cpp
 )
 
-#add_subdirectory(test)
+add_subdirectory(test)
 
 add_library(${project} ${${project}_HEADERS} ${${project}_SOURCES})
 set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
 target_include_directories(${project} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
 
-add_subdirectory(example)
+add_subdirectory(examples)

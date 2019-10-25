@@ -1,7 +1,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <nlohmann/json.hpp>
-using namespace nlohmann ;
+
+
+using namespace nlohmann;
 namespace py = pybind11;
 
 
@@ -66,6 +68,10 @@ py::object from_json_impl(const json &j) {
 }
 
 
+template <class Serialization>
+class pipe_lined_ds;
+
+template <class Serialization>
 class data_set {
 public:
     data_set(pybind11::object& collections, context* ctx = nullptr ):collection_(collections) {
@@ -73,6 +79,15 @@ public:
     }
 
     auto id() { return partitioner; }
+
+    data_set<Serialization>* map( py::function f, bool preservesPartitioning=false){
+
+
+    }
+
+    data_set<Serialization>* map_partitions_with_index( py::function f, bool preservesPartitioning=false){
+        return new  pipe_lined_ds<Serialization>(this,f,preservesPartitioning);
+    }
 
 private:
 
@@ -87,6 +102,15 @@ private:
     std::size_t partitioner;
 };
 
+template <class Serialization>
+class pipe_lined_ds final : public data_set<Serialization> {
+public:
+    using data_set_current = data_set<Serialization>;
+
+    pipe_lined_ds(data_set_current* ptr,py::function func, bool preservesPartitioning=false){
+
+    }
+};
 
 
 

@@ -29,7 +29,7 @@ namespace friedrichdb {
 
         void deserialization_json(binary_data) override {}
 
-        using storage = std::unordered_map<std::string, Field>;
+        using storage = std::unordered_map<std::string, field>;
 
         template<typename Key, typename Value>
         void emplace(Key &&key, Value &&value) {

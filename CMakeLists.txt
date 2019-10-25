@@ -95,8 +95,8 @@ list(APPEND ${project}_SOURCES
 
 add_subdirectory(test)
 
-add_library(${project} ${${project}_HEADERS} ${${project}_SOURCES})
-set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
-target_include_directories(${project} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
+#add_library(${project} ${${project}_HEADERS} ${${project}_SOURCES})
+#set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
+#target_include_directories(${project} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
 
 add_subdirectory(examples)

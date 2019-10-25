@@ -4,7 +4,7 @@ set(project python_exampla)
 
 project(${project} CXX)
 
-include_directories(../friedrichdb/include)
+#include_directories(../friedrichdb/include)
 set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES main.cpp)

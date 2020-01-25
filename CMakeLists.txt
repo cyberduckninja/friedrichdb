@@ -60,7 +60,7 @@ list(APPEND ${project}_HEADERS
         header/friedrichdb/composite_key.h
         header/friedrichdb/controller.hpp
         header/friedrichdb/database.hpp
-        header/friedrichdb/document/document.hpp
+        header/friedrichdb/in-memory/document.hpp
         header/friedrichdb/fake_file_storage.hpp
         header/friedrichdb/journal.hpp
         header/friedrichdb/operation.hpp

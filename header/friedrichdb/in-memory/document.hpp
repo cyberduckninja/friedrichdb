@@ -6,8 +6,8 @@
 #include <set>
 #include <unordered_map>
 
-#include <friedrichdb/serializable.hpp>
-#include <friedrichdb/document/field.hpp>
+#include "../serializable.hpp"
+#include "field.hpp"
 
 namespace friedrichdb {
 

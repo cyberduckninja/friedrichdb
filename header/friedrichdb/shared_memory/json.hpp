@@ -201,11 +201,9 @@ inline value::value(bool b) : type_(type::boolean_type), u_() {
     u_.boolean_ = b;
 }
 
-#ifdef PICOJSON_USE_INT64
 inline value::value(int64_t i) : type_(int64_type), u_() {
   u_.int64_ = i;
 }
-#endif
 
 inline value::value(double n) : type_(type::number_type), u_() {
     if (
@@ -319,19 +317,13 @@ std::swap(u_, x.u_);
   }
 IS(null, null)
 IS(bool, boolean)
-#ifdef PICOJSON_USE_INT64
 IS(int64_t, int64)
-#endif
 IS(std::string, string)
 IS(array, array)
 IS(object, object)
 #undef IS
 template <> inline bool value::is<double>() const {
-    return type_ == number_type
-#ifdef PICOJSON_USE_INT64
-        || type_ == int64_type
-#endif
-            ;
+    return type_ == number_type|| type_ == int64_type;
 }
 
 #define GET(ctype, var)                                                                                                            \
@@ -347,12 +339,12 @@ GET(bool, u_.boolean_)
 GET(std::string, *u_.string_)
 GET(array, *u_.array_)
 GET(object, *u_.object_)
-#ifdef PICOJSON_USE_INT64
+
 GET(double,
     (type_ == int64_type && (const_cast<value *>(this)->type_ = number_type, const_cast<value *>(this)->u_.number_ = u_.int64_),
      u_.number_))
 GET(int64_t, u_.int64_)
-#else
+
 GET(double, u_.number_)
 #endif
 #undef GET
@@ -368,9 +360,7 @@ SET(std::string, string, u_.string_ = new std::string(_val);)
 SET(array, array, u_.array_ = new array(_val);)
 SET(object, object, u_.object_ = new object(_val);)
 SET(double, number, u_.number_ = _val;)
-#ifdef PICOJSON_USE_INT64
 SET(int64_t, int64, u_.int64_ = _val;)
-#endif
 #undef SET
 
 #if PICOJSON_USE_RVALUE_REFERENCE
@@ -394,10 +384,8 @@ inline bool value::evaluate_as_boolean() const {
             return u_.boolean_;
         case number_type:
             return u_.number_ != 0;
-#ifdef PICOJSON_USE_INT64
         case int64_type:
     return u_.int64_ != 0;
-#endif
         case string_type:
             return !u_.string_->empty();
         default:
@@ -448,13 +436,11 @@ inline std::string value::to_str() const {
             return "null";
         case boolean_type:
             return u_.boolean_ ? "true" : "false";
-#ifdef PICOJSON_USE_INT64
         case int64_type: {
     char buf[sizeof("-9223372036854775808")];
     SNPRINTF(buf, sizeof(buf), "%" PRId64, u_.int64_);
     return buf;
   }
-#endif
         case number_type: {
             char buf[256];
             double tmp;

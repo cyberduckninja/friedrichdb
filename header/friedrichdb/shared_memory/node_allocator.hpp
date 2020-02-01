@@ -4,7 +4,7 @@
 #include <boost/interprocess/offset_ptr.hpp>
 
 
-namespace chainbase {
+namespace friedrichdb {
 
     namespace bip = boost::interprocess;
 

@@ -4,7 +4,7 @@
 #include <string>
 
 #include <friedrichdb/abstract_collection.hpp>
-#include <friedrichdb/in-memory/document.hpp>
+#include <friedrichdb/base/document.hpp>
 #include <friedrichdb/composite_key.h>
 
 namespace friedrichdb { namespace in_memory {

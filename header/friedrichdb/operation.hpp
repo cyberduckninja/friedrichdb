@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <friedrichdb/serializable.hpp>
-#include <friedrichdb/in-memory/document.hpp>
+#include <friedrichdb/base/document.hpp>
 
 namespace friedrichdb {
 

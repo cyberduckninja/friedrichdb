@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 set(project friedrichdb)
 project(${project} CXX)
@@ -49,10 +49,13 @@ endif(CCACHE_FOUND)
 
 #include_directories(thirdparty/rapidjson/include)
 
-list(APPEND ${project}_HEADERS
+list(APPEND ${PROJECT_NAME}_HEADERS
 
         header/friedrichdb/in-memory/in_memory_collection.hpp
         header/friedrichdb/in-memory/in_memory_database.hpp
+        header/friedrichdb/in-memory/in_memory_table.hpp
+        header/friedrichdb/tenser/tensor.hpp
+
 
         header/friedrichdb/abstract_collection.hpp
         header/friedrichdb/abstract_database.hpp
@@ -60,7 +63,7 @@ list(APPEND ${project}_HEADERS
         header/friedrichdb/composite_key.h
         header/friedrichdb/controller.hpp
         header/friedrichdb/database.hpp
-        header/friedrichdb/in-memory/document.hpp
+        header/friedrichdb/core/document.hpp
         header/friedrichdb/fake_file_storage.hpp
         header/friedrichdb/journal.hpp
         header/friedrichdb/operation.hpp
@@ -74,7 +77,7 @@ list(APPEND ${project}_HEADERS
 
 )
 
-list(APPEND ${project}_SOURCES
+list(APPEND ${PROJECT_NAME}_SOURCES
         sourcer/abstract_database.cpp
         sourcer/in-memory/in_memory_collection.cpp
         sourcer/in-memory/in_memory_database.cpp
@@ -95,8 +98,8 @@ list(APPEND ${project}_SOURCES
 
 add_subdirectory(test)
 
-#add_library(${project} ${${project}_HEADERS} ${${project}_SOURCES})
+add_library(${PROJECT_NAME} ${${project}_HEADERS} ${${project}_SOURCES})
 #set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
-#target_include_directories(${project} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
 
 add_subdirectory(examples)

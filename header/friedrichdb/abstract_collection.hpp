@@ -12,8 +12,9 @@
 
 namespace friedrichdb {
 
-    enum class table_storage_type {
+    enum class table_storage_type : std::uint8_t {
         memory = 0x00,
+        shared_memory,
         persistent
     };
 

@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include "../serializable.hpp"
-#include "field.hpp"
+#include "flat_field.hpp"
 
 namespace friedrichdb {
 
@@ -29,7 +29,7 @@ namespace friedrichdb {
 
         void deserialization_json(binary_data) override {}
 
-        using storage = std::unordered_map<std::string, field>;
+        using storage = std::unordered_map<std::string, flat_field>;
 
         template<typename Key, typename Value>
         void emplace(Key &&key, Value &&value) {

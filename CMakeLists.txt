@@ -54,7 +54,6 @@ list(APPEND ${PROJECT_NAME}_HEADERS
         header/friedrichdb/in-memory/in_memory_collection.hpp
         header/friedrichdb/in-memory/in_memory_database.hpp
         header/friedrichdb/in-memory/in_memory_table.hpp
-        header/friedrichdb/tenser/tensor.hpp
 
 
         header/friedrichdb/abstract_collection.hpp

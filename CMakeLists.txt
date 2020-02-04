@@ -43,11 +43,7 @@ endif(CCACHE_FOUND)
 #ccahe
 #############################################################################################
 
-#add_definitions(-DRAPIDJSON_HAS_STDSTRING)
 
-#add_definitions(-DRAPIDJSON_HAS_CXX11_RVALUE_REFS)
-
-#include_directories(thirdparty/rapidjson/include)
 
 list(APPEND ${PROJECT_NAME}_HEADERS
 
@@ -60,20 +56,19 @@ list(APPEND ${PROJECT_NAME}_HEADERS
         header/friedrichdb/in-memory/in_memory_table.hpp
         header/friedrichdb/in-memory/document.hpp
 
-
-        header/friedrichdb/old/abstract_collection.hpp
-        header/friedrichdb/old/abstract_database.hpp
-        header/friedrichdb/old/abstract_index.hpp
-        header/friedrichdb/old/controller.hpp
-        header/friedrichdb/old/database.hpp
-        header/friedrichdb/old/fake_file_storage.hpp
-        header/friedrichdb/old/journal.hpp
-        header/friedrichdb/old/operation.hpp
-        header/friedrichdb/old/query.hpp
-        header/friedrichdb/old/query_scheduler.hpp
-        header/friedrichdb/old/serializable.hpp
-        header/friedrichdb/old/storage.hpp
-        header/friedrichdb/old/transaction.hpp
+        #header/friedrichdb/old/abstract_collection.hpp
+        #header/friedrichdb/old/abstract_database.hpp
+        #header/friedrichdb/old/abstract_index.hpp
+        #header/friedrichdb/old/controller.hpp
+        #header/friedrichdb/old/database.hpp
+        #header/friedrichdb/old/fake_file_storage.hpp
+        #header/friedrichdb/old/journal.hpp
+        #header/friedrichdb/old/operation.hpp
+        #header/friedrichdb/old/query.hpp
+        #header/friedrichdb/old/query_scheduler.hpp
+        #header/friedrichdb/old/serializable.hpp
+        #header/friedrichdb/old/storage.hpp
+        #header/friedrichdb/old/transaction.hpp
 
         header/friedrichdb/shared_memory/json.hpp
         header/friedrichdb/shared_memory/node_allocator.hpp
@@ -82,22 +77,22 @@ list(APPEND ${PROJECT_NAME}_HEADERS
 )
 
 list(APPEND ${PROJECT_NAME}_SOURCES
-        sourcer/abstract_database.cpp
+        #sourcer/abstract_database.cpp
         sourcer/in-memory/in_memory_collection.cpp
         sourcer/in-memory/in_memory_database.cpp
-        sourcer/document.cpp
-        sourcer/abstract_collection.cpp
-        sourcer/database.cpp
-        sourcer/fake_file_storage.cpp
-        sourcer/field_t.cpp
-        sourcer/operation.cpp
-        sourcer/schema.cpp
-        sourcer/storage.cpp
-        sourcer/tuple_t.cpp
-        sourcer/type.cpp
-        sourcer/query.cpp
-        sourcer/transaction.cpp
-        sourcer/controller.cpp
+        #sourcer/document.cpp
+        #sourcer/abstract_collection.cpp
+        #sourcer/database.cpp
+        #sourcer/fake_file_storage.cpp
+        #sourcer/field_t.cpp
+        #sourcer/operation.cpp
+        #sourcer/schema.cpp
+        #sourcer/storage.cpp
+        #sourcer/tuple_t.cpp
+        #sourcer/type.cpp
+        #sourcer/query.cpp
+        #sourcer/transaction.cpp
+        #sourcer/controller.cpp
 )
 
 add_subdirectory(test)
@@ -105,5 +100,5 @@ add_subdirectory(test)
 add_library(${PROJECT_NAME} ${${project}_HEADERS} ${${project}_SOURCES})
 #set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
-
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CONAN})
 add_subdirectory(examples)

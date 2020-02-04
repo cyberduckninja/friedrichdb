@@ -7,7 +7,7 @@
 #include <string>
 #include <cassert>
 
-
+/// TODO:  decimal
 class number final {
 private:
     enum class type : std::uint8_t {
@@ -48,6 +48,7 @@ private:
 
 
 public:
+    number() = default;
     number(const number&) = delete;
     number&operator=(const number&) = delete;
     explicit number(std::uint8_t value):type_(type::uint8),payload_(value) {}
@@ -138,19 +139,21 @@ struct tensor_base final {
 };
 
 using array_t =  std::vector<field_base>;
-using object_t = std::map<std::string,field_base>;
+using object_t = std::map<std::string,field_base>; /// hashmap
 using tensor_t = tensor_base;
+using  string_t = std::string;
 
 enum class field_type : uint8_t {
     null_t,
     bool_t,
     number_t,
     string_t,
+    array_t,
+    object_t
 
 };
 
 class field_base final {
-
 
     union payload {
 
@@ -166,14 +169,26 @@ class field_base final {
         std::nullptr_t nullptr_;
         bool bool_;
         number* number_;
-        std::string* string_;
+        string_t* string_;
+        array_t* array_;
+        object_t* object_;
     };
 
 public:
+    using key_type = std::string;
+    using mapped_type = field_base;
+    using value_type = std::pair<const key_type,mapped_type>;
+    using reference = field_base&;
+    using const_reference = const field_base&;
+    using size_type = std::size_t ;
 
     field_base(const field_base&) = delete;
 
     field_base&operator=(const field_base&) = delete;
+
+    ~field_base() {
+        reset();
+    }
 
     field_base(): type_(field_type::null_t), payload_(std::make_unique<payload>()){}
 
@@ -182,40 +197,42 @@ public:
     template <class T, class = std::is_scalar<T>>
     field_base(T value): type_(field_type::number_t), payload_(std::make_unique<payload>(value)){}
 
-    field_base(const std::string& value): type_(field_type::string_t), payload_(std::make_unique<payload>(value)){}
+    field_base(const string_t & value): type_(field_type::string_t), payload_(std::make_unique<payload>(value)){}
 
     ///flat_field(const char* value): type_(type::string_t), payload_(std::make_unique<payload>(value)){}
 
-    bool is_string() noexcept {
+    bool is_string() const noexcept {
         return type_ == field_type::string_t;
     }
 
-    bool is_number() noexcept {
+    bool is_number() const noexcept {
         return type_ == field_type::number_t;
     }
 
-    bool is_bool() noexcept {
+    bool is_bool() const noexcept {
         return type_ == field_type::bool_t;
     }
 
-    number & get_number() const {
-        assert(type_ == field_type::number_t);
-        return *(payload_->number_);
+    bool is_array() const noexcept {
+        return type_ == field_type::array_t;
     }
 
-    bool get_bool() const {
-        assert(type_ == field_type::bool_t);
-        return payload_->bool_;
+    bool is_object() const noexcept {
+        return type_ == field_type::object_t;
+    }
+    mapped_type& at(const key_type& k){
+        return get_object().at(k);
     }
 
-    std::string& get_string() const {
-        assert(type_ == field_type::string_t);
-        return *(payload_->string_);
+    mapped_type& at(const key_type& k) const {
+        return get_object().at(k);
+    }
+    reference at (size_type n){
+        return get_array().at(n);
     }
 
-    std::string& get_string(){
-        assert(type_ == field_type::string_t);
-        return *(payload_->string_);
+    const_reference at (size_type n) const{
+        return get_array().at(n);
     }
 
     bool operator< (const field_base & rhs) const {
@@ -268,6 +285,89 @@ public:
 
 
 private:
+
+    void reset() {
+
+        switch (type_){
+            case field_type::array_t:
+                delete payload_->array_;
+            case field_type::object_t:
+                delete payload_->object_;
+            type_ = field_type::null_t;
+            return;
+        }
+
+    }
+
+    void create(field_type crete_type){
+        payload_ = std::make_unique<payload>();
+        switch (crete_type){
+            case field_type::array_t:
+                type_= field_type::array_t;
+                payload_->array_ = new array_t;
+                break;
+            case field_type::object_t:
+                type_ = field_type::object_t;
+                payload_->object_ = new object_t;
+                break;
+            case field_type::null_t:
+                type_ = field_type::null_t;
+                break;
+            case field_type::bool_t:
+                type_ = field_type::bool_t;
+                break;
+            case field_type::number_t:
+                type_ = field_type::number_t;
+                ///payload_->number_ = new number;
+                break;
+            case field_type::string_t:
+                type_ = field_type::string_t;
+                payload_->string_ = new string_t;
+                break;
+        }
+    }
+
+
+    number & get_number() const {
+        assert(type_ == field_type::number_t);
+        return *(payload_->number_);
+    }
+
+    bool get_bool() const {
+        assert(type_ == field_type::bool_t);
+        return payload_->bool_;
+    }
+
+    std::string& get_string() const {
+        assert(type_ == field_type::string_t);
+        return *(payload_->string_);
+    }
+
+    std::string& get_string(){
+        assert(type_ == field_type::string_t);
+        return *(payload_->string_);
+    }
+
+    object_t & get_object(){
+        assert(type_ == field_type::object_t);
+        return *(payload_->object_);
+    }
+
+    object_t & get_object() const {
+        assert(type_ == field_type::object_t);
+        return *(payload_->object_);
+    }
+
+    array_t & get_array(){
+        assert(type_ == field_type::array_t);
+        return *(payload_->array_);
+    }
+
+    array_t & get_array() const {
+        assert(type_ == field_type::array_t);
+        return *(payload_->array_);
+    }
+
     field_type type_;
     std::unique_ptr<payload> payload_;
 

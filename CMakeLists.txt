@@ -51,28 +51,33 @@ endif(CCACHE_FOUND)
 
 list(APPEND ${PROJECT_NAME}_HEADERS
 
+        header/friedrichdb/core/composite_key.h
+        header/friedrichdb/core/field_base.hpp
+        header/friedrichdb/core/table.hpp
+
         header/friedrichdb/in-memory/in_memory_collection.hpp
         header/friedrichdb/in-memory/in_memory_database.hpp
         header/friedrichdb/in-memory/in_memory_table.hpp
+        header/friedrichdb/in-memory/document.hpp
 
 
-        header/friedrichdb/abstract_collection.hpp
-        header/friedrichdb/abstract_database.hpp
-        header/friedrichdb/abstract_index.hpp
-        header/friedrichdb/composite_key.h
-        header/friedrichdb/controller.hpp
-        header/friedrichdb/database.hpp
-        header/friedrichdb/core/document.hpp
-        header/friedrichdb/fake_file_storage.hpp
-        header/friedrichdb/journal.hpp
-        header/friedrichdb/operation.hpp
-        header/friedrichdb/query.hpp
-        header/friedrichdb/query_scheduler.hpp
-        header/friedrichdb/serializable.hpp
-        header/friedrichdb/storage.hpp
-        header/friedrichdb/transaction.hpp
+        header/friedrichdb/old/abstract_collection.hpp
+        header/friedrichdb/old/abstract_database.hpp
+        header/friedrichdb/old/abstract_index.hpp
+        header/friedrichdb/old/controller.hpp
+        header/friedrichdb/old/database.hpp
+        header/friedrichdb/old/fake_file_storage.hpp
+        header/friedrichdb/old/journal.hpp
+        header/friedrichdb/old/operation.hpp
+        header/friedrichdb/old/query.hpp
+        header/friedrichdb/old/query_scheduler.hpp
+        header/friedrichdb/old/serializable.hpp
+        header/friedrichdb/old/storage.hpp
+        header/friedrichdb/old/transaction.hpp
 
-
+        header/friedrichdb/shared_memory/json.hpp
+        header/friedrichdb/shared_memory/node_allocator.hpp
+        header/friedrichdb/shared_memory/table.hpp
 
 )
 

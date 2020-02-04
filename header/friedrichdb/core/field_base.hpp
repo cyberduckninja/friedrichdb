@@ -130,26 +130,27 @@ private:
 };
 
 
-class flat_field;
+class field_base;
 ///TODO:
 struct tensor_base final {
     std::vector<unsigned int> shape_;
-    std::vector<flat_field> base_;
+    std::vector<field_base> base_;
 };
 
-using array_t =  std::vector<flat_field>;
-using object_t = std::map<std::string,flat_field>;
+using array_t =  std::vector<field_base>;
+using object_t = std::map<std::string,field_base>;
 using tensor_t = tensor_base;
 
-class flat_field final {
-private:
-    enum class type : uint8_t {
-        null_t,
-        bool_t,
-        number_t,
-        string_t,
+enum class field_type : uint8_t {
+    null_t,
+    bool_t,
+    number_t,
+    string_t,
 
-    };
+};
+
+class field_base final {
+
 
     union payload {
 
@@ -170,104 +171,104 @@ private:
 
 public:
 
-    flat_field(const flat_field&) = delete;
+    field_base(const field_base&) = delete;
 
-    flat_field&operator=(const flat_field&) = delete;
+    field_base&operator=(const field_base&) = delete;
 
-    flat_field(): type_(type::null_t), payload_(std::make_unique<payload>()){}
+    field_base(): type_(field_type::null_t), payload_(std::make_unique<payload>()){}
 
-    flat_field(bool value): type_(type::bool_t), payload_(std::make_unique<payload>(value)){}
+    field_base(bool value): type_(field_type::bool_t), payload_(std::make_unique<payload>(value)){}
 
     template <class T, class = std::is_scalar<T>>
-    flat_field(T value): type_(type::number_t), payload_(std::make_unique<payload>(value)){}
+    field_base(T value): type_(field_type::number_t), payload_(std::make_unique<payload>(value)){}
 
-    flat_field(const std::string& value): type_(type::string_t), payload_(std::make_unique<payload>(value)){}
+    field_base(const std::string& value): type_(field_type::string_t), payload_(std::make_unique<payload>(value)){}
 
     ///flat_field(const char* value): type_(type::string_t), payload_(std::make_unique<payload>(value)){}
 
     bool is_string() noexcept {
-        return type_ == type::string_t;
+        return type_ == field_type::string_t;
     }
 
     bool is_number() noexcept {
-        return type_ == type::number_t;
+        return type_ == field_type::number_t;
     }
 
     bool is_bool() noexcept {
-        return type_ == type::bool_t;
+        return type_ == field_type::bool_t;
     }
 
     number & get_number() const {
-        assert(type_ == type::number_t);
+        assert(type_ == field_type::number_t);
         return *(payload_->number_);
     }
 
     bool get_bool() const {
-        assert(type_ == type::bool_t);
+        assert(type_ == field_type::bool_t);
         return payload_->bool_;
     }
 
     std::string& get_string() const {
-        assert(type_ == type::string_t);
+        assert(type_ == field_type::string_t);
         return *(payload_->string_);
     }
 
     std::string& get_string(){
-        assert(type_ == type::string_t);
+        assert(type_ == field_type::string_t);
         return *(payload_->string_);
     }
 
-    bool operator< (const flat_field & rhs) const {
+    bool operator< (const field_base & rhs) const {
 
         switch (type_){
-            case type::null_t:   return false;
-            case type::number_t: return get_number() < rhs.get_number();
-            case type::string_t: return get_string() < rhs.get_string();
-            case type::bool_t:   return get_bool()   < rhs.get_bool();
+            case field_type::null_t:   return false;
+            case field_type::number_t: return get_number() < rhs.get_number();
+            case field_type::string_t: return get_string() < rhs.get_string();
+            case field_type::bool_t:   return get_bool()   < rhs.get_bool();
 
         }
 
     }
 
-    bool operator> (const flat_field & rhs) const {
+    bool operator> (const field_base & rhs) const {
         return rhs < *this;
     }
 
-    bool operator<= (const flat_field & rhs) const {
+    bool operator<= (const field_base & rhs) const {
 
         switch (type_){
-            case type::null_t:   return true;
-            case type::number_t: return get_number() <= rhs.get_number();
-            case type::string_t: return get_string() <= rhs.get_string();
-            case type::bool_t:   return get_bool()   <= rhs.get_bool();
+            case field_type::null_t:   return true;
+            case field_type::number_t: return get_number() <= rhs.get_number();
+            case field_type::string_t: return get_string() <= rhs.get_string();
+            case field_type::bool_t:   return get_bool()   <= rhs.get_bool();
         }
 
     }
 
-    bool operator>= (const flat_field & rhs) const{
+    bool operator>= (const field_base & rhs) const{
         return rhs <= *this;
     }
 
-    bool operator == (const flat_field & rhs) const {
+    bool operator == (const field_base & rhs) const {
         if (type_ != rhs.type_)
             return false;
 
         switch (type_){
-            case type::null_t:   return true;
-            case type::number_t: return get_number() == rhs.get_number();
-            case type::string_t: return get_string() == rhs.get_string();
-            case type::bool_t:   return get_bool()   == rhs.get_bool();
+            case field_type::null_t:   return true;
+            case field_type::number_t: return get_number() == rhs.get_number();
+            case field_type::string_t: return get_string() == rhs.get_string();
+            case field_type::bool_t:   return get_bool()   == rhs.get_bool();
         }
 
     }
 
-    bool operator!= (const flat_field & rhs) const{
+    bool operator!= (const field_base & rhs) const{
         return !(*this == rhs);
     }
 
 
 private:
-    type type_;
+    field_type type_;
     std::unique_ptr<payload> payload_;
 
 };

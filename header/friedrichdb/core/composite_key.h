@@ -1,6 +1,6 @@
 #pragma once
 
-#include <friedrichdb/serializable.hpp>
+#include "../serializable.hpp"
 namespace friedrichdb {
 
     /// database:collection:guid - guid document

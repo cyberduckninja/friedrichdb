@@ -7,7 +7,7 @@ include_directories(../header)
 
 list(APPEND ${PROJECT_NAME}_HEADERS
 
-        ../../header/friedrichdb/core/flat_field.hpp
+        ../../header/friedrichdb/core/field_base.hpp
 )
 
 list(APPEND ${PROJECT_NAME}_SOURCES

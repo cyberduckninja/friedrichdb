@@ -131,7 +131,15 @@ private:
 
 
 class flat_field;
-using array = std::vector<flat_field>;
+///TODO:
+struct tensor_base final {
+    std::vector<unsigned int> shape_;
+    std::vector<flat_field> base_;
+};
+
+using array_t =  std::vector<flat_field>;
+using object_t = std::map<std::string,flat_field>;
+using tensor_t = tensor_base;
 
 class flat_field final {
 private:
@@ -140,6 +148,7 @@ private:
         bool_t,
         number_t,
         string_t,
+
     };
 
     union payload {

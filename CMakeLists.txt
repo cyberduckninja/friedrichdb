@@ -47,7 +47,6 @@ endif(CCACHE_FOUND)
 
 list(APPEND ${PROJECT_NAME}_HEADERS
 
-        header/friedrichdb/core/composite_key.h
         header/friedrichdb/core/field_base.hpp
         header/friedrichdb/core/table.hpp
 
@@ -72,7 +71,6 @@ list(APPEND ${PROJECT_NAME}_HEADERS
 
         header/friedrichdb/shared_memory/json.hpp
         header/friedrichdb/shared_memory/node_allocator.hpp
-        header/friedrichdb/shared_memory/table.hpp
 
 )
 

@@ -1,11 +1,33 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <string>
 #include <cassert>
+#include <boost/make_unique.hpp>
+#include <boost/interprocess/containers/map.hpp>
+#include <boost/interprocess/containers/vector.hpp>
+#include <boost/interprocess/containers/string.hpp>
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+
+class field_base;
+///TODO:
+struct tensor_base final {
+    boost::container::vector<unsigned int> shape_;
+    boost::container::vector<field_base> base_;
+};
+
+using string_t = boost::container::string;
+using array_t =  boost::container::vector<field_base>;
+using object_t = boost::container::map<string_t,field_base>; /// hashmap
+using tensor_t = tensor_base;
+
+enum class field_type : uint8_t {
+    null_t,
+    bool_t,
+    number_t,
+    string_t,
+    array_t,
+    object_t
+
+};
 
 /// TODO:  decimal
 class number final {
@@ -131,28 +153,6 @@ private:
 };
 
 
-class field_base;
-///TODO:
-struct tensor_base final {
-    std::vector<unsigned int> shape_;
-    std::vector<field_base> base_;
-};
-
-using array_t =  std::vector<field_base>;
-using object_t = std::map<std::string,field_base>; /// hashmap
-using tensor_t = tensor_base;
-using  string_t = std::string;
-
-enum class field_type : uint8_t {
-    null_t,
-    bool_t,
-    number_t,
-    string_t,
-    array_t,
-    object_t
-
-};
-
 class field_base final {
 
     union payload {
@@ -161,10 +161,10 @@ class field_base final {
 
         explicit payload(bool value):bool_(value){}
 
-        template <class T, bool flag= std::is_scalar<T>::value>
+        template <class T,  typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
         explicit payload(T value):number_(new number(value)){}
 
-        payload(const std::string& value):string_(new std::string(value)){}
+        payload(const string_t & value):string_(new string_t(value)){}
 
         std::nullptr_t nullptr_;
         bool bool_;
@@ -175,31 +175,42 @@ class field_base final {
     };
 
 public:
-    using key_type = std::string;
+    using key_type = string_t;
     using mapped_type = field_base;
-    using value_type = std::pair<const key_type,mapped_type>;
+    using value_type = boost::container::pair<const key_type,mapped_type>;
     using reference = field_base&;
     using const_reference = const field_base&;
     using size_type = std::size_t ;
+
+    static auto  array() -> field_base {
+        return field_base(field_type::array_t);
+    }
+
+    static auto  object() -> field_base {
+        return field_base(field_type::object_t);
+    }
 
     field_base(const field_base&) = delete;
 
     field_base&operator=(const field_base&) = delete;
 
+    field_base(field_base&&) = default;
+    field_base&operator=(field_base&&) = default;
+
     ~field_base() {
         reset();
     }
 
-    field_base(): type_(field_type::null_t), payload_(std::make_unique<payload>()){}
+    field_base(): type_(field_type::null_t), payload_(new payload){}
 
-    field_base(bool value): type_(field_type::bool_t), payload_(std::make_unique<payload>(value)){}
+    field_base(bool value): type_(field_type::bool_t), payload_(new payload(value)){}
 
-    template <class T, class = std::is_scalar<T>>
-    field_base(T value): type_(field_type::number_t), payload_(std::make_unique<payload>(value)){}
+    template <class T,  typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
+    field_base(T value): type_(field_type::number_t), payload_(new payload(value)){}
 
-    field_base(const string_t & value): type_(field_type::string_t), payload_(std::make_unique<payload>(value)){}
+    field_base(const string_t & value): type_(field_type::string_t), payload_(new payload(value)){}
 
-    ///flat_field(const char* value): type_(type::string_t), payload_(std::make_unique<payload>(value)){}
+    field_base(const char* value): type_(field_type::string_t), payload_(new payload(value)){}
 
     bool is_string() const noexcept {
         return type_ == field_type::string_t;
@@ -220,19 +231,23 @@ public:
     bool is_object() const noexcept {
         return type_ == field_type::object_t;
     }
-    mapped_type& at(const key_type& k){
-        return get_object().at(k);
-    }
 
     mapped_type& at(const key_type& k) const {
         return get_object().at(k);
     }
-    reference at (size_type n){
+
+    template<typename... Args>
+    void emplace(Args&&... args){
+        get_object().emplace(std::forward<Args>(args)...);
+    }
+
+    const_reference at (size_type n) const {
         return get_array().at(n);
     }
 
-    const_reference at (size_type n) const{
-        return get_array().at(n);
+    template<typename... Args>
+    reference emplace_back(Args&&... args){
+        return get_array().emplace_back(std::forward<Args>(args)...);
     }
 
     bool operator< (const field_base & rhs) const {
@@ -300,7 +315,7 @@ private:
     }
 
     void create(field_type crete_type){
-        payload_ = std::make_unique<payload>();
+        payload_.reset(new payload);
         switch (crete_type){
             case field_type::array_t:
                 type_= field_type::array_t;
@@ -327,6 +342,9 @@ private:
         }
     }
 
+    field_base(field_type type){
+        create(type);
+    }
 
     number & get_number() const {
         assert(type_ == field_type::number_t);
@@ -338,12 +356,12 @@ private:
         return payload_->bool_;
     }
 
-    std::string& get_string() const {
+    string_t & get_string() const {
         assert(type_ == field_type::string_t);
         return *(payload_->string_);
     }
 
-    std::string& get_string(){
+    string_t & get_string(){
         assert(type_ == field_type::string_t);
         return *(payload_->string_);
     }
@@ -369,7 +387,7 @@ private:
     }
 
     field_type type_;
-    std::unique_ptr<payload> payload_;
+    boost::interprocess::unique_ptr<payload> payload_;
 
 };
 

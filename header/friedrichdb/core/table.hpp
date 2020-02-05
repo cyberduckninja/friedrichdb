@@ -13,7 +13,7 @@ enum class table_type {
 
 struct field final {
     std::string name_;
-    flat_field base_;
+    field_base base_;
 };
 
 using row_t = std::vector<field>;

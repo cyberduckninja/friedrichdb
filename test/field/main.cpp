@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../../header/friedrichdb/core/field_base.hpp"
-
+#include <nlohmann/json.hpp>
 int main() {
 
     field_base boolean(true);
@@ -8,11 +8,11 @@ int main() {
     field_base number(int(3));
     field_base number_(int(2));
 
-    field_base map_ = field_base::object();
+    field_base map_;
     map_.emplace("qq",1);
     auto&d = map_.at("qq");
 
-    field_base array_ = field_base::array();
+    field_base array_;
     array_.emplace_back(1);
     array_.emplace_back(2);
     auto&d1 = array_.at(0);

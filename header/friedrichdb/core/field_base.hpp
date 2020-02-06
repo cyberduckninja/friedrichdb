@@ -187,7 +187,8 @@ public:
         assert_invariant();
     }
 
-    field_base(field_base&& other) noexcept : type_(std::move(other.type_)),payload_(other.payload_.release()) {
+    field_base(field_base&& other) noexcept : type_(std::move(other.type_)) {
+        std::swap(payload_,other.payload_);
         other.assert_invariant();
         other.type_ = field_type::null;
         other.payload_.reset();
@@ -455,7 +456,9 @@ private:
         }
 
         template<class T, typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-        payload(T value) noexcept : number_(create<number_t>(value)) {}
+        payload(T value) noexcept : number_(create<number_t>(value)) {
+
+        }
 
         payload(field_type t) {
             switch (t) {
@@ -535,8 +538,7 @@ private:
                 stack.pop_back();
 
                 if (current_item.is_array()) {
-                    std::move(current_item.payload_->array_->begin(), current_item.payload_->array_->end(),
-                              std::back_inserter(stack));
+                    std::move(current_item.payload_->array_->begin(), current_item.payload_->array_->end(),std::back_inserter(stack));
                     current_item.payload_->array_->clear();
                 } else if (current_item.is_object()) {
                     for (auto &&it : *current_item.payload_->object_) {
@@ -571,9 +573,9 @@ private:
                 }
 
                 case field_type::number: {
-                    AllocatorType<string_t> alloc;
+                    AllocatorType<number_t> alloc;
                     std::allocator_traits<decltype(alloc)>::destroy(alloc, number_);
-                    ///std::allocator_traits<decltype(alloc)>::deallocate(alloc, number_, 1);
+                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, number_, 1);
                     break;
                 }
 

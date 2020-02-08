@@ -171,7 +171,7 @@ public:
     field_base(const field_base&) = delete;
     field_base&operator=(const field_base&) = delete;
 
-    ~field_base() noexcept {
+    ~field_base()  {
         assert_invariant();
         payload_->destroy(type_);
         payload_.reset();
@@ -183,14 +183,15 @@ public:
     }
 
 
-    field_base(std::nullptr_t = nullptr) noexcept: field_base(field_type::null){
+    field_base(std::nullptr_t = nullptr) : field_base(field_type::null){
         assert_invariant();
     }
 
-    field_base(field_base&& other) noexcept : type_(std::move(other.type_)),payload_(other.payload_.release()) {
+    field_base(field_base&& other)  : type_(std::move(other.type_)),payload_(std::move(other.payload_)) {
+        other.payload_.reset(new payload(field_type::number));
         other.assert_invariant();
         other.type_ = field_type::null;
-        other.payload_.reset();
+        other.payload_.reset(new payload(field_type::null));
         assert_invariant();
     }
 
@@ -348,30 +349,7 @@ public:
                 break;
         }
     }
-/*
-    void swap(reference other) noexcept(
-    std::is_nothrow_move_constructible<field_base>::value and
-    std::is_nothrow_move_assignable<field_base>::value and
-    std::is_nothrow_move_constructible<field_base>::value and
-    std::is_nothrow_move_assignable<field_base>::value
-    ) {
-        std::swap(type_, other.type_);
-        std::swap(payload_, other.payload_);
-        assert_invariant();
-    }
 
-    void swap(array_t &other) {
-        std::swap(get_array(), other);
-    }
-
-    void swap(object_t &other) {
-        std::swap(get_object(), other);
-    }
-
-    void swap(string_t &other) {
-        std::swap(get_string(), other);
-    }
-*/
     bool operator< (const field_base & rhs) const {
 
         switch (type_){
@@ -450,12 +428,12 @@ private:
 
         payload() = default;
 
-        payload(boolean_t value) noexcept : boolean_(value) {
+        payload(boolean_t value)  : boolean_(value) {
 
         }
 
         template<class T, typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-        payload(T value) noexcept : number_(create<number_t>(value)) {}
+        payload(T value)  : number_(create<number_t>(value)) {}
 
         payload(field_type t) {
             switch (t) {
@@ -470,12 +448,12 @@ private:
                 }
 
                 case field_type::string: {
-                    string_ = create<string_t>("");
+                    string_ = create<string_t>();
                     break;
                 }
 
                 case field_type::boolean: {
-                    boolean_ = boolean_t(false);
+                    boolean_ = boolean_t();
                     break;
                 }
 

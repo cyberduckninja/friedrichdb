@@ -140,6 +140,11 @@ public:
     using pointer = typename std::allocator_traits<allocator_type>::pointer;
     using const_pointer = typename std::allocator_traits<allocator_type>::const_pointer;
 
+    /// todo: replaces non static allocator
+    static allocator_type get_allocator(){
+        return allocator_type();
+    }
+
     struct tensor_base final {
         boost::container::vector<unsigned int> shape_;
         boost::container::vector<field_base> base_;
@@ -167,7 +172,6 @@ public:
     using size_type = std::size_t ;
     using difference_type = std::ptrdiff_t;
 
-public:
     field_base(const field_base&) = delete;
     field_base&operator=(const field_base&) = delete;
 

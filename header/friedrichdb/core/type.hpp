@@ -12,8 +12,8 @@ struct basic_tensor_t final {
     boost::container::vector<T,Allocator<T>> base_;
 };
 
-template<typename CharT, template<typename T> class Allocator >
-using basic_string_t = boost::container::basic_string<CharT, std::char_traits<CharT>,Allocator<CharT>>;
+template<typename CharT, template<typename T> class Traits, template<typename T> class Allocator > ///std::char_traits<CharT>
+using basic_string_t = boost::container::basic_string<CharT, Traits<CharT>,Allocator<CharT>>;
 
 template<typename T, template<typename P> class Allocator >
 using basic_vector_t =  boost::container::vector<T,Allocator<T>>;

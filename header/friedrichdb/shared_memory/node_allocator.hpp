@@ -61,4 +61,4 @@ namespace friedrichdb {
         bip::offset_ptr<list_item> _freelist{};
     };
 
-}  // namepsace chainbase
+}

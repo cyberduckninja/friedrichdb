@@ -150,7 +150,7 @@ public:
         return allocator_type();
     }
 
-    using string_t = basic_string_t<char,AllocatorType>;
+    using string_t = basic_string_t<char,std::char_traits,AllocatorType>;
     using array_t =  basic_vector_t<field_base,AllocatorType>;
     using object_t = basic_map_t<
             string_t,

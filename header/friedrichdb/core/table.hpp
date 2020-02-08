@@ -56,11 +56,11 @@ class record_view final {
 
 
 template<class Allocator>
-class table {
+class collection {
 public:
     using iterator = storage_base_t::iterator;
 
-    table(Allocator&allocator_t, schema_t current_schema) : schema_(std::move(current_schema)) {}
+    collection(Allocator&allocator_t, schema_t current_schema) : schema_(std::move(current_schema)) {}
 
     row_t &row(std::size_t index) {
         return storage_.at(index);

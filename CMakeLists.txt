@@ -95,7 +95,7 @@ list(APPEND ${PROJECT_NAME}_SOURCES
 
 add_subdirectory(test)
 
-add_library(${PROJECT_NAME} ${${project}_HEADERS} ${${project}_SOURCES} header/friedrichdb/core/asda.hpp)
+add_library(${PROJECT_NAME} ${${project}_HEADERS} ${${project}_SOURCES})
 #set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CONAN})

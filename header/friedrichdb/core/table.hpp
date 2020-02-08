@@ -28,11 +28,11 @@ struct schema_t final {
 /// base storage in memory / shm / gpu
 class table final {
 public:
-    using iterator = storage_base_t::iterator ;
+    using iterator = storage_base_t::iterator;
 
-    table(const schema_t& current_schema):schema_(current_schema){}
+    table(const schema_t &current_schema) : schema_(current_schema) {}
 
-    row_t& row(std::size_t index ){
+    row_t &row(std::size_t index) {
 
     }
 
@@ -44,7 +44,7 @@ public:
 
     }
 
-    const schema_t& schema() const { return schema_; }
+    const schema_t &schema() const { return schema_; }
 
     /// \brief Return a column by index
     virtual std::shared_ptr<ChunkedArray> column(int i) const = 0;
@@ -59,36 +59,36 @@ public:
     std::vector<std::shared_ptr<Field>> fields() const;
 
 
-     std::shared_ptr<Table> Slice(int64_t offset, int64_t length) const = 0;
+    std::shared_ptr<Table> Slice(int64_t offset, int64_t length) const = 0;
 
     std::shared_ptr<Table> Slice(int64_t offset) const { return Slice(offset, num_rows_); }
 
 
-    std::shared_ptr<ChunkedArray> GetColumnByName(const std::string& name) const {
+    std::shared_ptr<ChunkedArray> GetColumnByName(const std::string &name) const {
         auto i = schema_->GetFieldIndex(name);
         return i == -1 ? NULLPTR : column(i);
     }
 
 
-     Status RemoveColumn(int i, std::shared_ptr<Table>* out) const = 0;
+    Status RemoveColumn(int i, std::shared_ptr<Table> *out) const = 0;
 
 
-     Status AddColumn(int i, std::shared_ptr<Field> field_arg,
-                             std::shared_ptr<ChunkedArray> column,
-                             std::shared_ptr<Table>* out) const = 0;
+    Status AddColumn(int i, std::shared_ptr<Field> field_arg,
+                     std::shared_ptr<ChunkedArray> column,
+                     std::shared_ptr<Table> *out) const = 0;
 
 
-     Status SetColumn(int i, std::shared_ptr<Field> field_arg,
-                             std::shared_ptr<ChunkedArray> column,
-                             std::shared_ptr<Table>* out) const = 0;
+    Status SetColumn(int i, std::shared_ptr<Field> field_arg,
+                     std::shared_ptr<ChunkedArray> column,
+                     std::shared_ptr<Table> *out) const = 0;
 
 
     std::vector<std::string> ColumnNames() const;
 
 
-     Status Validate() const = 0;
+    Status Validate() const = 0;
 
-     Status ValidateFull() const = 0;
+    Status ValidateFull() const = 0;
 
     int num_columns() const { return schema_.storage_.size(); }
 

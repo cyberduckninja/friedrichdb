@@ -50,8 +50,11 @@ class  document_view final {
 
 };
 
+class record_view final {
 
-/// base storage in memory / shm / gpu
+};
+
+
 template<class Allocator>
 class table {
 public:

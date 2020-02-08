@@ -49,11 +49,13 @@ list(APPEND ${PROJECT_NAME}_HEADERS
 
         header/friedrichdb/core/field_base.hpp
         header/friedrichdb/core/table.hpp
+        header/friedrichdb/core/type.hpp
 
         header/friedrichdb/in-memory/in_memory_collection.hpp
         header/friedrichdb/in-memory/in_memory_database.hpp
         header/friedrichdb/in-memory/in_memory_table.hpp
         header/friedrichdb/in-memory/document.hpp
+        header/friedrichdb/in-memory/table.hpp
 
         #header/friedrichdb/old/abstract_collection.hpp
         #header/friedrichdb/old/abstract_database.hpp

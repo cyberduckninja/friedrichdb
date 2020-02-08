@@ -54,7 +54,7 @@ template <typename K, typename V, typename KH = std::hash<K>, typename KEq = std
 using unordered_map_shared = std::unordered_map<K, V, KH, KEq, allocator<std::pair<const K, V>> >;
 
 template<typename K>
-using unique_ptr_shared = managed_unique_ptr<K,manager>;
+using unique_ptr_shared = typename managed_unique_ptr<K,manager>::type;
 
 template<class T>
 using make_managed_unique_ptr = make_managed_unique_ptr<T,manager>;

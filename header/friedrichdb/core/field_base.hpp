@@ -1,11 +1,8 @@
 #pragma once
 
 #include <cassert>
-#include <boost/make_unique.hpp>
-#include <boost/interprocess/containers/map.hpp>
-#include <boost/interprocess/containers/vector.hpp>
-#include <boost/interprocess/containers/string.hpp>
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+
+#include "type.hpp"
 
 /// TODO:  decimal
 class number_t final {
@@ -130,6 +127,14 @@ private:
     payload payload_;
 };
 
+enum class field_type : uint8_t {
+    null,
+    boolean,
+    number,
+    string,
+    array,
+    object
+};
 
 class field_base final {
 public:
@@ -145,25 +150,17 @@ public:
         return allocator_type();
     }
 
-    struct tensor_base final {
-        boost::container::vector<unsigned int> shape_;
-        boost::container::vector<field_base> base_;
-    };
-
-    using string_t = boost::container::string;
-    using array_t =  boost::container::vector<field_base,AllocatorType<field_base>>;
-    using object_t = boost::container::map<string_t,field_base, std::less<>,AllocatorType<std::pair<const string_t,field_base>>>;
+    using string_t = basic_string_t<char,AllocatorType>;
+    using array_t =  basic_vector_t<field_base,AllocatorType>;
+    using object_t = basic_map_t<
+            string_t,
+            field_base,
+            std::less<>,
+            AllocatorType<std::pair<const string_t,field_base>>
+    >;
     using boolean_t = bool;
-    using tensor_t = tensor_base;
+    using tensor_t = basic_tensor_t<field_base,AllocatorType>;
 
-    enum class field_type : uint8_t {
-        null,
-        boolean,
-        number,
-        string,
-        array,
-        object
-    };
 
     using key_type = string_t;
     using mapped_type = field_base;
@@ -623,6 +620,6 @@ private:
     }
 
     field_type type_;
-    boost::interprocess::unique_ptr<payload> payload_;
+    unique_ptr_t<payload> payload_;
 
 };

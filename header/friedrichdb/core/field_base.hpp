@@ -137,6 +137,24 @@ enum class field_type : uint8_t {
 };
 
 template<
+        template<typename U> class AllocatorType,
+        typename T,
+        typename... Args
+>
+T* create(Args&& ... args){
+    AllocatorType<T> alloc;
+    using AllocatorTraits = std::allocator_traits<AllocatorType<T>>;
+
+    auto deleter = [&](T * object){
+        AllocatorTraits::deallocate(alloc, object, 1);
+    };
+    std::unique_ptr<T, decltype(deleter)> object_tmp(AllocatorTraits::allocate(alloc, 1), deleter);
+    AllocatorTraits::construct(alloc, object_tmp.get(), std::forward<Args>(args)...);
+    assert(object_tmp != nullptr);
+    return object_tmp.release();
+}
+
+template<
         template<typename U> class AllocatorType/*,
         template<typename U, typename V, typename... Args> class ObjectType =std::map,
         template<typename U, typename... Args> class ArrayType = std::vector,
@@ -407,23 +425,6 @@ public:
 
 private:
 
-    template<
-            typename T,
-            typename... Args
-    >
-    static T* create(Args&& ... args){
-        AllocatorType<T> alloc;
-        using AllocatorTraits = std::allocator_traits<AllocatorType<T>>;
-
-        auto deleter = [&](T * object){
-            AllocatorTraits::deallocate(alloc, object, 1);
-        };
-        std::unique_ptr<T, decltype(deleter)> object_tmp(AllocatorTraits::allocate(alloc, 1), deleter);
-        AllocatorTraits::construct(alloc, object_tmp.get(), std::forward<Args>(args)...);
-        assert(object_tmp != nullptr);
-        return object_tmp.release();
-    }
-
     union payload {
 
         object_t* object_;
@@ -439,22 +440,22 @@ private:
         }
 
         template<class T, typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-        payload(T value)  : number_(create<number_t>(value)) {}
+        payload(T value)  : number_(create<AllocatorType,number_t>(value)) {}
 
         payload(field_type t) {
             switch (t) {
                 case field_type::object: {
-                    object_ = create<object_t>();
+                    object_ = create<AllocatorType,object_t>();
                     break;
                 }
 
                 case field_type::array: {
-                    array_ = create<array_t>();
+                    array_ = create<AllocatorType,array_t>();
                     break;
                 }
 
                 case field_type::string: {
-                    string_ = create<string_t>();
+                    string_ = create<AllocatorType,string_t>();
                     break;
                 }
 
@@ -464,7 +465,7 @@ private:
                 }
 
                 case field_type::number: {
-                    number_ = create<number_t>(0);
+                    number_ = create<AllocatorType,number_t>(0);
                     break;
                 }
 
@@ -482,23 +483,23 @@ private:
         }
 
         payload(const char* value) {
-            string_ = create<string_t>(value);
+            string_ = create<AllocatorType,string_t>(value);
         }
 
         payload(const string_t &value) {
-            string_ = create<string_t>(value);
+            string_ = create<AllocatorType,string_t>(value);
         }
 
         payload(string_t &&value) {
-            string_ = create<string_t>(std::move(value));
+            string_ = create<AllocatorType,string_t>(std::move(value));
         }
 
         payload(object_t &&value) {
-            object_ = create<object_t>(std::move(value));
+            object_ = create<AllocatorType,object_t>(std::move(value));
         }
 
         payload(array_t &&value) {
-            array_ = create<array_t>(std::move(value));
+            array_ = create<AllocatorType,array_t>(std::move(value));
         }
 
         void destroy(field_type t) noexcept {

@@ -136,12 +136,17 @@ enum class field_type : uint8_t {
     object
 };
 
-class field_base final {
+template<
+        template<typename U> class AllocatorType/*,
+        template<typename U, typename V, typename... Args> class ObjectType =std::map,
+        template<typename U, typename... Args> class ArrayType = std::vector,
+        class StringType = std::string,
+        class BooleanType = bool,
+        class NumberType = number_t*/
+>
+class basic_field final {
 public:
-
-    template <typename T>
-    using AllocatorType = std::allocator<T>;
-    using allocator_type = AllocatorType<field_base>;
+    using allocator_type = AllocatorType<basic_field>;
     using pointer = typename std::allocator_traits<allocator_type>::pointer;
     using const_pointer = typename std::allocator_traits<allocator_type>::const_pointer;
 
@@ -151,44 +156,44 @@ public:
     }
 
     using string_t = basic_string_t<char,std::char_traits,AllocatorType>;
-    using array_t =  basic_vector_t<field_base,AllocatorType>;
+    using array_t =  basic_vector_t<basic_field,AllocatorType>;
     using object_t = basic_map_t<
             string_t,
-            field_base,
+            basic_field,
             std::less<>,
-            AllocatorType<std::pair<const string_t,field_base>>
+            AllocatorType<std::pair<const string_t,basic_field>>
     >;
     using boolean_t = bool;
-    using tensor_t = basic_tensor_t<field_base,AllocatorType>;
+    using tensor_t = basic_tensor_t<basic_field,AllocatorType>;
 
 
     using key_type = string_t;
-    using mapped_type = field_base;
-    using reference = field_base&;
-    using const_reference = const field_base&;
+    using mapped_type = basic_field;
+    using reference = basic_field&;
+    using const_reference = const basic_field&;
     using size_type = std::size_t ;
     using difference_type = std::ptrdiff_t;
 
-    field_base(const field_base&) = delete;
-    field_base&operator=(const field_base&) = delete;
+    basic_field(const basic_field&) = delete;
+    basic_field&operator=(const basic_field&) = delete;
 
-    ~field_base() noexcept {
+    ~basic_field() noexcept {
         assert_invariant();
         payload_->destroy(type_);
         payload_.reset();
     }
 
 
-    field_base(const field_type v): type_(v), payload_(new payload(v)){
+    basic_field(const field_type v): type_(v), payload_(new payload(v)){
         assert_invariant();
     }
 
 
-    field_base(std::nullptr_t = nullptr) : field_base(field_type::null){
+    basic_field(std::nullptr_t = nullptr) : basic_field(field_type::null){
         assert_invariant();
     }
 
-    field_base(field_base&& other)  : type_(std::move(other.type_)),payload_(std::move(other.payload_)) {
+    basic_field(basic_field&& other)  : type_(std::move(other.type_)),payload_(std::move(other.payload_)) {
         other.payload_.reset(new payload(field_type::number));
         other.assert_invariant();
         other.type_ = field_type::null;
@@ -196,14 +201,14 @@ public:
         assert_invariant();
     }
 
-    field_base(bool value): type_(field_type::boolean), payload_(new payload(value)){}
+    basic_field(bool value): type_(field_type::boolean), payload_(new payload(value)){}
 
     template <class T,  typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-    field_base(T value): type_(field_type::number), payload_(new payload(value)){}
+    basic_field(T value): type_(field_type::number), payload_(new payload(value)){}
 
-    field_base(const string_t & value): type_(field_type::string), payload_(new payload(value)){}
+    basic_field(const string_t & value): type_(field_type::string), payload_(new payload(value)){}
 
-    field_base(const char* value): type_(field_type::string), payload_(new payload(value)){}
+    basic_field(const char* value): type_(field_type::string), payload_(new payload(value)){}
 
     bool is_string() const noexcept {
         return type_ == field_type::string;
@@ -351,7 +356,7 @@ public:
         }
     }
 
-    bool operator< (const field_base & rhs) const {
+    bool operator< (const basic_field & rhs) const {
 
         switch (type_){
             case field_type::null:   return false;
@@ -363,11 +368,11 @@ public:
 
     }
 
-    bool operator> (const field_base & rhs) const {
+    bool operator> (const basic_field & rhs) const {
         return rhs < *this;
     }
 
-    bool operator<= (const field_base & rhs) const {
+    bool operator<= (const basic_field & rhs) const {
 
         switch (type_){
             case field_type::null:   return true;
@@ -378,11 +383,11 @@ public:
 
     }
 
-    bool operator>= (const field_base & rhs) const{
+    bool operator>= (const basic_field & rhs) const{
         return rhs <= *this;
     }
 
-    bool operator == (const field_base & rhs) const {
+    bool operator == (const basic_field & rhs) const {
         if (type_ != rhs.type_)
             return false;
 
@@ -395,7 +400,7 @@ public:
 
     }
 
-    bool operator!= (const field_base & rhs) const{
+    bool operator!= (const basic_field & rhs) const{
         return !(*this == rhs);
     }
 
@@ -497,7 +502,7 @@ private:
         }
 
         void destroy(field_type t) noexcept {
-            std::vector<field_base> stack;
+            basic_vector_t<basic_field,AllocatorType> stack;
 
             if (t == field_type::array) {
                 stack.reserve(array_->size());
@@ -510,7 +515,7 @@ private:
             }
 
             while (not stack.empty()) {
-                field_base current_item(std::move(stack.back()));
+                basic_field current_item(std::move(stack.back()));
                 stack.pop_back();
 
                 if (current_item.is_array()) {
@@ -623,3 +628,5 @@ private:
     unique_ptr_t<payload> payload_;
 
 };
+
+using field_base = basic_field<std::allocator>;

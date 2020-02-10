@@ -155,7 +155,8 @@ T* create(Args&& ... args){
 }
 
 template<
-        template<typename U> class AllocatorType/*,
+        template<typename U> class AllocatorType,
+        template <class T, class D > class Unique_Ptr_T/*,
         template<typename U, typename V, typename... Args> class ObjectType =std::map,
         template<typename U, typename... Args> class ArrayType = std::vector,
         class StringType = std::string,
@@ -626,8 +627,8 @@ private:
     }
 
     field_type type_;
-    unique_ptr_t<payload> payload_;
+    Unique_Ptr_T<payload,boost::movelib::default_delete<payload>> payload_;
 
 };
 
-using field_base = basic_field<std::allocator>;
+using field_base = basic_field<std::allocator,unique_ptr_t>;

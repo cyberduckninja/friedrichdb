@@ -2,7 +2,7 @@
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
-#include "../core/type.hpp"
+#include "friedrichdb/core/field_base.hpp"
 
 #include <unordered_map>
 
@@ -27,11 +27,11 @@ using string_shm = basic_string_t <char,std::char_traits,allocator>;
 template <typename K, typename V, typename KH = std::hash<K>, typename KEq = std::equal_to<K> >
 using unordered_map_shm = std::unordered_map<K, V, KH, KEq, allocator<std::pair<const K, V>> >;
 
-template<typename K>
-using unique_ptr_shm = typename managed_unique_ptr<K,manager>::type;
+template<typename K,typename Manager>
+using unique_ptr_shm = typename managed_unique_ptr<K,Manager>::type;
 
-template<class T>
-using make_unique_ptr_shm = make_managed_unique_ptr<T,manager>;
+/// template<class T>
+/// using make_unique_ptr_shm = make_managed_unique_ptr<T,manager>;
 
 
 template<class T>
@@ -61,5 +61,8 @@ public:
 
 
 private:
-    unique_ptr_shm<T> data_;
+    unique_ptr_shm<T,manager> data_;
 };
+
+
+using field_base_shm = basic_field<allocator,unique_ptr_shm>;

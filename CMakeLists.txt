@@ -43,6 +43,7 @@ endif(CCACHE_FOUND)
 #ccahe
 #############################################################################################
 
+include_directories(header)
 
 
 list(APPEND ${PROJECT_NAME}_HEADERS

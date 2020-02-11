@@ -38,6 +38,7 @@ private:
     boost::container::map<std::string,std::size_t> index_;
 };
 
+template< template <typename A> class Allocator>
 class table_view final {
 
 };
@@ -55,12 +56,12 @@ class record_view final {
 };
 
 
-template<class Allocator>
+template< template <typename A> class Allocator>
 class collection {
 public:
     using iterator = storage_base_t::iterator;
 
-    collection(Allocator&allocator_t, schema_t current_schema) : schema_(std::move(current_schema)) {}
+    collection(schema_t current_schema) : schema_(std::move(current_schema)) {}
 
     row_t &row(std::size_t index) {
         return storage_.at(index);
@@ -70,13 +71,18 @@ public:
         return storage_.at(index);
     }
 
+    template <template <typename T> class OAllocator>
+    void  batch_write(table_view<OAllocator>){
+
+    }
+
     const schema_t &schema() const { return schema_; }
 
     const field_base& field(std::size_t i) const { return schema_.field(i); }
 
-    table_view Slice(int64_t offset, int64_t length) { }
+    ///table_view Slice(int64_t offset, int64_t length) { }
 
-    table_view Slice(int64_t offset) const { return Slice(offset, num_rows_); }
+    ///table_view Slice(int64_t offset) const { return Slice(offset, num_rows_); }
 
     int num_columns() const { return schema_.storage_.size(); }
 
@@ -84,7 +90,8 @@ public:
 
 private:
     schema_t schema_;
-    Allocator& allocator_;
     storage_base_t storage_;
-    int64_t num_rows_{};
+    int64_t num_rows_;
 };
+
+using in_memory_collection = collection<std::allocator>;

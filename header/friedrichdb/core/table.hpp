@@ -7,18 +7,29 @@
 
 #include "field_base.hpp"
 
+template< template<typename P> class Allocator >
 struct field final {
-    boost::interprocess::string  uuid;
+    using string_t  = basic_string_t<char,std::char_traits,Allocator>;
+    string_t  uuid;
     field_base base_;
 };
 
-using row_t = boost::interprocess::vector<field>;
-using storage_base_t = boost::interprocess::vector<row_t>;
+template< template<typename P> class Allocator >
+using basic_row_t = basic_vector_t<field<Allocator>,Allocator>;
 
-class schema_t final {
+template< template<typename P> class Allocator >
+using basic_storage_base_t = basic_vector_t<basic_row_t<Allocator>,Allocator>;
+
+template< template<typename P> class Allocator >
+class basic_schema_t final {
 public:
-    using storage_t = boost::interprocess::vector<field_type>;
-    using iterator =  typename  storage_t::iterator;
+    using name_t  = basic_string_t<char,std::char_traits,Allocator>;
+    using index_t  = basic_map_t<
+            name_t,
+            std::size_t,
+            std::less<>,
+            Allocator<std::pair<const name_t,std::size_t>>
+    >;
 
     const field_type& field(std::size_t index) const {
         return storage_.at(index);
@@ -34,8 +45,8 @@ public:
     }
 
 private:
-    boost::interprocess::vector<field_type> storage_;
-    boost::container::map<std::string,std::size_t> index_;
+    basic_vector_t<field_type,Allocator> storage_;
+    index_t index_;
 };
 
 template< template <typename A> class Allocator>
@@ -59,7 +70,9 @@ class record_view final {
 template< template <typename A> class Allocator>
 class collection {
 public:
-    using iterator = storage_base_t::iterator;
+    using schema_t  = basic_schema_t<Allocator>;
+    using row_t = basic_row_t<Allocator>;
+    using storage_base_t = basic_storage_base_t<Allocator>;
 
     collection(schema_t current_schema) : schema_(std::move(current_schema)) {}
 
@@ -71,8 +84,13 @@ public:
         return storage_.at(index);
     }
 
-    template <template <typename T> class OAllocator>
-    void  batch_write(table_view<OAllocator>){
+    template <template <typename T> class OtherAllocator>
+    void  batch_write(table_view<OtherAllocator>){
+
+    }
+
+    template <template <typename T> class OtherAllocator>
+    void  batch_read(table_view<OtherAllocator>){
 
     }
 

@@ -41,6 +41,9 @@ public:
             Allocator<std::pair<const name_t,std::size_t>>
     >;
 
+    basic_schema_t() = default;
+
+
     template<class Iterator>
     basic_schema_t(Iterator begin,Iterator end) {
         for(;begin!=end;++begin){
@@ -100,7 +103,7 @@ public:
     using storage_base_t = basic_storage_base_t<Allocator>;
 
     template< template <typename A> class OtherAllocator>
-    collection(basic_schema_t<OtherAllocator> current_schema) : schema_(std::move(current_schema)) {}
+    collection(basic_schema_t<OtherAllocator> current_schema) : schema_(current_schema.begin(),current_schema.end()) {}
 
     row_t &row(std::size_t index) {
         return storage_.at(index);

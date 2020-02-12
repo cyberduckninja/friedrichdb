@@ -33,12 +33,12 @@ class basic_schema_t final {
 public:
     using storage_t = basic_vector_t<field_metadata<Allocator>,Allocator>;
     using iterator = typename storage_t::iterator;
-    using name_t  = basic_string_t<char,std::char_traits,Allocator>;
+    using string_t  = basic_string_t<char,std::char_traits,Allocator>;
     using index_t  = basic_map_t<
-            name_t,
+            string_t,
             std::size_t,
             std::less<>,
-            Allocator<std::pair<const name_t,std::size_t>>
+            Allocator<std::pair<const string_t,std::size_t>>
     >;
 
     basic_schema_t() = default;
@@ -46,9 +46,7 @@ public:
 
     template<class Iterator>
     basic_schema_t(Iterator begin,Iterator end) {
-        for(;begin!=end;++begin){
-            push(begin()->name_,begin()->type_);
-        }
+
     }
 
     const field_type& field(std::size_t index) const {
@@ -59,7 +57,13 @@ public:
         return storage_.at(index_.at(index));
     }
 
-    void push(const std::string&name, field_type type   ) {
+    template<class Iterator>
+    void push(Iterator begin,Iterator end) {
+        storage_.emplace_back({name,type});
+        index_.emplace(name,storage_.size());
+    }
+
+    void push(const string_t&name, field_type type   ) {
         storage_.emplace_back({name,type});
         index_.emplace(name,storage_.size());
     }

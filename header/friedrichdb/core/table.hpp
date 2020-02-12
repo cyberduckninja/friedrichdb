@@ -23,6 +23,7 @@ using basic_storage_base_t = basic_vector_t<basic_row_t<Allocator>,Allocator>;
 template< template<typename P> class Allocator >
 class basic_schema_t final {
 public:
+    using storage_t = basic_vector_t<field_type,Allocator>;
     using name_t  = basic_string_t<char,std::char_traits,Allocator>;
     using index_t  = basic_map_t<
             name_t,
@@ -45,7 +46,7 @@ public:
     }
 
 private:
-    basic_vector_t<field_type,Allocator> storage_;
+    storage_t storage_;
     index_t index_;
 };
 
@@ -74,7 +75,8 @@ public:
     using row_t = basic_row_t<Allocator>;
     using storage_base_t = basic_storage_base_t<Allocator>;
 
-    collection(schema_t current_schema) : schema_(std::move(current_schema)) {}
+    template< template <typename A> class OtherAllocator>
+    collection(basic_schema_t<OtherAllocator> current_schema) : schema_(std::move(current_schema)) {}
 
     row_t &row(std::size_t index) {
         return storage_.at(index);

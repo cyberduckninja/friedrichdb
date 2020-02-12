@@ -100,6 +100,21 @@ class record_view final {
 
 };
 
+enum class join_type {
+    left
+
+};
+
+template< template <typename A> class Allocator>
+class collection ;
+
+template< template <typename A> class Allocator1,template <typename A> class Allocator2>
+auto left_join(collection<Allocator1>&c1, collection<Allocator2>&c2) -> void {
+
+}
+
+
+
 
 template< template <typename A> class Allocator>
 class collection final {
@@ -110,6 +125,23 @@ public:
 
     template< template <typename A> class OtherAllocator>
     collection(basic_schema_t<OtherAllocator>& current_schema) : schema_(current_schema.begin(),current_schema.end()) {}
+
+
+    template<template<typename A> class OtherAllocator>
+    void update(
+            const collection<OtherAllocator> &other,
+            join_type join = join_type::left,
+            bool overwrite = true){ ///, filter_func=None, errors='ignore'))
+
+        switch(join){
+
+            case join_type::left:
+                left_join(this,other);
+                break;
+        }
+
+    }
+
 
     row_t &row(std::size_t index) {
         return storage_.at(index);

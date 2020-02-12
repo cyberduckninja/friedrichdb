@@ -4,7 +4,8 @@
 #include <nlohmann/json.hpp>
 int main() {
     basic_schema_t<std::allocator> schema;
-    schema.push("1",field_type::boolean);
+    schema.push("hahahahaha",field_type::boolean);
+    assert(schema.begin()->type_ == field_type::boolean);
     collection<std::allocator> c(schema);
 
 

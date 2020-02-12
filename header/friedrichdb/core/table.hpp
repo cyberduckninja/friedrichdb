@@ -18,6 +18,9 @@ struct field final {
 template< template<typename P> class Allocator >
 struct field_metadata final {
     using string_t  = basic_string_t<char,std::char_traits,Allocator>;
+
+    field_metadata(const string_t &name, field_type type) : name_(name), type_(type) {}
+
     string_t  name_;
     field_type type_;
 };
@@ -46,7 +49,12 @@ public:
 
     template<class Iterator>
     basic_schema_t(Iterator begin,Iterator end) {
-
+        storage_.insert(storage_.cend(),begin,end);
+        int index = 0;
+        for(auto&i:storage_ ){
+            index_.emplace(i.name_,index);
+            ++index;
+        }
     }
 
     const field_type& field(std::size_t index) const {
@@ -57,14 +65,8 @@ public:
         return storage_.at(index_.at(index));
     }
 
-    template<class Iterator>
-    void push(Iterator begin,Iterator end) {
-        storage_.emplace_back({name,type});
-        index_.emplace(name,storage_.size());
-    }
-
     void push(const string_t&name, field_type type   ) {
-        storage_.emplace_back({name,type});
+        storage_.emplace_back( name,type);
         index_.emplace(name,storage_.size());
     }
 

@@ -103,7 +103,7 @@ public:
     using storage_base_t = basic_storage_base_t<Allocator>;
 
     template< template <typename A> class OtherAllocator>
-    collection(basic_schema_t<OtherAllocator> current_schema) : schema_(current_schema.begin(),current_schema.end()) {}
+    collection(basic_schema_t<OtherAllocator>& current_schema) : schema_(current_schema.begin(),current_schema.end()) {}
 
     row_t &row(std::size_t index) {
         return storage_.at(index);

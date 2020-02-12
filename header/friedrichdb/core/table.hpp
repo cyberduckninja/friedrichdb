@@ -14,6 +14,14 @@ struct field final {
     field_base base_;
 };
 
+
+template< template<typename P> class Allocator >
+struct field_metadata final {
+    using string_t  = basic_string_t<char,std::char_traits,Allocator>;
+    string_t  name_;
+    field_type type_;
+};
+
 template< template<typename P> class Allocator >
 using basic_row_t = basic_vector_t<field<Allocator>,Allocator>;
 
@@ -23,7 +31,8 @@ using basic_storage_base_t = basic_vector_t<basic_row_t<Allocator>,Allocator>;
 template< template<typename P> class Allocator >
 class basic_schema_t final {
 public:
-    using storage_t = basic_vector_t<field_type,Allocator>;
+    using storage_t = basic_vector_t<field_metadata<Allocator>,Allocator>;
+    using iterator = typename storage_t::iterator;
     using name_t  = basic_string_t<char,std::char_traits,Allocator>;
     using index_t  = basic_map_t<
             name_t,
@@ -31,6 +40,13 @@ public:
             std::less<>,
             Allocator<std::pair<const name_t,std::size_t>>
     >;
+
+    template<class Iterator>
+    basic_schema_t(Iterator begin,Iterator end) {
+        for(;begin!=end;++begin){
+            push(begin()->name_,begin()->type_);
+        }
+    }
 
     const field_type& field(std::size_t index) const {
         return storage_.at(index);
@@ -41,8 +57,16 @@ public:
     }
 
     void push(const std::string&name, field_type type   ) {
-        storage_.emplace_back(type);
+        storage_.emplace_back({name,type});
         index_.emplace(name,storage_.size());
+    }
+
+    auto begin() -> iterator {
+        storage_.begin();
+    }
+
+    auto end() -> iterator {
+        storage_.end();
     }
 
 private:
@@ -69,7 +93,7 @@ class record_view final {
 
 
 template< template <typename A> class Allocator>
-class collection {
+class collection final {
 public:
     using schema_t  = basic_schema_t<Allocator>;
     using row_t = basic_row_t<Allocator>;

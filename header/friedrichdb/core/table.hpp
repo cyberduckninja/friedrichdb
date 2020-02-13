@@ -109,7 +109,11 @@ template< template <typename A> class Allocator>
 class collection ;
 
 template< template <typename A> class Allocator1,template <typename A> class Allocator2>
-auto left_join(collection<Allocator1>&c1, collection<Allocator2>&c2) -> void {
+auto left_join(
+        std::vector<std::string>&key,
+        const collection<Allocator1>&c1,
+        const collection<Allocator2>&c2) -> void {
+
 
 }
 
@@ -132,11 +136,11 @@ public:
             const collection<OtherAllocator> &other,
             join_type join = join_type::left,
             bool overwrite = true){ ///, filter_func=None, errors='ignore'))
-
+        std::vector<std::string> key;
         switch(join){
 
             case join_type::left:
-                left_join(this,other);
+                left_join(key,this,other);
                 break;
         }
 

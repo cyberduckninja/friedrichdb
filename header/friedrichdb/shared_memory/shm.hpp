@@ -17,7 +17,10 @@ template<typename T>
 using allocator = bip::allocator<T, manager>;
 
 template <class Key, class T>
-using map_shm = basic_map_t <Key,T,std::less<Key>,allocator<T>>;
+using map_shm = basic_map_t <Key,T,std::less<>,allocator<T>>;
+
+template <typename T>
+using list_shm = boost::container::list<T,allocator<T>>;
 
 template <class T>
 using vector_shm = basic_vector_t<T,allocator>;
@@ -66,3 +69,10 @@ private:
 
 
 using field_base_shm = basic_field<allocator,unique_ptr_shm>;
+
+class big_object final {};
+
+class database_shm final {
+private:
+    list_shm<big_object> storage_;
+};

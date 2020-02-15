@@ -1,25 +1,43 @@
 #pragma once
 
-#include <friedrichdb/abstract_collection.hpp>
-#include <friedrichdb/query_scheduler.hpp>
-#include <friedrichdb/database.hpp>
+#include <memory>
+#include <unordered_map>
+#include <list>
 
 namespace friedrichdb { namespace in_memory {
 
-        class in_memory_database final : public abstract_database {
-        public:
+        struct collection final {
 
-            in_memory_database();
+        };
 
-            ~in_memory_database();
-
-            auto apply(query&&) -> output_query override ;
+        struct view_collection final {
+            view_collection(collection*ptr):ptr_(ptr){}
 
         private:
-            auto remove_collection(operation)              -> output_operation;
-            auto create_collection(const std::string&name) -> abstract_collection*;
-            auto find_collection(const std::string&name)   -> std::pair<bool,abstract_collection*>;
-            std::unordered_map<std::string, std::unique_ptr<abstract_collection>> tables_;
+            collection* ptr_;
+        };
+
+        struct options {
+            std::string name_;
+        };
+
+
+        class database final {
+        public:
+            auto remove(const std::string&){}
+
+            auto create(const options& o) -> void{
+                storage_.emplace_back();
+                name_to_idx_.emplace(o.name_,storage_.size());
+            }
+
+            auto find(const std::string&name)   -> view_collection {
+
+            }
+
+        private:
+            std::list<std::unique_ptr<collection>> storage_;
+            std::unordered_map<std::string,std::size_t> name_to_idx_;
         };
 
     }

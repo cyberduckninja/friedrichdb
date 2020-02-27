@@ -73,10 +73,7 @@ list(APPEND ${PROJECT_NAME}_HEADERS
         header/friedrichdb/core/table.hpp
         header/friedrichdb/core/type.hpp
 
-        header/friedrichdb/in-memory/in_memory_collection.hpp
         header/friedrichdb/in-memory/in_memory_database.hpp
-        header/friedrichdb/in-memory/in_memory_table.hpp
-        header/friedrichdb/in-memory/document.hpp
 
         header/friedrichdb/shared_memory/shm.hpp
         header/friedrichdb/shared_memory/node_allocator.hpp

@@ -99,8 +99,10 @@ namespace friedrichdb { namespace core {
         template<template<typename A> class Allocator>
         class collection;
 
-        template<template<typename A> class Allocator1,
-                template<typename A> class Allocator2>
+        template<
+                template<typename A>class Allocator1,
+                template<typename A> class Allocator2
+        >
         auto left_join(
                 std::vector<std::string> &key,
                 const collection<Allocator1> &c1,
@@ -118,22 +120,25 @@ namespace friedrichdb { namespace core {
             using storage_base_t = basic_storage_base_t<Allocator>;
 
             template<template<typename A> class OtherAllocator>
-            collection(basic_schema_t<OtherAllocator> &current_schema) : schema_(current_schema.begin(),
-                                                                                 current_schema.end()) {}
+            collection(basic_schema_t<OtherAllocator> &current_schema)
+                : schema_(current_schema.begin(), current_schema.end()) {}
 
 
             template<template<typename A> class OtherAllocator>
             void update(
                     const collection<OtherAllocator> &other,
                     join_type join = join_type::left,
-                    bool overwrite = true) { ///, filter_func=None, errors='ignore'))
+                    bool overwrite = true
+            ) { ///, filter_func=None, errors='ignore'))
                 std::vector<std::string> key;
                 switch (join) {
-
                     case join_type::left:
                         left_join(key, this, other);
                         break;
                 }
+
+
+
 
             }
 

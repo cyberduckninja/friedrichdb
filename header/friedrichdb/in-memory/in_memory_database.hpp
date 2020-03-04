@@ -17,21 +17,32 @@ namespace friedrichdb { namespace in_memory {
             collection* ptr_;
         };
 
-        struct options {
+        struct create_options {
             std::string name_;
         };
 
+        struct remove_options final {};
+
+        struct  find_options final {};
+
+        struct database_options final {};
 
         class database final {
         public:
-            auto remove(const std::string&){}
+            database(const database_options&o ){
 
-            auto create(const options& o) -> void{
+            }
+
+            auto remove(const remove_options&o) -> void {
+
+            }
+
+            auto create(const create_options& o) -> void {
                 storage_.emplace_back();
                 name_to_idx_.emplace(o.name_,storage_.size());
             }
 
-            auto find(const std::string&name)   -> view_collection {
+            auto find(const find_options&o)   -> view_collection {
 
             }
 
@@ -40,6 +51,5 @@ namespace friedrichdb { namespace in_memory {
             std::unordered_map<std::string,std::size_t> name_to_idx_;
         };
 
-    }
-}
+}}
 

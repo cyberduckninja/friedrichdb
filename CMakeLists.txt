@@ -70,10 +70,11 @@ include_directories(header)
 list(APPEND ${PROJECT_NAME}_HEADERS
 
         header/friedrichdb/core/field_base.hpp
+        header/friedrichdb/core/options.hpp
         header/friedrichdb/core/table.hpp
         header/friedrichdb/core/type.hpp
 
-        header/friedrichdb/in-memory/in_memory_database.hpp
+        header/friedrichdb/in-memory/database.hpp
 
         header/friedrichdb/shared_memory/shm.hpp
         header/friedrichdb/shared_memory/node_allocator.hpp
@@ -82,7 +83,7 @@ list(APPEND ${PROJECT_NAME}_HEADERS
 
 list(APPEND ${PROJECT_NAME}_SOURCES
         sourcer/in-memory/in_memory_collection.cpp
-        sourcer/in-memory/in_memory_database.cpp
+        sourcer/in-memory/database.cpp
 )
 
 add_subdirectory(test)

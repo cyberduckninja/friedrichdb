@@ -9,7 +9,7 @@
 #include <friedrichdb/database.hpp>
 #include <friedrichdb/journal.hpp>
 #include <friedrichdb/query_scheduler.hpp>
-#include <friedrichdb/in-memory/in_memory_database.hpp>
+#include <friedrichdb/in-memory/database.hpp>
 
 /// run - time
 namespace friedrichdb {

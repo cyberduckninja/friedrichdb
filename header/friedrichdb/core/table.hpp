@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <memory>
+#include <algorithm>
 
 #include <boost/container/static_vector.hpp>
 
@@ -90,18 +91,6 @@ namespace friedrichdb { namespace core {
 
         };
 
-        class column_view final {
-
-        };
-
-        class document_view final {
-
-        };
-
-        class record_view final {
-
-        };
-
         enum class join_type {
             left
 
@@ -185,5 +174,4 @@ namespace friedrichdb { namespace core {
             int64_t num_rows_;
         };
 
-        using in_memory_collection = collection<std::allocator>;
 }}

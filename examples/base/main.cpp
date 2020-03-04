@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <friedrichdb/database.hpp>
-#include <friedrichdb/in-memory/in_memory_database.hpp>
+#include <friedrichdb/in-memory/database.hpp>
 #include <friedrichdb/fake_file_storage.hpp>
 #include <friedrichdb/query.hpp>
 #include <friedrichdb/controller.hpp>

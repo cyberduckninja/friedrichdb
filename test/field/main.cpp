@@ -1,6 +1,8 @@
 #include <iostream>
-#include "../../header/friedrichdb/core/field_base.hpp"
-#include <nlohmann/json.hpp>
+#include "friedrichdb/core/field_base.hpp"
+
+using namespace friedrichdb::core;
+
 int main() {
 
     field_base boolean(true);

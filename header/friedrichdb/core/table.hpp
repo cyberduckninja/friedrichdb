@@ -99,7 +99,10 @@ namespace friedrichdb { namespace core {
         using empty_basic_schema_t = basic_schema_t<Allocator>;
 
         enum class join_type {
-            left
+          left,
+          right,
+          inner,
+          full_outer
 
         };
 
@@ -137,6 +140,7 @@ namespace friedrichdb { namespace core {
                     bool overwrite = true
             ) { ///, filter_func=None, errors='ignore'))
                 std::vector<std::string> key;
+
                 switch (join) {
                     case join_type::left:
                         left_join(key, this, other);

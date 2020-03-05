@@ -44,19 +44,17 @@ public:
   }
 
   template <typename... Args>
-  auto create(const core::collection_create_options &options, Args... args)
-      -> view_collection {
+  auto create(const core::collection_constructor_options &options, Args... args) -> view_collection {
     storage_.emplace_back(new collection(std::forward<Args>(args)...));
-    auto result = name_to_idx_.emplace(options.name_, storage_.size());
+    auto result = name_to_idx_.emplace(options.name_, storage_.size()-1);
     auto it = storage_.begin();
     std::advance(it, result.first->second);
     return it->get();
   }
 
-  auto create(const core::collection_create_options &options)
-      -> view_collection {
+  auto create(const core::collection_constructor_options &options) -> view_collection {
     storage_.emplace_back(new collection(empty_schema_t()));
-    auto result = name_to_idx_.emplace(options.name_, storage_.size());
+    auto result = name_to_idx_.emplace(options.name_, storage_.size()-1);
     auto it = storage_.begin();
     std::advance(it, result.first->second);
     return it->get();

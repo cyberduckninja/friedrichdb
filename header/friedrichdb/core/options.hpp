@@ -5,7 +5,7 @@
 
 namespace friedrichdb { namespace core {
 
-        struct collection_create_options final {
+        struct collection_constructor_options final {
             std::string name_;
         };
 

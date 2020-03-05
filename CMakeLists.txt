@@ -71,7 +71,7 @@ list(APPEND ${PROJECT_NAME}_HEADERS
 
         header/friedrichdb/core/field_base.hpp
         header/friedrichdb/core/options.hpp
-        header/friedrichdb/core/table.hpp
+        header/friedrichdb/core/collection.hpp
         header/friedrichdb/core/type.hpp
 
         header/friedrichdb/in-memory/database.hpp

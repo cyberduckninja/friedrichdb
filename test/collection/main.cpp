@@ -1,6 +1,6 @@
-#include <iostream>
-#include "friedrichdb/core/table.hpp"
+#include "friedrichdb/core/collection.hpp"
 #include "friedrichdb/core/field_base.hpp"
+#include <iostream>
 
 using namespace friedrichdb::core;
 

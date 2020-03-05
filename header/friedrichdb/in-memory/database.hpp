@@ -5,11 +5,11 @@
 #include <map>
 #include <memory>
 #include <iostream>
-
 #include <unordered_map>
+
+#include <friedrichdb/core/collection.hpp>
 #include <friedrichdb/core/field_base.hpp>
 #include <friedrichdb/core/options.hpp>
-#include <friedrichdb/core/table.hpp>
 
 namespace friedrichdb { namespace in_memory {
 

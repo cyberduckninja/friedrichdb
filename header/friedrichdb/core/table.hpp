@@ -39,6 +39,7 @@ namespace friedrichdb { namespace core {
         public:
             using storage_t = basic_vector_t<field_metadata<Allocator>, Allocator>;
             using iterator = typename storage_t::iterator;
+            using const_iterator = typename storage_t::const_iterator;
             using string_t  = basic_string_t<char, std::char_traits, Allocator>;
             using index_t  = basic_map_t<
                     string_t,
@@ -81,15 +82,21 @@ namespace friedrichdb { namespace core {
                 return storage_.end();
             }
 
+          auto begin() const -> const_iterator {
+            return storage_.begin();
+          }
+
+          auto end() const -> const_iterator {
+            return storage_.end();
+          }
+
         private:
             storage_t storage_;
             index_t index_;
         };
 
-        template<template<typename A> class Allocator>
-        class table_view final {
-
-        };
+        template<template<typename P> class Allocator>
+        using empty_basic_schema_t = basic_schema_t<Allocator>;
 
         enum class join_type {
             left
@@ -120,9 +127,8 @@ namespace friedrichdb { namespace core {
             using storage_base_t = basic_storage_base_t<Allocator>;
 
             template<template<typename A> class OtherAllocator>
-            collection(basic_schema_t<OtherAllocator> &current_schema)
+            collection(const basic_schema_t<OtherAllocator>& current_schema)
                 : schema_(current_schema.begin(), current_schema.end()) {}
-
 
             template<template<typename A> class OtherAllocator>
             void update(
@@ -149,16 +155,6 @@ namespace friedrichdb { namespace core {
 
             const row_t &row(std::size_t index) const {
                 return storage_.at(index);
-            }
-
-            template<template<typename T> class OtherAllocator>
-            void batch_write(table_view<OtherAllocator>) {
-
-            }
-
-            template<template<typename T> class OtherAllocator>
-            void batch_read(table_view<OtherAllocator>) {
-
             }
 
             const schema_t &schema() const { return schema_; }

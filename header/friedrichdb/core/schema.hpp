@@ -1,15 +1,21 @@
 #pragma once
 
-#include "basic_field.hpp"
+#include <friedrichdb/core/basic_field.hpp>
+#include <friedrichdb/core/field.hpp>
 
 namespace friedrichdb { namespace core {
 
-template <template <typename P> class Allocator> class basic_schema_t final {
+template <
+    template <typename P> class Allocator,
+    template <typename P,class D> class UniquePtr
+>
+class basic_schema_t final {
 public:
-  using storage_t = basic_vector_t<field_metadata<Allocator>, Allocator>;
+  using field_metadata = field_metadata<Allocator,UniquePtr>;
+  using storage_t = basic_vector_t<field_metadata, Allocator>;
   using iterator = typename storage_t::iterator;
   using const_iterator = typename storage_t::const_iterator;
-  using string_t = basic_string_t<char, std::char_traits, Allocator>;
+  using string_t = typename field_metadata::string_t ;
   using index_t =
       basic_map_t<
           string_t,
@@ -55,7 +61,7 @@ private:
   index_t index_;
 };
 
-template<template<typename P> class Allocator>
-using empty_basic_schema_t = basic_schema_t<Allocator>;
+template<template<typename P> class Allocator,template <typename P,class D> class UniquePtr>
+using empty_basic_schema_t = basic_schema_t<Allocator,UniquePtr>;
 
 }}

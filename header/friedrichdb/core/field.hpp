@@ -1,18 +1,27 @@
 #pragma once
-#include "friedrichdb/core/type.hpp"
+
+#include "basic_field.hpp"
 
 namespace friedrichdb { namespace core {
 
-template <template <typename P> class Allocator>
+template<
+    template <typename P> class Allocator,
+    template <typename P,class D> class UniquePtr
+>
 struct field final {
-  using string_t = basic_string_t<char, std::char_traits, Allocator>;
+  using field_t = basic_field<Allocator, UniquePtr>;
+  using string_t = typename field_t::string_t ;
   string_t uuid;
-  field_base base_;
+  field_t base_;
 };
 
-template <template <typename P> class Allocator>
+template <
+    template <typename P> class Allocator,
+    template <typename P,class D> class UniquePtr
+>
 struct field_metadata final {
-  using string_t = basic_string_t<char, std::char_traits, Allocator>;
+  using field_t = basic_field<Allocator, UniquePtr>;
+  using string_t = typename field_t::string_t ;
 
   field_metadata(const string_t &name, field_type type)
       : name_(name), type_(type) {}

@@ -4,7 +4,6 @@
 #include <boost/interprocess/containers/map.hpp>
 #include <boost/interprocess/containers/vector.hpp>
 #include <boost/interprocess/containers/string.hpp>
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 namespace friedrichdb { namespace core {
 
@@ -24,6 +23,4 @@ namespace friedrichdb { namespace core {
         template<class Key, class T, class Compare, class Allocator>
         using basic_map_t = boost::container::map<Key, T, Compare, Allocator>;
 
-        template<class T, class D = boost::movelib::default_delete<T> >
-        using unique_ptr_t =  boost::interprocess::unique_ptr<T, D>;
     }}

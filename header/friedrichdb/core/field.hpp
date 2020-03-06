@@ -1,5 +1,5 @@
 #pragma once
-#include "type.hpp"
+#include "friedrichdb/core/type.hpp"
 
 namespace friedrichdb { namespace core {
 

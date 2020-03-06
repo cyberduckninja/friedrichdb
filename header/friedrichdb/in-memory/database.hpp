@@ -7,11 +7,19 @@
 #include <iostream>
 #include <unordered_map>
 
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+
 #include <friedrichdb/core/basic_field.hpp>
 #include <friedrichdb/core/collection.hpp>
 #include <friedrichdb/core/options.hpp>
 
+
 namespace friedrichdb { namespace in_memory {
+
+template<class T, class D = boost::movelib::default_delete<T> >
+using unique_ptr_t =  boost::interprocess::unique_ptr<T, D>;
+
+using field_base = basic_field<std::allocator, unique_ptr_t>;
 
 using collection = core::collection<std::allocator>;
 

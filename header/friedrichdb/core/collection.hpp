@@ -7,7 +7,6 @@
 #include <boost/container/static_vector.hpp>
 
 #include "basic_field.hpp"
-#include "field.hpp"
 
 namespace friedrichdb { namespace core {
 

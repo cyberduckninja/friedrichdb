@@ -1,7 +1,14 @@
 #include "friedrichdb/core/basic_field.hpp"
+#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include <boost/move/unique_ptr.hpp>
 #include <iostream>
 
 using namespace friedrichdb::core;
+
+template<class T, class D = boost::movelib::default_delete<T> >
+using unique_ptr_t =  boost::interprocess::unique_ptr<T, D>;
+
+using field_base = basic_field<std::allocator, unique_ptr_t>;
 
 int main() {
 

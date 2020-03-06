@@ -1,7 +1,6 @@
 #pragma once
 
 #include "basic_field.hpp"
-#include "field.hpp"
 
 namespace friedrichdb { namespace core {
 

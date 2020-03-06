@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include <boost/move/default_delete.hpp>
+
 #include "type.hpp"
 
 namespace friedrichdb { namespace core {
@@ -700,5 +702,4 @@ namespace friedrichdb { namespace core {
 
         };
 
-        using field_base = basic_field<std::allocator, unique_ptr_t>;
     }}

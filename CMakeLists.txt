@@ -69,9 +69,10 @@ include_directories(header)
 
 list(APPEND ${PROJECT_NAME}_HEADERS
 
-        header/friedrichdb/core/field_base.hpp
-        header/friedrichdb/core/options.hpp
+        header/friedrichdb/core/basic_field.hpp
         header/friedrichdb/core/collection.hpp
+        header/friedrichdb/core/options.hpp
+        header/friedrichdb/core/schema.hpp
         header/friedrichdb/core/type.hpp
 
         header/friedrichdb/in-memory/database.hpp
@@ -88,7 +89,7 @@ list(APPEND ${PROJECT_NAME}_SOURCES
 
 add_subdirectory(test)
 
-add_library(${PROJECT_NAME} ${${project}_HEADERS} ${${project}_SOURCES})
+add_library(${PROJECT_NAME} ${${project}_HEADERS} ${${project}_SOURCES} )
 #set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CONAN})

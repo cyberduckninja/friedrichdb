@@ -3,7 +3,7 @@
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/container/list.hpp>
 
-#include "friedrichdb/core/field_base.hpp"
+#include "friedrichdb/core/basic_field.hpp"
 
 #include <unordered_map>
 

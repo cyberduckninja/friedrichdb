@@ -7,8 +7,8 @@
 #include <iostream>
 #include <unordered_map>
 
+#include <friedrichdb/core/basic_field.hpp>
 #include <friedrichdb/core/collection.hpp>
-#include <friedrichdb/core/field_base.hpp>
 #include <friedrichdb/core/options.hpp>
 
 namespace friedrichdb { namespace in_memory {

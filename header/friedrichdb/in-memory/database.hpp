@@ -21,7 +21,7 @@ using unique_ptr_t =  boost::interprocess::unique_ptr<T, D>;
 
 using collection = core::collection<std::allocator,unique_ptr_t>;
 
-using empty_schema_t = core::empty_basic_schema_t<std::allocator>;
+using empty_schema_t = core::empty_basic_schema_t<std::allocator,unique_ptr_t>;
 
 struct view_collection final {
   view_collection(collection *ptr) : ptr_(ptr) {}

@@ -11,11 +11,11 @@ template <
 >
 class basic_schema_t final {
 public:
-  using field_metadata = field_metadata<Allocator,UniquePtr>;
-  using storage_t = basic_vector_t<field_metadata, Allocator>;
+  using field_metadata_t = field_metadata<Allocator,UniquePtr>;
+  using storage_t = basic_vector_t<field_metadata_t, Allocator>;
   using iterator = typename storage_t::iterator;
   using const_iterator = typename storage_t::const_iterator;
-  using string_t = typename field_metadata::string_t ;
+  using string_t = typename field_metadata_t::string_t ;
   using index_t =
       basic_map_t<
           string_t,

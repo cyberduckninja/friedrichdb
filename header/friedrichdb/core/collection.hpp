@@ -17,7 +17,7 @@ namespace friedrichdb { namespace core {
             template<typename P> class Allocator,
             template <typename P,class D> class UniquePtr
         >
-        using basic_row_t = basic_vector_t<field<Allocator,UniquePtr>, Allocator>;
+        using basic_row_t = basic_vector_t<field_t<Allocator,UniquePtr>, Allocator>;
 
         template<
             template<typename P> class Allocator,

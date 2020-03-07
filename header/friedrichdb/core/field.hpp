@@ -8,11 +8,11 @@ template<
     template <typename P> class Allocator,
     template <typename P,class D> class UniquePtr
 >
-struct field final {
-  using field_t = basic_field<Allocator, UniquePtr>;
-  using string_t = typename field_t::string_t ;
+struct field_t final {
+  using field = basic_field<Allocator, UniquePtr>;
+  using string_t = typename field::string_t ;
   string_t uuid;
-  field_t base_;
+  field base_;
 };
 
 template <

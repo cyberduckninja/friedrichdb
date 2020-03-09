@@ -91,8 +91,7 @@ list(APPEND ${PROJECT_NAME}_HEADERS
 )
 
 list(APPEND ${PROJECT_NAME}_SOURCES
-        sourcer/in-memory/in_memory_collection.cpp
-        sourcer/in-memory/database.cpp
+
 )
 
 add_subdirectory(test)

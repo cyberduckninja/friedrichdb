@@ -77,11 +77,13 @@ list(APPEND ${PROJECT_NAME}_HEADERS
         header/friedrichdb/core/basic_field.hpp
         header/friedrichdb/core/collection.hpp
         header/friedrichdb/core/field.hpp
-        header/friedrichdb/core/join.hpp
         header/friedrichdb/core/number.hpp
         header/friedrichdb/core/options.hpp
         header/friedrichdb/core/schema.hpp
         header/friedrichdb/core/type.hpp
+
+        header/friedrichdb/functions/join.hpp
+        header/friedrichdb/functions/update.hpp
 
         header/friedrichdb/in-memory/database.hpp
 

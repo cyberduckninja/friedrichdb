@@ -9,7 +9,6 @@
 #include "friedrichdb/core/basic_field.hpp"
 #include "friedrichdb/core/field.hpp"
 #include "friedrichdb/core/schema.hpp"
-#include "friedrichdb/core/join.hpp"
 
 namespace friedrichdb { namespace core {
 
@@ -42,36 +41,6 @@ namespace friedrichdb { namespace core {
             >
             collection(const basic_schema_t<OtherAllocator,OtherUniquePtr>& current_schema)
                 : schema_(current_schema.begin(), current_schema.end()) {}
-
-            template<
-                template<typename A> class OtherAllocator,
-                template <typename P,class D> class OtherUniquePtr
-            >
-            void update(
-                    const collection<OtherAllocator,OtherUniquePtr> &other,
-                    join_type join = join_type::left,
-                    bool overwrite = true
-            ) { ///, filter_func=None, errors='ignore'))
-                std::vector<std::string> key;
-
-                switch (join) {
-                    case join_type::left:
-                        left_join(key, this, other);
-                        break;
-                    case join_type::right:
-                      break;
-                    case join_type::inner:
-                      break;
-                    case join_type::full_outer:
-                      break;
-                    }
-
-                for(const auto&i:key){
-
-                }
-
-
-            }
 
 
             row_t &row(std::size_t index) {

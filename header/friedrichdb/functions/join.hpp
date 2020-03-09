@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+
+#include "forward.hpp"
 #include <friedrichdb/core/schema.hpp>
 
 namespace friedrichdb { namespace core {
@@ -12,11 +14,7 @@ enum class join_type {
   full_outer
 };
 
-template <
-    template <typename A> class Allocator,
-    template <typename P, class D> class UniquePtr
->
-class collection;
+
 
 template <
     template <typename A> class Allocator1,

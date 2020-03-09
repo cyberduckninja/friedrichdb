@@ -1,4 +1,3 @@
-
 #include <string>
 
 #include <friedrichdb/database.hpp>
@@ -20,6 +19,4 @@ namespace friedrichdb {
     auto database::name() -> const std::string & {
         return name_;
     }
-
-
 }

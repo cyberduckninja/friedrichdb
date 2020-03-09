@@ -7,9 +7,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_compile_options(
-        -v
+option(CONAN_EXPERIMENTAL_INCLUDE "CONAN EXPERIMENT INCLUDE" ON)
 
+add_compile_options(
         -Wall
         -Wextra
         -Wpedantic
@@ -42,6 +42,11 @@ include_directories(${Python3_INCLUDE_DIRS})
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_add_remote(NAME bincrafters INDEX 1 URL https://api.bintray.com/conan/bincrafters/public-conan)
+
+if (CONAN_EXPERIMENTAL_INCLUDE)
+    conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan )
+    set(CONAN_SYSTEM_INCLUDES "On")
+endif ()
 
 conan_cmake_run(
         CONANFILE conanfile.txt

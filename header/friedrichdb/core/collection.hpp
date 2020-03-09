@@ -66,7 +66,7 @@ namespace friedrichdb { namespace core {
                       break;
                     }
 
-                for(;;){
+                for(const auto&i:key){
 
                 }
 

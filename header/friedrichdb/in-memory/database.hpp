@@ -36,16 +36,16 @@ public:
   database() = delete;
   database(const database &) = delete;
 
-  auto remove(const core::collection_remove_options &options) -> void {
+  auto remove(const core::collection_remove_options &options) -> bool {
     auto it = name_to_idx_.find(options.name_);
-
     if (it == name_to_idx_.end()) {
-      std::cerr << "not collection" << std::endl;
+      return false;
     } else {
       auto result = storage_.begin();
       std::advance(result, it->second);
       storage_.erase(result);
       name_to_idx_.erase(it);
+      return true;
     }
   }
 

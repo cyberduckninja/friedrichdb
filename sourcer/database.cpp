@@ -1,31 +1,22 @@
-#include "friedrichdb/database.hpp"
+#include <string>
+
+#include <friedrichdb/database.hpp>
+#include <friedrichdb/query.hpp>
+#include <cassert>
+
 namespace friedrichdb {
 
-    bool database::table(const std::string &name, abstract_table *ptr) {
-        return memory->table(name,ptr);
+
+    database::database(const std::string &name, abstract_database*memory) : name_(name), memory(memory) {
+        assert(memory->type() == storage_type::memory);
     }
 
-    abstract_table *database::table(const std::string &name) {
-        return memory->table(name);
+    database::database(const std::string &name,abstract_database*memory, abstract_database*file) : name_(name), memory(memory), file(file) {
+        assert(memory->type() == storage_type::memory);
+        assert(file->type() == storage_type::disk);
     }
 
-    abstract_table *database::table(const std::string &name) const {
-        return memory->table(name);
+    auto database::name() -> const std::string & {
+        return name_;
     }
-
-    abstract_database::storge_t database::type() const {
-        return memory->type();
-    }
-
-    bool database::table(schema &&) {
-        return false;
-    }
-
-    database::database(abstract_database *memory, abstract_database *file) :abstract_database(storge_t::instance) {
-        assert(memory->type() != storge_t::memory);
-        assert(file->type() != storge_t::disk);
-        this->memory.reset(memory);
-        this->file.reset(file);
-    }
-
 }

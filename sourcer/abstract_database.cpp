@@ -1,13 +1,19 @@
+#include <utility>
+
 #include <friedrichdb/abstract_database.hpp>
+#include <string>
+
 namespace friedrichdb {
 
-    abstract_database::storge_t abstract_database::type() const {
-        return abstract_database::storge_t::instance;
+    storage_type abstract_database::type() const {
+        return type_;
     }
 
-    abstract_database::abstract_database(abstract_database::storge_t type):type_(type) {
+    abstract_database::abstract_database(
+            storage_type type
+    ):
+            type_(type) {
 
     }
-
 
 }

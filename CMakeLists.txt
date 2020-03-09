@@ -1,78 +1,104 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 set(project friedrichdb)
 project(${project} CXX)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-list(APPEND ${project}_HEADERS
+option(CONAN_EXPERIMENTAL_INCLUDE "CONAN EXPERIMENT INCLUDE" ON)
 
-        header/friedrichdb/data_types/object_id.hpp
-        header/friedrichdb/data_types/ordering.h
-        header/friedrichdb/data_types/time.hpp
-        header/friedrichdb/data_types/timestamp.hpp
+add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
 
-        header/friedrichdb/in-memory/in_memory_database.hpp
-        header/friedrichdb/in-memory/table.hpp
-        header/friedrichdb/in-memory/part_manager.hpp
+        -Wcast-align
+        #-Wcast-qual
+        #-Wconversion
+        -Wctor-dtor-privacy
+        -Wenum-compare
+        #-Wfloat-equal
+        -Wnon-virtual-dtor
+        #-Wold-style-cast
+        -Woverloaded-virtual
+        -Wredundant-decls
+        #-Wsign-conversion
+        -Wsign-promo
+)
 
-        header/friedrichdb/index/hash_index.hpp
-        header/friedrichdb/index/unique_hash_index.hpp
+#############################################################################################
+#conan
 
-        header/friedrichdb/objects/boolean.hpp
-        header/friedrichdb/objects/double_tt.hpp
-        header/friedrichdb/objects/object_id.hpp
-        header/friedrichdb/objects/positive_integer.hpp
-        header/friedrichdb/objects/view_t.hpp
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
 
-        header/friedrichdb/abstract_table.hpp
-        header/friedrichdb/composite_key.hpp
-        header/friedrichdb/database.hpp
-        header/friedrichdb/fake_file_storage.hpp
-        header/friedrichdb/schema.hpp
-        header/friedrichdb/tuple_t.hpp
-        header/friedrichdb/type.hpp
-        header/friedrichdb/storage.hpp
-        #header/friedrichdb/transaction.hpp
-        #header/friedrichdb/journal.hpp
-        header/friedrichdb/meta_data_t.hpp
-        #header/friedrichdb/query.hpp
-        header/friedrichdb/field_t.hpp
-        header/friedrichdb/abstract_index.hpp
-        header/friedrichdb/abstract_database.hpp
+find_package(Python3 COMPONENTS Development)
+include_directories(${Python3_INCLUDE_DIRS})
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_add_remote(NAME bincrafters INDEX 1 URL https://api.bintray.com/conan/bincrafters/public-conan)
+
+if (CONAN_EXPERIMENTAL_INCLUDE)
+    conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan )
+    set(CONAN_SYSTEM_INCLUDES "On")
+endif ()
+
+conan_cmake_run(
+        CONANFILE conanfile.txt
+        BASIC_SETUP
+        BUILD missing
+        NO_OUTPUT_DIRS
+)
+
+#conan
+#############################################################################################
+#ccahe
+
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    message(STATUS "Enabling ccache")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
+#ccahe
+#############################################################################################
+
+include_directories(header)
+
+
+list(APPEND ${PROJECT_NAME}_HEADERS
+
+        header/friedrichdb/core/basic_field.hpp
+        header/friedrichdb/core/collection.hpp
+        header/friedrichdb/core/field.hpp
+        header/friedrichdb/core/join.hpp
+        header/friedrichdb/core/number.hpp
+        header/friedrichdb/core/options.hpp
+        header/friedrichdb/core/schema.hpp
+        header/friedrichdb/core/type.hpp
+
+        header/friedrichdb/in-memory/database.hpp
+
+        header/friedrichdb/shared_memory/shm.hpp
+        header/friedrichdb/shared_memory/node_allocator.hpp
 
 )
 
-list(APPEND ${project}_SOURCES
-        sourcer/abstract_index.cpp
-        sourcer/abstract_database.cpp
-        sourcer/data_types/object_id.cpp
-        sourcer/data_types/time.cpp
-        sourcer/data_types/timestamp.cpp
-        sourcer/in-memory/table.cpp
-        sourcer/in-memory/in_memory_database.cpp
-        sourcer/database.cpp
-        sourcer/composite_key.cpp
-        sourcer/field_t.cpp
-        sourcer/schema.cpp
-        sourcer/storage.cpp
-        sourcer/tuple_t.cpp
-        sourcer/type.cpp
+list(APPEND ${PROJECT_NAME}_SOURCES
+        sourcer/in-memory/in_memory_collection.cpp
+        sourcer/in-memory/database.cpp
 )
 
+add_subdirectory(test)
 
-add_library(
-        ${project} STATIC
-        ${${project}_HEADERS}
-        ${${project}_SOURCES}
-)
-
-set_target_properties(${project} PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/header)
-
-target_include_directories(
-        ${project}
-        PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/header
-)
-
-#add_subdirectory(example)
+add_library(${PROJECT_NAME} ${${project}_HEADERS} ${${project}_SOURCES} )
+#set_property(TARGET ${project} PROPERTY EXPORT_NAME ${project})
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/header")
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CONAN})
+add_subdirectory(examples)

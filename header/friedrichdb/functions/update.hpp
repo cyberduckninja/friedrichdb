@@ -1,14 +1,18 @@
 #pragma once
 
-template<
-    template<typename A> class OtherAllocator,
-    template <typename P,class D> class OtherUniquePtr
->
-void update(
-    const collection<OtherAllocator,OtherUniquePtr> &other,
-    join_type join = join_type::left,
-    bool overwrite = true
-) { ///, filter_func=None, errors='ignore'))
+#include <string>
+#include <vector>
+
+#include "forward.hpp"
+#include "join.hpp"
+
+namespace friedrichdb { namespace functions {
+
+template <template <typename A> class OtherAllocator,
+          template <typename P, class D> class OtherUniquePtr>
+void update(const collection<OtherAllocator, OtherUniquePtr> &other,
+            join_type join = join_type::left,
+            bool overwrite = true) { ///, filter_func=None, errors='ignore'))
   std::vector<std::string> key;
 
   switch (join) {
@@ -23,9 +27,11 @@ void update(
     break;
   }
 
-  for(const auto&i:key){
-
+  for (const auto &i : key) {
   }
 
 
 }
+
+
+}}

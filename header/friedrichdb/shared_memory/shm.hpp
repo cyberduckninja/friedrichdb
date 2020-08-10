@@ -5,7 +5,7 @@
 
 #include "friedrichdb/core/basic_field.hpp"
 
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
 
 namespace friedrichdb { namespace shared_memory {
 
@@ -31,7 +31,7 @@ namespace friedrichdb { namespace shared_memory {
         using string_shm = core::basic_string_t<char, std::char_traits, allocator_t>;
 
         template<typename K, typename V, typename KH = std::hash<K>, typename KEq = std::equal_to<K> >
-        using unordered_map_shm = std::unordered_map<K, V, KH, KEq, allocator_t<std::pair<const K, V>>>;
+        using unordered_map_shm = boost::unordered_map<K, V, KH, KEq, allocator_t<std::pair<const K, V>>>;
 
         template<typename K, typename Manager>
         using unique_ptr_shm = typename managed_unique_ptr<K, Manager>::type;
@@ -73,12 +73,24 @@ namespace friedrichdb { namespace shared_memory {
 
         using field_base_shm = core::basic_field<allocator_t, unique_ptr_shm>;
 
-        using  big_object  = map_shm<int,int>;
+        using  big_object  = map_shm<string_shm,vector_shm<uint8_t>>;
+
+        using void_allocator = allocator_t<void>;
 
         class database_shm final {
         public:
-            database_shm() = default;
+            database_shm() = delete;
+            database_shm(const char *name)
+                : segment_(
+                    boost::interprocess::open_or_create,
+                    name,
+                    65536)
+                , allocator(segment_ .get_segment_manager()) {
+
+            }
         private:
-            list_shm<unique_ptr_shm<big_object,manager_t>> storage_;
+            boost::interprocess::managed_shared_memory segment_;
+            void_allocator allocator;
+            ///list_shm<unique_ptr_shm<big_object,manager_t>> storage_;
         };
 }}

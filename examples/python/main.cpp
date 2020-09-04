@@ -35,7 +35,7 @@ json to_json_impl(const py::handle &obj) {
         }
         return out;
     }
-    throw std::runtime_error("to_json not implemented for this type of object: " + obj.cast<std::string>());
+    throw std::runtime_error("to_json not implemented for this type_ of object: " + obj.cast<std::string>());
 }
 
 py::object from_json_impl(const json &j) {

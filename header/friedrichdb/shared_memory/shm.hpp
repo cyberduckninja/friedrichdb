@@ -5,7 +5,7 @@
 
 #include "friedrichdb/core/basic_field.hpp"
 
-#include <boost/unordered_map.hpp>
+
 
 namespace friedrichdb { namespace shared_memory {
 
@@ -26,7 +26,7 @@ namespace friedrichdb { namespace shared_memory {
         using list_shm = boost::container::list<T, allocator_t<T>>;
 
         template<class T>
-        using vector_shm = core::basic_vector_t<T, allocator_t>;
+        using vector_shm = core::basic_vector_t<T,allocator_t>;
 
         using string_shm = core::basic_string_t<char, std::char_traits, allocator_t>;
 

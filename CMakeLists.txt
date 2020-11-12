@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 set(project friedrichdb)
 project(${project} CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -15,16 +15,16 @@ add_compile_options(
         -Wpedantic
 
         -Wcast-align
-        #-Wcast-qual
-        #-Wconversion
+        -Wcast-qual
+        -Wconversion
         -Wctor-dtor-privacy
         -Wenum-compare
-        #-Wfloat-equal
+        -Wfloat-equal
         -Wnon-virtual-dtor
-        #-Wold-style-cast
+        -Wold-style-cast
         -Woverloaded-virtual
         -Wredundant-decls
-        #-Wsign-conversion
+        -Wsign-conversion
         -Wsign-promo
 )
 
@@ -41,10 +41,7 @@ include_directories(${Python3_INCLUDE_DIRS})
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_add_remote(NAME bincrafters INDEX 1 URL https://api.bintray.com/conan/bincrafters/public-conan)
-
 if (CONAN_EXPERIMENTAL_INCLUDE)
-    conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan )
     set(CONAN_SYSTEM_INCLUDES "On")
 endif ()
 
@@ -74,7 +71,6 @@ include_directories(header)
 
 list(APPEND ${PROJECT_NAME}_HEADERS
 
-        header/friedrichdb/core/basic_field.hpp
         header/friedrichdb/core/collection.hpp
         header/friedrichdb/core/field.hpp
         header/friedrichdb/core/number.hpp
@@ -93,7 +89,7 @@ list(APPEND ${PROJECT_NAME}_HEADERS
 )
 
 list(APPEND ${PROJECT_NAME}_SOURCES
-    source/core/dict.cpp
+        source/friedrichdb/core/dict.cpp
 )
 
 add_subdirectory(test)

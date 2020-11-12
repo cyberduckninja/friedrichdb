@@ -9,7 +9,7 @@ namespace friedrichdb {
 
         template<typename TypeIter>
         dict_value dict_value::array_int(TypeIter begin, int size) {
-            dict_value res(type_t::INT, new AutoBuffer<int64_t, 1>(size));
+            dict_value res(type_t::INT, new boost::container::small_vector<int64_t, 1>(size));
             for (int j = 0; j < size; begin++, j++) {
                 (*res.pi)[j] = *begin;
             }
@@ -18,7 +18,7 @@ namespace friedrichdb {
 
         template<typename TypeIter>
         dict_value dict_value::array_real(TypeIter begin, int size) {
-            dict_value res(type_t::REAL, new AutoBuffer<double, 1>(size));
+            dict_value res(type_t::REAL, new boost::container::small_vector<double, 1>(size));
             for (int j = 0; j < size; begin++, j++) {
                 (*res.pd)[j] = *begin;
             }
@@ -27,7 +27,7 @@ namespace friedrichdb {
 
         template<typename TypeIter>
         dict_value dict_value::array_string(TypeIter begin, int size) {
-            dict_value res(type_t::STRING, new AutoBuffer<std::string, 1>(size));
+            dict_value res(type_t::STRING, new boost::container::small_vector<std::string, 1>(size));
             for (int j = 0; j < size; begin++, j++) {
                 (*res.ps)[j] = *begin;
             }

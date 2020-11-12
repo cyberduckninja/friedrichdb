@@ -4,32 +4,32 @@
 namespace friedrichdb { namespace core {
 
         dict_value::dict_value(bool i)
-                : type_(type_t::INT), pi(new AutoBuffer<int64_t, 1>) {
+                : type_(type_t::INT), pi(new boost::container::small_vector<int64_t, 1>) {
             (*pi)[0] = i ? 1 : 0;
         }
 
         dict_value::dict_value(int64_t i)
-                : type_(type_t::INT), pi(new AutoBuffer<int64_t, 1>) { (*pi)[0] = i; }
+                : type_(type_t::INT), pi(new boost::container::small_vector<int64_t, 1>) { (*pi)[0] = i; }
 
         dict_value::dict_value(int i)
                 : type_(type_t::INT),
-                  pi(new AutoBuffer<int64_t, 1>) { (*pi)[0] = i; }
+                  pi(new boost::container::small_vector<int64_t, 1>) { (*pi)[0] = i; }
 
         dict_value::dict_value(unsigned p)
                 : type_(type_t::INT),
-                  pi(new AutoBuffer<int64_t, 1>) { (*pi)[0] = p; }
+                  pi(new boost::container::small_vector<int64_t, 1>) { (*pi)[0] = p; }
 
         dict_value::dict_value(double p)
                 : type_(type_t::REAL),
-                  pd(new AutoBuffer<double, 1>) { (*pd)[0] = p; }
+                  pd(new boost::container::small_vector<double, 1>) { (*pd)[0] = p; }
 
         dict_value::dict_value(const std::string &s)
                 : type_(type_t::STRING),
-                  ps(new AutoBuffer<std::string, 1>) { (*ps)[0] = s; }
+                  ps(new boost::container::small_vector<std::string, 1>) { (*ps)[0] = s; }
 
         dict_value::dict_value(const char *s)
                 : type_(type_t::STRING),
-                  ps(new AutoBuffer<std::string, 1>) { (*ps)[0] = s; }
+                  ps(new boost::container::small_vector<std::string, 1>) { (*ps)[0] = s; }
 
         int dict_value::getIntValue(int idx) const {
             return (int) get<int64_t>(idx);
@@ -39,7 +39,7 @@ namespace friedrichdb { namespace core {
             return get<double>(idx);
         }
 
-        std::string dict_value::getStringValue(int idx) const {
+        std::string dict_value::get_string_value(int idx) const {
             return get<std::string>(idx);
         }
 
@@ -73,15 +73,15 @@ namespace friedrichdb { namespace core {
                 return *this;
 
             if (r.type_ == type_t::INT) {
-                auto *tmp = new AutoBuffer<int64_t, 1>(*r.pi);
+                auto *tmp = new boost::container::small_vector<int64_t, 1>(*r.pi);
                 release();
                 pi = tmp;
             } else if (r.type_ == type_t::STRING) {
-                auto *tmp = new AutoBuffer<std::string, 1>(*r.ps);
+                auto *tmp = new boost::container::small_vector<std::string, 1>(*r.ps);
                 release();
                 ps = tmp;
             } else if (r.type_ == type_t::REAL) {
-                auto *tmp = new AutoBuffer<double, 1>(*r.pd);
+                auto *tmp = new boost::container::small_vector<double, 1>(*r.pd);
                 release();
                 pd = tmp;
             }
@@ -95,11 +95,11 @@ namespace friedrichdb { namespace core {
             type_ = r.type_;
 
             if (r.type_ == type_t::INT)
-                pi = new AutoBuffer<int64_t, 1>(*r.pi);
+                pi = new boost::container::small_vector<int64_t, 1>(*r.pi);
             else if (r.type_ == type_t::STRING)
-                ps = new AutoBuffer<std::string, 1>(*r.ps);
+                ps = new boost::container::small_vector<std::string, 1>(*r.ps);
             else if (r.type_ == type_t::REAL)
-                pd = new AutoBuffer<double, 1>(*r.pd);
+                pd = new boost::container::small_vector<double, 1>(*r.pd);
         }
 
         bool dict_value::is_string() const {

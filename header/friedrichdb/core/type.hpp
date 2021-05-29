@@ -5,14 +5,9 @@
 #include <boost/interprocess/containers/vector.hpp>
 #include <boost/interprocess/containers/string.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/utility/string_view.hpp>
 
 namespace friedrichdb::core {
-
-    template<class T, template<typename P> class Allocator>
-    struct basic_tensor_t final {
-        boost::container::vector<unsigned int, Allocator<unsigned int>> shape_;
-        boost::container::vector<T, Allocator<T>> base_;
-    };
 
     template<
             class CharT,
@@ -20,6 +15,8 @@ namespace friedrichdb::core {
             class Allocator  = void
     >
     using basic_string_t = boost::container::basic_string<CharT, Traits, Allocator>;
+
+    using boost::basic_string_view;
 
     template<
             class T,

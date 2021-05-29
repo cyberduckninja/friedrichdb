@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include "memory_resource.hpp"
+
 class buffer {
 public:
     buffer() = delete;
@@ -119,13 +121,13 @@ public:
 
     std::size_t capacity() const noexcept { return _capacity; }
 
-    mr::device_memory_resource *memory_resource() const noexcept { return _mr; }
+    device_memory_resource *memory_resource() const noexcept { return mr_; }
 
 private:
     void *_data{nullptr};
     std::size_t _size{};
     std::size_t _capacity{};
-    mr::device_memory_resource *_mr{mr::get_current_device_resource()};
+    device_memory_resource *mr_{get_current_device_resource()};
 
     void allocate(std::size_t bytes) {
         _size = bytes;

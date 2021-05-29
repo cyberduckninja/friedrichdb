@@ -3,63 +3,53 @@
 #include <utility>
 #include <memory>
 #include <algorithm>
+#include <unordered_map>
+#include <iostream>
 
-#include <boost/container/static_vector.hpp>
+#include "document.hpp"
 
-#include "friedrichdb/core/basic_field.hpp"
-#include "friedrichdb/core/field.hpp"
-#include "friedrichdb/core/schema.hpp"
+namespace friedrichdb::core {
 
-namespace friedrichdb { namespace core {
+    class collection_t final {
+    public:
+        using storage_t = std::unordered_map<std::string, document_ptr>;
+        using iterator = typename storage_t::iterator ;
 
-        template<
-            template<typename P> class Allocator,
-            template <typename P,class D> class UniquePtr
-        >
-        using basic_row_t = basic_vector_t<field_t<Allocator,UniquePtr>, Allocator>;
+        void insert(const std::string& uid, document_ptr document) {
+            storage_.emplace(uid, std::move(document));
+        }
 
-        template<
-            template<typename P> class Allocator,
-            template <typename P,class D> class UniquePtr
-        >
-        using basic_storage_base_t = basic_vector_t<basic_row_t<Allocator,UniquePtr>, Allocator>;
-
-
-        template<
-            template<typename A> class Allocator,
-            template <typename P,class D> class UniquePtr
-        >
-        class collection final {
-        public:
-            using schema_t  = basic_schema_t<Allocator,UniquePtr>;
-            using row_t = basic_row_t<Allocator,UniquePtr>;
-            using storage_base_t = basic_storage_base_t<Allocator,UniquePtr>;
-
-            template<
-                template<typename A> class OtherAllocator,
-                template <typename P,class D> class OtherUniquePtr
-            >
-            collection(const basic_schema_t<OtherAllocator,OtherUniquePtr>& current_schema)
-                : schema_(current_schema.begin(), current_schema.end()) {}
-
-
-            row_t &row(std::size_t index) {
-                return storage_.at(index);
+        document_t *get(const std::string& uid) {
+            auto it = storage_.find(uid);
+            if (it == storage_.end()) {
+                return nullptr;
+            } else {
+                it->second.get();
             }
+        }
 
-            const row_t &row(std::size_t index) const {
-                return storage_.at(index);
-            }
+        std::size_t size() const {
+            return storage_.size();
+        }
 
-            const schema_t &schema() const { return schema_; }
+        auto begin() -> iterator {
+            return storage_.begin();
+        }
 
-            std::size_t size() const {
-              return storage_.size();
-            }
+        auto end() -> iterator {
+            return storage_.end();
+        }
 
-        private:
-            schema_t schema_;
-            storage_base_t storage_;
-        };
+        auto remove(const std::string& key ){
+            storage_.erase(key);
+        }
 
-}}
+        void drop(){
+            storage_.clear();
+        }
+
+    private:
+        storage_t storage_;
+    };
+
+}

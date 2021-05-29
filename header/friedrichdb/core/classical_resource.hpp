@@ -64,7 +64,7 @@ public:
 
 private:
 
-    void *do_allocate(std::size_t bytes,std::size_t alignment = default_host_alignment) override {
+    void *do_allocate(std::size_t bytes, std::size_t alignment = default_host_alignment) override {
 #if __cplusplus >= 201703L
         return ::operator new(bytes, std::align_val_t(alignment));
 #else
@@ -76,7 +76,7 @@ private:
     }
 
 
-    void do_deallocate(void *p,std::size_t bytes,std::size_t alignment = default_host_alignment) override {
+    void do_deallocate(void *p, std::size_t bytes, std::size_t alignment = default_host_alignment) override {
 #if __cplusplus >= 201703L
         ::operator delete(p, bytes, std::align_val_t(alignment));
 #else

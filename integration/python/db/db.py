@@ -3,24 +3,21 @@
 import copy
 from functools import reduce
 import logging
-import os
 from typing import List
 
 from math import ceil
-from operator import itemgetter
-from uuid import uuid1
-from .queries import Query, where
+from queries import Query, where
 
-from friedrich_db import DataBase, Collection, Client
+import friedrich_db
 
-from .results import (
+from results import (
     InsertOneResult,
     InsertManyResult,
     UpdateResult,
     DeleteResult
 )
 
-from .errors import DuplicateKeyError, InvalidName
+from errors import DuplicateKeyError, InvalidName
 
 try:
     basestring
@@ -47,22 +44,21 @@ def _check_name(name):
 
 
 class Client:
-    def __init__(self, foldername=u"tinydb", **kwargs):
-        self._foldername = foldername
-        self.client = Client()
+    def __init__(self):
+        self.client = friedrich_db.Client()
         print("init Client")
 
-    def __getitem__(self, key) -> DataBase:
-        return self.client.get(key)
+    def __getitem__(self, key):
+        return DataBase(self.client, key)
 
     def close(self):
         pass
 
-    def __getattr__(self, name) -> DataBase:
-        return self.client.get(name)
+    def __getattr__(self, name):
+        return DataBase(self.client, name)
 
 
-class Database:
+class DataBase:
     def __init__(self, client: Client, name: str):
         self.client: Client = client
         self.name: str = name
@@ -71,43 +67,46 @@ class Database:
 
     def __getattr__(self, name):
         print("__getattr__ 0")
-        return Collection(name, self)
+        return Collection(name, self.database)
 
     def __getitem__(self, name):
         print("__getattr__ 1")
-        return Collection(name, self)
+        return Collection(name, self.database)
 
     def collection_names(self) -> List[str]:
         return self.database.collection_name()
 
 
 class Collection:
-    def __init__(self, table, parent=None):
-        self.tablename = table
-        self.table = None
-        self.parent = parent
+    def __init__(self, name, database):
+        self.name = name
+        self.database = database
+        self.collection = None
         print("init Collection")
 
+    def __len__(self):
+        return len(self.collection)
+
     def __repr__(self):
-        return self.tablename
+        return self.name
 
     def __getattr__(self, name):
-        print("__getattr__")
-        # if self.table is None:
-        #     self.tablename += u"." + name
-        if self.table is None:
+        print("0 __getattr__ Collection")
+        if self.collection is None:
+            print("1 __getattr__ Collection")
             self.build_table()
+        print("2 __getattr__ Collection")
         return self
 
     def build_table(self):
-        self.table = self.parent.tinydb.table(self.tablename)
+        self.collection = self.database[self.name]
 
     def count(self):
         return self.find().count()
 
     def drop(self, **kwargs):
-        if self.table:
-            self.parent.tinydb.purge_table(self.tablename)
+        if self.collection:
+            self.database.drop_collection(self.name)
             return True
         else:
             return False
@@ -119,36 +118,41 @@ class Collection:
             return self.insert_one(docs, *args, **kwargs)
 
     def insert_one(self, doc, *args, **kwargs):
-        print(1)
-        if self.table is None:
+        print("1 insert_one")
+        if self.collection is None:
             self.build_table()
-        print(2)
+        print("2 insert_one")
         if not isinstance(doc, dict):
             raise ValueError(u'"doc" must be a dict')
-        print(3)
-        _id = doc[u'_id'] = doc.get('_id') or generate_id()
-        print(4)
+        print("3 insert_one")
+        _id = doc[u'_id'] = doc.get('_id') or friedrich_db.generate_id()
+        print("4 insert_one")
         bypass_document_validation = kwargs.get('bypass_document_validation')
         if bypass_document_validation is True:
             # insert doc without validation of duplicated `_id`
-            print(5)
-            eid = self.table.insert(doc)
+            print("5 insert_one")
+            eid = self.collection.insert(doc)
         else:
-            print(6)
+            print("6 insert_one")
             existing = self.find_one({'_id': _id})
+            print(existing)
+            print("7 insert_one")
             if existing is None:
-                eid = self.table.insert(doc)
+                print("8 insert_one")
+                eid = self.collection.insert(doc)
+                print(eid)
+                print("9 insert_one")
             else:
                 raise DuplicateKeyError(
                     u'_id:{0} already exists in collection:{1}'.format(
-                        _id, self.tablename
+                        _id, self.name
                     )
                 )
 
         return InsertOneResult(eid=eid, inserted_id=_id)
 
     def insert_many(self, docs, *args, **kwargs):
-        if self.table is None:
+        if self.collection is None:
             self.build_table()
 
         if not isinstance(docs, list):
@@ -169,14 +173,14 @@ class Collection:
                 if _id in existing:
                     raise DuplicateKeyError(
                         u'_id:{0} already exists in collection:{1}'.format(
-                            _id, self.tablename
+                            _id, self.name
                         )
                     )
                 existing.append(_id)
 
             _ids.append(_id)
 
-        results = self.table.insert_multiple(docs)
+        results = self.collection.insert_multiple(docs)
 
         return InsertManyResult(
             eids=[eid for eid in results],
@@ -206,7 +210,7 @@ class Collection:
         # use this to determine gt/lt/eq on prev_query
         logger.debug(u'query: {} prev_query: {}'.format(query, prev_key))
 
-        q = Query ()
+        q = Query()
         conditions = None
 
         # deal with the {'name': value} case by injecting a previous key
@@ -332,7 +336,7 @@ class Collection:
             return self.update_one(query, doc, *args, **kwargs)
 
     def update_one(self, query, doc):
-        if self.table is None:
+        if self.collection is None:
             self.build_table()
 
         if u"$set" in doc:
@@ -341,7 +345,7 @@ class Collection:
         allcond = self.parse_query(query)
 
         try:
-            result = self.table.update(doc, allcond)
+            result = self.collection.update(doc, allcond)
         except:
             # TODO: check table.update result
             # check what pymongo does in that case
@@ -351,21 +355,26 @@ class Collection:
 
     def find(self, filter=None, sort=None, skip=None, limit=None, *args, **kwargs):
         print(1)
-        if self.table is None:
+        if self.collection is None:
             self.build_table()
         print(2)
         if filter is None:
             print(3)
-            result = self.table.all()
+            print(dir(self.collection))
+            print(hasattr(self.collection,"all"))
+            result = self.collection.all()
+            print(4)
         else:
             print(4)
+            print(filter)
             allcond = self.parse_query(filter)
             print(5)
-            try:
-                result = self.table.search(allcond)
-            except (AttributeError, TypeError):
-                result = []
-
+            print(type(self.collection))
+            print(dir(self.collection))
+            print(hasattr(self.collection,"search"))
+            result = self.collection.search(allcond)
+            print(result)
+        print(5)
         result = Cursor(
             result,
             sort=sort,
@@ -376,12 +385,18 @@ class Collection:
         return result
 
     def find_one(self, filter=None):
-        if self.table is None:
+        print("0 find_one")
+        if self.collection is None:
+            print("1 find_one")
             self.build_table()
-
+        print("2 find_one")
         allcond = self.parse_query(filter)
-
-        return self.table.get(allcond)
+        print("3 find_one")
+        print(filter)
+        print(type(self.collection))
+        print(allcond)
+        print("4 find_one")
+        return self.collection.get(allcond)
 
     def remove(self, spec_or_id, multi=True, *args, **kwargs):
         if multi:
@@ -390,20 +405,19 @@ class Collection:
 
     def delete_one(self, query):
         item = self.find_one(query)
-        result = self.table.remove(where(u'_id') == item[u'_id'])
+        result = self.collection.remove(where(u'_id') == item[u'_id'])
 
         return DeleteResult(raw_result=result)
 
     def delete_many(self, query):
         items = self.find(query)
         result = [
-            self.table.remove(where(u'_id') == item[u'_id'])
+            self.collection.remove(where(u'_id') == item[u'_id'])
             for item in items
         ]
 
         if query == {}:
-            # need to reset TinyDB's index for docs order consistency
-            self.table._last_id = 0
+            self.collection.drop()
 
         return DeleteResult(raw_result=result)
 
@@ -638,7 +652,3 @@ class Cursor:
 
     def count(self, with_limit_and_skip=False):
         return len(self.cursordat)
-
-
-def generate_id():
-    return str(uuid1()).replace(u"-", u"")

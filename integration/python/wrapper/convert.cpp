@@ -3,7 +3,7 @@
 #include <boost/smart_ptr/intrusive_ptr.hpp>
 #include <boost/smart_ptr/intrusive_ref_counter.hpp>
 
-
+#include "nlohmann/json.hpp"
 
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
@@ -12,7 +12,91 @@
 // declaration should be in each translation unit.
 PYBIND11_DECLARE_HOLDER_TYPE(T, boost::intrusive_ptr<T>)
 
-void to_document(std::string&& key, const py::handle &source, friedrichdb::core::document_t& target) {
+using friedrichdb::core::document_t;
+using json = nlohmann::json;
+
+
+inline json to_json(const py::handle &obj) {
+    if (obj.ptr() == nullptr || obj.is_none()) {
+        return nullptr;
+    }
+    if (py::isinstance<py::bool_>(obj)) {
+        return obj.cast<bool>();
+    }
+    if (py::isinstance<py::int_>(obj)) {
+        return obj.cast<long>();
+    }
+    if (py::isinstance<py::float_>(obj)) {
+        return obj.cast<double>();
+    }
+    if (py::isinstance<py::bytes>(obj)) {
+        py::module base64 = py::module::import("base64");
+        return base64.attr("b64encode")(obj).attr("decode")("utf-8").cast<std::string>();
+    }
+    if (py::isinstance<py::str>(obj)) {
+        return obj.cast<std::string>();
+    }
+    if (py::isinstance<py::tuple>(obj) || py::isinstance<py::list>(obj)) {
+        auto out = json::array();
+        for (const py::handle value : obj) {
+            out.push_back(to_json(value));
+        }
+        return out;
+    }
+    if (py::isinstance<py::dict>(obj)) {
+        auto out = json::object();
+        for (const py::handle key : obj) {
+            out[py::str(key).cast<std::string>()] = to_json(obj[key]);
+        }
+        return out;
+    }
+    throw std::runtime_error("to_json not implemented for this type of object: " + py::repr(obj).cast<std::string>());
+}
+
+inline document_t to__(const py::handle &obj) {
+    /*
+    if (obj.ptr() == nullptr || obj.is_none()) {
+        return nullptr;
+    }
+     */
+    if (py::isinstance<py::bool_>(obj)) {
+        return obj.cast<bool>();
+    }
+    if (py::isinstance<py::int_>(obj)) {
+        return obj.cast<long>();
+    }
+    if (py::isinstance<py::float_>(obj)) {
+        return obj.cast<double>();
+    }
+    if (py::isinstance<py::bytes>(obj)) {
+        py::module base64 = py::module::import("base64");
+        return base64.attr("b64encode")(obj).attr("decode")("utf-8").cast<std::string>();
+    }
+    if (py::isinstance<py::str>(obj)) {
+        return obj.cast<std::string>();
+    }
+
+    if (py::isinstance<py::tuple>(obj) || py::isinstance<py::list>(obj)) {
+        auto out = json::array();
+        for (const py::handle value : obj) {
+            out.emplace_back(to_json(value));
+        }
+        return out;
+    }
+    if (py::isinstance<py::dict>(obj)) {
+        auto out = json::object();
+        for (const py::handle key : obj) {
+            out[py::str(key).cast<std::string>()] = to_json(obj[key]);
+        }
+        return out;
+    }
+
+    throw std::runtime_error("to_json not implemented for this type of object: " + py::repr(obj).cast<std::string>());
+}
+
+void to_document( const py::handle &source, friedrichdb::core::document_t& target);
+
+void to_document_inner(std::string&& key, const py::handle &source, friedrichdb::core::document_t& target) {
     if (source.ptr() == nullptr || source.is_none()) {
         target.add(std::move(key));
         return;
@@ -22,6 +106,7 @@ void to_document(std::string&& key, const py::handle &source, friedrichdb::core:
         return;
     }
     if (py::isinstance<py::int_>(source)) {
+        std::cerr << "0 to_document_inner int" << std::endl;
         target.add(std::move(key),source.cast<long>());
         return;
     }
@@ -38,23 +123,36 @@ void to_document(std::string&& key, const py::handle &source, friedrichdb::core:
         target.add(std::move(key),source.cast<std::string>());
         return;
     }
-/*
+
+
     if (py::isinstance<py::tuple>(source) || py::isinstance<py::list>(source)) {
+        std::cerr << "0 array" << std::endl;
+        auto inner_doc = friedrichdb::core::document_t::to_array() ;
+        std::cerr << "1 array" << std::endl;
         for (const py::handle value : source) {
-            out.push_back(to_json(value));
+            std::cerr << "2 array" << std::endl;
+            inner_doc.append(to__(value));
+            std::cerr << "3 array" << std::endl;
         }
-        target.add(key,out);
+        std::cerr << "4 array" << std::endl;
+        target.add(std::move(key),std::move(inner_doc));
         return ;
     }
     if (py::isinstance<py::dict>(source)) {
-        for (const py::handle key : source) {
-            out[py::str(key).cast<std::string>()] = to_json(source[key]);
-        }
-        target.add(key,out);
+        std::cerr << "0 dict" << std::endl;
+        friedrichdb::core::document_t inner_doc;
+        to_document(source,inner_doc);
+        target.add(std::move(key),std::move(inner_doc));
         return ;
     }
-*/
+
     throw std::runtime_error("to_document not implemented for this type of object: " + py::repr(source).cast<std::string>());
+}
+
+void to_document( const py::handle &source, friedrichdb::core::document_t& target) {
+    for (const py::handle key : source) {
+        to_document_inner(py::str(key).cast<std::string>(), source[key], target);
+    }
 }
 
 void update_document_inner(std::string&& key, const py::handle &obj,friedrichdb::core::document_t& target) {

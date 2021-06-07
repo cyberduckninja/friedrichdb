@@ -4,14 +4,6 @@ import re
 from tinydb import where
 
 
-def test_next_id(db):
-    db.truncate()
-
-    assert db._get_next_id() == 1
-    assert db._get_next_id() == 2
-    assert db._get_next_id() == 3
-
-
 def test_tables_list(db):
     db.table('table1').insert({'a': 1})
     db.table('table2').insert({'a': 1})
@@ -48,75 +40,6 @@ def test_multiple_tables(db):
     assert len(table3) == 0
 
 
-def test_caching(db):
-    table1 = db.table('table1')
-    table2 = db.table('table1')
-
-    assert table1 is table2
-
-
-def test_query_cache(db):
-    query1 = where('int') == 1
-
-    assert db.count(query1) == 3
-    assert query1 in db._query_cache
-
-    assert db.count(query1) == 3
-    assert query1 in db._query_cache
-
-    query2 = where('int') == 0
-
-    assert db.count(query2) == 0
-    assert query2 in db._query_cache
-
-    assert db.count(query2) == 0
-    assert query2 in db._query_cache
-
-
-def test_zero_cache_size(db):
-    table = db.table('table3', cache_size=0)
-    query = where('int') == 1
-
-    table.insert({'int': 1})
-    table.insert({'int': 1})
-
-    assert table.count(query) == 2
-    assert table.count(where('int') == 2) == 0
-    assert len(table._query_cache) == 0
-
-
-def test_query_cache_size(db):
-    table = db.table('table3', cache_size=1)
-    query = where('int') == 1
-
-    table.insert({'int': 1})
-    table.insert({'int': 1})
-
-    assert table.count(query) == 2
-    assert table.count(where('int') == 2) == 0
-    assert len(table._query_cache) == 1
-
-
-def test_lru_cache(db):
-    # Test integration into TinyDB
-    table = db.table('table3', cache_size=2)
-    query = where('int') == 1
-
-    table.search(query)
-    table.search(where('int') == 2)
-    table.search(where('int') == 3)
-    assert query not in table._query_cache
-
-    table.remove(where('int') == 1)
-    assert not table._query_cache.lru
-
-    table.search(query)
-
-    assert len(table._query_cache) == 1
-    table.clear_cache()
-    assert len(table._query_cache) == 0
-
-
 def test_table_is_iterable(db):
     table = db.table('table1')
 
@@ -142,8 +65,3 @@ def test_table_repr(db):
         r"<Table name=\'table4\', total=0, "
         r"storage=<tinydb\.storages\.MemoryStorage object at [a-zA-Z0-9]+>>",
         repr(table))
-
-
-def test_truncate_table(db):
-    db.truncate()
-    assert db._get_next_id() == 1

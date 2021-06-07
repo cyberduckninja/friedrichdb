@@ -14,6 +14,10 @@ namespace friedrichdb::core {
         using json_t = nlohmann::json;
         using json_ptr_t = std::unique_ptr<json_t>;
 
+        static auto  to_array() {
+            return document_t(json_t::array());
+        }
+
         document_t();
 
         document_t(json_t value);
@@ -28,6 +32,11 @@ namespace friedrichdb::core {
 
         void add(std::string &&key, const std::string &value);
 
+        void add(std::string &&key, document_t value) {
+            auto tmp = std::move(value);
+            json_.emplace(std::move(key), tmp.extract());
+        }
+
         void append(bool value){
             json_.emplace_back(value);
         }
@@ -38,9 +47,63 @@ namespace friedrichdb::core {
             json_.emplace_back(value);
         }
 
+        void append(document_t value){
+            auto tmp = std::move(value);
+            json_.emplace_back(tmp.extract());
+        }
+
         template<class Char>
         void append(const std::basic_string<Char>& value){
             json_.emplace_back(value);
+        }
+
+
+        document_t(bool value){
+            json_= json_t(value);
+        }
+        document_t(long value){
+            json_= json_t(value);
+        }
+        document_t(double value){
+            json_= json_t(value);
+        }
+
+        template<class Char>
+        document_t(const std::basic_string<Char>& value){
+            json_= json_t(value);
+        }
+
+        /*
+        document_t(document_t value){
+            auto tmp = std::move(value);
+            json_= json_t(tmp.extract());
+        }*/
+
+        void append(const std::string& key,bool value){
+            if(json_.contains(key)){
+                json_[key]=json_t::array();
+            }
+            json_[key].emplace_back(value);
+        }
+        void append(const std::string& key,long value){
+            if(json_.contains(key)){
+                json_[key]=json_t::array();
+            }
+            json_[key].emplace_back(value);
+        }
+        void append(const std::string& key,double value){
+            if(json_.contains(key)){
+                json_[key]=json_t::array();
+            }
+            json_[key].emplace_back(value);
+        }
+
+        template<class Char>
+        void append(const std::string& key,const std::basic_string<Char>& value){
+            if(json_.contains(key)){
+                json_[key]=json_t::array();
+            }
+            json_[key].emplace_back(value);
         }
 
         template<class Char>
@@ -72,6 +135,11 @@ namespace friedrichdb::core {
         bool contains_key(const std::basic_string<Char>& key) const {
             return json_.contains(key);
         }
+
+        auto extract() -> json_t {
+            return json_;
+        }
+
 
         [[nodiscard]] auto to_string() const -> std::string;
 

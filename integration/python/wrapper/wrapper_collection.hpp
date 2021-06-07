@@ -29,7 +29,7 @@ public:
 
     void insert(const py::handle &document);
     void insert_many(py::iterable);
-    auto get(py::object cond, std::optional<std::string> doc_id) -> py::object;
+    auto get(py::object cond) -> py::object;
     auto search(py::object cond) -> py::list;
     auto all() -> py::list;
     std::size_t size() const ;

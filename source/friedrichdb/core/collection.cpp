@@ -1,0 +1,1 @@
+#include <friedrichdb/core/collection.hpp>

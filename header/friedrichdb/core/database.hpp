@@ -14,9 +14,16 @@ namespace friedrichdb ::core {
             return storage_.at(name).get();
         }
 
-        auto create(const std::string &name) -> collection_t * {
-            auto result = storage_.emplace(name, std::make_unique<collection_t>());
-            return result.first->second.get();
+        auto get_or_create(const std::string &name) -> collection_t * {
+            std::cerr << "database_t::get_or_create" << std::endl;
+            auto it = storage_.find(name);
+            if(it == storage_.end()){
+                auto result = storage_.emplace(name, std::make_unique<collection_t>());
+                return result.first->second.get();
+            } else {
+                return it->second.get();
+            }
+
         }
 
         auto begin() -> iterator {
@@ -27,8 +34,15 @@ namespace friedrichdb ::core {
             return storage_.end();
         }
 
-        auto drop(const std::string& name) -> void {
-            storage_.erase(name);
+        auto drop(const std::string& name) -> bool {
+            auto it = storage_.find(name);
+            if(it ==  storage_.end()){
+                return false;
+            }else {
+                storage_.erase(name);
+                return true;
+            }
+
         }
 
     private:

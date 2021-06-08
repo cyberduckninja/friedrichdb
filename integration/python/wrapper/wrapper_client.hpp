@@ -23,7 +23,7 @@ namespace py = pybind11;
 class PYBIND11_EXPORT wrapper_client final : public boost::intrusive_ref_counter<wrapper_client> {
 public:
     wrapper_client();
-    wrapper_database_ptr create(const std::string& name);
+    wrapper_database_ptr get_or_create(const std::string& name);
     auto database_names() -> py::list;
 private:
     std::unordered_map<std::string, boost::intrusive_ptr<wrapper_database>> storage_;

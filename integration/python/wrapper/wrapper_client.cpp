@@ -8,9 +8,14 @@
 // declaration should be in each translation unit.
 PYBIND11_DECLARE_HOLDER_TYPE(T, boost::intrusive_ptr<T>)
 
-wrapper_database_ptr wrapper_client::create(const std::string &name) {
-    auto result =  storage_.emplace(name, new wrapper_database(new friedrichdb::core::database_t ));
-    return result.first->second;
+wrapper_database_ptr wrapper_client::get_or_create(const std::string &name) {
+    auto it = storage_.find(name);
+    if(it == storage_.end()){
+        auto result =  storage_.emplace(name, new wrapper_database(new friedrichdb::core::database_t ));
+        return result.first->second;
+    } else {
+        return it->second;
+    }
 }
 
 wrapper_client::wrapper_client() {}

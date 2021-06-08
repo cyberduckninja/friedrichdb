@@ -30,7 +30,7 @@ public:
     ~wrapper_database();
     auto collection_names() -> py::list;
     wrapper_collection_ptr create(const std::string& name);
-    void drop_collection(const std::string& name);
+    bool drop_collection(const std::string& name);
 private:
     unique ptr_;
 };

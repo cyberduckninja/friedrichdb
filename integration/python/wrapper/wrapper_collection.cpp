@@ -10,15 +10,10 @@ PYBIND11_DECLARE_HOLDER_TYPE(T, boost::intrusive_ptr<T>)
 
 
 void wrapper_collection::insert(const py::handle &document) {
-    std::cerr << "0 wrapper_collection::insert" << std::endl;
     auto is_document = py::isinstance<py::dict>(document);
-    std::cerr << "1 wrapper_collection::insert" << std::endl;
     if (is_document) {
-        std::cerr << "2 wrapper_collection::insert" << std::endl;
         auto doc = friedrichdb::core::make_document();
-        std::cerr << "3 wrapper_collection::insert" << std::endl;
         to_document(document,*doc);
-        std::cerr << "4 wrapper_collection::insert" << std::endl;
         ptr_->insert(document["_id"].cast<std::string>(), std::move(doc));
     }
 }
@@ -31,33 +26,19 @@ wrapper_collection::wrapper_collection(wrapper_collection::pointer ptr) :ptr_(pt
 
 
 auto wrapper_collection::get(py::object cond) -> py::object {
-    std::cerr << "0 wrapper_collection::get  " << std::endl;
-
     auto is_not_empty = !cond.is(py::none());
-    std::cerr << "1 wrapper_collection::get  " << std::endl;
     if (is_not_empty) {
-        std::cerr << "2 wrapper_collection::get  " << std::endl;
         wrapper_document_ptr tmp;
-        std::cerr << "3 wrapper_collection::get  " << std::endl;
-        std::cerr << ptr_->size() << std::endl;
-        std::cerr << "3.5 wrapper_collection::get  " << std::endl;
+        //std::cerr << ptr_->size() << std::endl;
         for (auto &i:*ptr_) {
-            std::cerr << "4 wrapper_collection::get  " << std::endl;
             auto result = cache_.find(i.first);
-            std::cerr << "5 wrapper_collection::get  " << std::endl;
             if (result == cache_.end()) {
-                std::cerr << "6 wrapper_collection::get  " << std::endl;
                 auto it = cache_.emplace(i.first, wrapper_document_ptr(new wrapper_document(i.second.get())));
-                std::cerr << "7 wrapper_collection::get  " << std::endl;
                 tmp = it.first->second;
-                std::cerr << "8 wrapper_collection::get  " << std::endl;
             } else {
-                std::cerr << "9 wrapper_collection::get  " << std::endl;
                 tmp = result->second;
             }
-            std::cerr << "10 wrapper_collection::get  " << std::endl;
             if (cond(tmp).cast<bool>()) {
-                std::cerr << "11 wrapper_collection::get  " << std::endl;
                 return py::cast(tmp);
             }
         }
@@ -70,23 +51,14 @@ auto wrapper_collection::get(py::object cond) -> py::object {
 
 
 auto wrapper_collection::search(py::object cond) -> py::list {
-    std::cerr << "0 wrapper_collection::search  " << std::endl;
     py::list tmp;
-    std::cerr << "1 wrapper_collection::search  " << std::endl;
     wrapper_document_ptr doc;
-    std::cerr << "2 wrapper_collection::search  " << std::endl;
     for (auto &i:*ptr_) {
-        std::cerr << "3 wrapper_collection::search  " << std::endl;
         auto result = cache_.find(i.first);
-        std::cerr << "4 wrapper_collection::search  " << std::endl;
         if (result == cache_.end()) {
-            std::cerr << "5 wrapper_collection::search  " << std::endl;
             auto it = cache_.emplace(i.first, wrapper_document_ptr(new wrapper_document(i.second.get())));
-            std::cerr << "6 wrapper_collection::search  " << std::endl;
             doc = it.first->second;
-            std::cerr << "7 wrapper_collection::search  " << std::endl;
         } else {
-            std::cerr << "8 wrapper_collection::search  " << std::endl;
             doc = result->second;
         }
         if (cond(doc).cast<bool>()) {

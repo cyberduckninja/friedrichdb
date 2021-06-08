@@ -106,7 +106,7 @@ void to_document_inner(std::string&& key, const py::handle &source, friedrichdb:
         return;
     }
     if (py::isinstance<py::int_>(source)) {
-        std::cerr << "0 to_document_inner int" << std::endl;
+        ///std::cerr << "0 to_document_inner int" << std::endl;
         target.add(std::move(key),source.cast<long>());
         return;
     }
@@ -126,20 +126,14 @@ void to_document_inner(std::string&& key, const py::handle &source, friedrichdb:
 
 
     if (py::isinstance<py::tuple>(source) || py::isinstance<py::list>(source)) {
-        std::cerr << "0 array" << std::endl;
         auto inner_doc = friedrichdb::core::document_t::to_array() ;
-        std::cerr << "1 array" << std::endl;
         for (const py::handle value : source) {
-            std::cerr << "2 array" << std::endl;
             inner_doc.append(to__(value));
-            std::cerr << "3 array" << std::endl;
         }
-        std::cerr << "4 array" << std::endl;
         target.add(std::move(key),std::move(inner_doc));
         return ;
     }
     if (py::isinstance<py::dict>(source)) {
-        std::cerr << "0 dict" << std::endl;
         friedrichdb::core::document_t inner_doc;
         to_document(source,inner_doc);
         target.add(std::move(key),std::move(inner_doc));
@@ -234,7 +228,7 @@ auto  from_object(const std::string& key, friedrichdb::core::document_t& target)
 void update_document( const py::handle &source, friedrichdb::core::document_t &target) {
 
     for (const py::handle key : source) {
-        std::cerr << py::str(key).cast<std::string>()  << std::endl;
+        //std::cerr << py::str(key).cast<std::string>()  << std::endl;
         update_document_inner(py::str(key).cast<std::string>(), source[key],target);
 
     }
